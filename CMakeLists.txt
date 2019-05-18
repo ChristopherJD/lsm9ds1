@@ -30,7 +30,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
 
 ######## Build and include settings ########
 include_directories(
-	/opt/poky/2.6.2/sysroots/cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi/usr/include/python3.5m
+	/usr/include/python3.5m
 	inc
 )
 
