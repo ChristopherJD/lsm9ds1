@@ -50,3 +50,10 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# User Added
+# -----------------------------------------------------------------------------
+Debug/
+Release/
+toolchain.cmake
+
