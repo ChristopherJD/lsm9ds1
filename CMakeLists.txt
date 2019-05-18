@@ -57,16 +57,20 @@ add_library(lsm9ds1 SHARED ${SOURCES})
 add_library(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
 
 enable_testing()
-add_executable(test ${TEST_SOURCES})
-target_link_libraries(test cunit)
-target_link_libraries(test lsm9ds1)
+add_executable(lsm9ds1_test ${TEST_SOURCES})
+target_link_libraries(lsm9ds1_test cunit)
+target_link_libraries(lsm9ds1_test lsm9ds1)
 
 ######## Install targets ########
 INSTALL(TARGETS lsm9ds1
-	DESTINATION usr/lib/
+	DESTINATION /usr/lib/
 )
 
 SET_TARGET_PROPERTIES(pylsm9ds1 PROPERTIES PREFIX "")
 INSTALL(TARGETS pylsm9ds1
-	DESTINATION usr/lib/python3.5/site-packages
+	DESTINATION /usr/lib/python3.5/site-packages
+)
+
+INSTALL(TARGETS lsm9ds1_test
+	DESTINATION /usr/bin
 )
