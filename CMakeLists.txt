@@ -32,7 +32,6 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
 find_package(PythonLibs REQUIRED)
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(
-	/usr/include/python3.5m
 	inc
 )
 
@@ -57,6 +56,7 @@ file(GLOB TEST_SOURCES
 add_library(lsm9ds1 SHARED ${SOURCES})
 add_library(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
 
+enable_testing()
 add_executable(test ${TEST_SOURCES})
 target_link_libraries(test cunit)
 target_link_libraries(test lsm9ds1)
