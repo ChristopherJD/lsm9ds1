@@ -148,7 +148,7 @@ environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.7
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/STRIP/value=arm-poky-linux-gnueabi-strip
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/Sysroot/delimiter=\:
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/Sysroot/operation=replace
-environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/Sysroot/value=/opt/poky/2.6.2/sysroots/cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
+environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/Sysroot/value=/opt/poky/2.6.2/sysroots
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/TARGET_PREFIX/delimiter=\:
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/TARGET_PREFIX/operation=replace
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132.1402431072/TARGET_PREFIX/value=arm-poky-linux-gnueabi-
@@ -315,7 +315,7 @@ environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.7
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/STRIP/value=arm-poky-linux-gnueabi-strip
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/Sysroot/delimiter=\:
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/Sysroot/operation=replace
-environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/Sysroot/value=/opt/poky/2.6.2/sysroots/cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
+environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/Sysroot/value=/opt/poky/2.6.2/sysroots
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/TARGET_PREFIX/delimiter=\:
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/TARGET_PREFIX/operation=replace
 environment/project/org.yocto.cmake.managedbuilder.configuration.gnu.exe.debug.733605132/TARGET_PREFIX/value=arm-poky-linux-gnueabi-

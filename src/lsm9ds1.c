@@ -30,10 +30,14 @@
 #include <stdlib.h>
 #include <getopt.h>
 #include <fcntl.h>
+#include <string.h>
 #include <sys/ioctl.h>
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include "lsm9ds1.h"
+
+#define SYSFS_GPIO_DIR	"/sys/class/gpio/"
+#define	GPIO_PIN	135
 
 static bool bus_initialized = false;
 static uint8_t num_calls = 0;
@@ -97,7 +101,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_xfer_t op, uint8_t address, uint8_t tx,
 		perror("SPIDEV transfer:");
 	}
 #endif
-	if(ret < 1) {
+	if (ret < 1) {
 		return LSM9DS1_SPI_BUS_XFER_ERROR;
 	}
 
@@ -169,7 +173,8 @@ lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
 
 	// The mag accel and gyro id should be at the same offset, if not, we don't know what device we have.
 	// We are comparing enums of different types, cast first since we want to do this.
-	if (!((int)LSM9DS1_REGISTER_WHO_AM_I_XG == (int)LSM9DS1_REGISTER_WHO_AM_I_M)) {
+	if (!((int) LSM9DS1_REGISTER_WHO_AM_I_XG
+			== (int) LSM9DS1_REGISTER_WHO_AM_I_M)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
 	}
 
@@ -231,9 +236,42 @@ lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_bus_t bus_type) {
 	return ret;
 }
 
+//TODO Add write and, I think I need to export
+lsm9ds1_status_t lsm9ds1_mag_cs(pin_state_t pin_state) {
+
+//TODO Remove hardcoded length
+	char buff[1024];
+	FILE * file;
+
+	snprintf(buff, 1024, SYSFS_GPIO_DIR"gpio%d/direction", GPIO_PIN);
+	file = fopen(buff, "w");
+	if (file == NULL) {
+#ifdef DEBUG
+		printf("unable to open %s\n", buff);
+#endif
+		fclose(file);
+		return LSM9DS1_UNABLE_TO_SET_CS_DIR;
+	}
+	snprintf(buff, 1024, "out");
+	if (fprintf(file, buff) != strlen(buff)) {
+#ifdef DEBUG
+		printf("error writing mag CS direction\n");
+#endif
+		fclose(file);
+		return LSM9DS1_UNABLE_TO_SET_CS_DIR;
+	}
+	fclose(file);
+	return LSM9DS1_SUCCESS;
+}
+
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
 		lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
 		lsm9ds1_gyro_scale_t scale) {
+
+#ifdef DEBUG
+	printf("Build Version: %s\n", BUILD_VERSION);
+	printf("Build Date/Time: %s %s\n",__DATE__,__TIME__);
+#endif
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 

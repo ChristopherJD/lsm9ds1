@@ -1,11 +1,18 @@
 cmake_minimum_required (VERSION 2.8.1)
 
+SET(LSM9DS1_VERSION_MAJOR 0)
+SET(LSM9DS1_VERSION_MINOR 1)
+SET(LSM9DS1_VERSION_PATCH 0)
+SET(LSM9DS1_VERSION_STRING ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
+
+add_definitions(-DBUILD_VERSION="${LSM9DS1_VERSION_STRING}")
+
+option(BUILD_DOCUMENTATION "Build lsm9ds1 documentation" OFF)
+
 if(BUILD_DOCUMENTATION)
 
 	# add a target to generate API documentation with Doxygen
 	find_package(Doxygen)
-	option(BUILD_DOCUMENTATION "Create and install the HTML based API documentation (requires Doxygen)" ${DOXYGEN_FOUND})
-
 
     if(NOT DOXYGEN_FOUND)
         message(FATAL_ERROR "Doxygen is needed to build the documentation.")
@@ -21,7 +28,7 @@ if(BUILD_DOCUMENTATION)
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
-endif()
+endif(BUILD_DOCUMENTATION)
 
 ######## Project settings ########
 PROJECT(liblsm9ds1)
@@ -29,7 +36,7 @@ SET(LICENSE "MIT")
 
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -g")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
 
 ######## Build and include settings ########
 find_package(PythonLibs REQUIRED)
@@ -57,11 +64,6 @@ file(GLOB TEST_SOURCES
 
 #Generate the shared library from the sources
 add_library(lsm9ds1 SHARED ${SOURCES})
-
-SET(LSM9DS1_VERSION_MAJOR 0)
-SET(LSM9DS1_VERSION_MINOR 0)
-SET(LSM9DS1_VERSION_PATCH 1)
-SET(LSM9DS1_VERSION_STRING ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
 
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})

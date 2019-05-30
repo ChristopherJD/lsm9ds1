@@ -87,7 +87,16 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_UKNOWN_ACCEL_RANGE = -13,
 	LSM9DS1_BUS_NOT_INTIALIZED = -14,
 	LSM9DS1_UKNOWN_GAIN_RANGE = -15,
+	LSM9DS1_UNABLE_TO_SET_CS_DIR = -16,
 } lsm9ds1_status_t;
+
+typedef enum {
+	LOW, HIGH
+}pin_state_t;
+
+typedef enum {
+	IN, OUT
+}pin_direction_t;
 
 typedef enum {
 	LSM9DS1_READ, LSM9DS1_WRITE,
