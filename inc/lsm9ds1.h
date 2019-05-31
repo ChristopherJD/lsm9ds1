@@ -88,6 +88,8 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_BUS_NOT_INTIALIZED = -14,
 	LSM9DS1_UKNOWN_GAIN_RANGE = -15,
 	LSM9DS1_UNABLE_TO_SET_CS_DIR = -16,
+	LSM9DS1_UNABLE_TO_OPEN_MAG_CS = -17,
+	LSM9DS1_UNABLE_TO_SET_CS = -18,
 } lsm9ds1_status_t;
 
 typedef enum {
@@ -321,6 +323,8 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range);
 lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain);
 
 lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale);
+
+lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device);
 
 
 #ifdef __cplusplus

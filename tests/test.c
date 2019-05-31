@@ -36,7 +36,8 @@
 int init_lsm9ds1_suite(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+	status = lsm9ds1_init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G,
+			LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
 	if (status < 0) {
 		fprintf(stderr, "Error initializing lsm9ds1!\n");
 		return -1;
@@ -57,14 +58,25 @@ int clean_lsm9ds1_suite(void) {
  * Writes test data to the temporary file and checks
  * whether the expected number of bytes were written.
  */
-void test_lsm9ds1_read_sub_device(void) {
+void test_lsm9ds1_read_sub_device_accel_gryo(void) {
 
 	lsm9ds1_devices_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-	status = lsm9ds1_read_sub_device(&found_device);
 
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
+	status = lsm9ds1_read_sub_device(&found_device);
 	CU_ASSERT(0 == status);
 	CU_ASSERT(LSM9DS1_ACCEL_GYRO == found_device);
+}
+
+void test_lsm9ds1_read_sub_device_mag(void) {
+	lsm9ds1_devices_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	(void) set_current_device(LSM9DS1_MAG);
+	status = lsm9ds1_read_sub_device(&found_device);
+	CU_ASSERT(0 == status);
+	CU_ASSERT(LSM9DS1_MAG == found_device);
 }
 
 /* The main() function for setting up and running the tests.
@@ -79,14 +91,20 @@ int main() {
 		return CU_get_error();
 
 	/* add a suite to the registry */
-	pSuite = CU_add_suite("lsm9ds1 suite", init_lsm9ds1_suite, clean_lsm9ds1_suite);
+	pSuite = CU_add_suite("lsm9ds1 suite", init_lsm9ds1_suite,
+			clean_lsm9ds1_suite);
 	if (NULL == pSuite) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
 
 	/* add the tests to the suite */
-	if ((NULL == CU_add_test(pSuite, "test read_sub_device", test_lsm9ds1_read_sub_device))) {
+	if ((NULL
+			== CU_add_test(pSuite, "test read_sub_device for accel and gyro",
+					test_lsm9ds1_read_sub_device_accel_gryo))
+			|| (NULL
+					== CU_add_test(pSuite, "test read_sub_device for mag",
+							test_lsm9ds1_read_sub_device_mag))) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
