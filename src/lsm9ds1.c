@@ -38,6 +38,13 @@
 
 #include "lsm9ds1.h"
 
+#if DEBUG > 0
+#define DEBUG_PRINT(fmt, args...) fprintf(stderr, "[%s:%d:%s()]: " fmt, \
+		__FILE__, __LINE__, __func__, ##args)
+#else
+#define DEBUG_PRINT(fmt, args...) /* Don't do anything in release builds */
+#endif
+
 static bool bus_initialized = false;
 static uint8_t num_calls = 0;
 static lsm9ds1_settings_t device_settings = { 0 };
@@ -151,12 +158,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		// Set back to high after the message was sent.
 		(void) lsm9ds1_mag_cs(HIGH);
 	}
-#ifdef DEBUG
-	printf("SPIDEV: transfer(%d)\n", ret);
-	if(ret < 0) {
-		perror("SPIDEV transfer:");
-	}
-#endif
+	DEBUG_PRINT("SPIDEV: transfer(%d)\n", ret);
 	if (ret < 1) {
 		return LSM9DS1_SPI_BUS_XFER_ERROR;
 	}
@@ -192,18 +194,15 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 
 	fd_gpio = open("/dev/gpiomem", O_RDWR);
 	if (fd_gpio < 0) {
-#ifdef DEBUG
-		printf("Error opening /dev/gpiomem\n");
-#endif
+		DEBUG_PRINT("Error opening /dev/gpiomem\n");
+
 		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
 	}
+	DEBUG_PRINT("Opened /dev/gpiomem\n");
 
 	long page_size = sysconf(_SC_PAGESIZE);
 	gpio_virt_addr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
 			fd_gpio, 0);
-#ifdef DEBUG
-		printf("mmap'd gpiomem at pointer %p\n", gpio_virt_addr);
-#endif
 	if (gpio_virt_addr == MAP_FAILED) {
 		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
 	}
@@ -212,12 +211,17 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
 	}
 
+	DEBUG_PRINT("mmap'd gpiomem at pointer %p\n", gpio_virt_addr);
+
 	// Setup CS as output
+	DEBUG_PRINT("Setting mag CS as output\n");
 	uint32_t temp_reg = 0;
 #define GPIO_FUNCTION_MASK 0xFFFFFE3F
 	temp_reg = gpio_virt_addr[2];
-	temp_reg |= GPIO_FUNCTION_MASK;
+	DEBUG_PRINT("GPIO Read Settings 0x%X\n", temp_reg);
+	temp_reg &= GPIO_FUNCTION_MASK;
 	temp_reg |= (1 << 6);
+	DEBUG_PRINT("GPIO Write Settings 0x%X\n", temp_reg);
 
 	gpio_virt_addr[2] = temp_reg;
 
@@ -236,7 +240,7 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 	(void) lsm9ds1_mag_cs(HIGH);
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_MAG);
+	(void) set_current_device(LSM9DS1_MAG);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_MAG == sub_device)) {
@@ -291,7 +295,7 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
@@ -300,8 +304,8 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG6_XL,
-			&read_buffer);
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO,
+			LSM9DS1_REGISTER_CTRL_REG6_XL, &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -309,12 +313,10 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	reg &= ~(0b00011000);
 	reg |= range;
 
-#ifdef DEBUG
-	printf("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: %d\n", reg);
-#endif
+	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: %d\n", reg);
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
-	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG6_XL,
-			reg);
+	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
+			LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
@@ -349,7 +351,7 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
@@ -369,8 +371,8 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 	reg |= scale;
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
-	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG1_G,
-			reg);
+	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
+			LSM9DS1_REGISTER_CTRL_REG1_G, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
@@ -427,7 +429,6 @@ static lsm9ds1_status_t init_i2c(void) {
 	return LSM9DS1_BUS_NOT_SUPPORTED;
 }
 
-//TODO fix write function.
 lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
 
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
@@ -445,10 +446,7 @@ lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
 	function_return = lsm9ds1_read(current_device, LSM9DS1_REGISTER_WHO_AM_I,
 			&read_buffer);
 	lsm9ds1_devices_t found_device = read_buffer;
-#ifdef DEBUG
-	printf("Sub-device: (%d)\n", found_device);
-#endif
-
+	DEBUG_PRINT("Sub-device: (%d)\n", found_device);
 	// Did we find a the gyro and accel combo or mag?
 	if ((LSM9DS1_ACCEL_GYRO == found_device) || (LSM9DS1_MAG == found_device)) {
 		*device_id = found_device;
@@ -504,10 +502,8 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
 		lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
 		lsm9ds1_gyro_scale_t scale) {
 
-#ifdef DEBUG
-	printf("Build Version: %s\n", BUILD_VERSION);
-	printf("Build Date/Time: %s %s\n",__DATE__,__TIME__);
-#endif
+	DEBUG_PRINT("Build Version: %s\n", BUILD_VERSION);
+	DEBUG_PRINT("Build Date/Time: %s %s\n", __DATE__, __TIME__);
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
@@ -517,38 +513,35 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
 	}
 	num_calls++;
 
-#ifdef DEBUG
-	printf("Initializing the lsm9ds1 bus...\n");
-#endif
+	DEBUG_PRINT("Initializing the lsm9ds1 bus...\n");
 	ret = lsm9ds1_init_bus(bus_type);
 	if (ret < 0) {
 		return ret;
 	};
 
-#ifdef DEBUG
-	printf("Setting up accelerometer... range(%d)\n", range);
-#endif
+	DEBUG_PRINT("Setting up accelerometer... range(%d)\n", range);
 	ret = lsm9ds1_setup_accel(range);
 	if (ret < 0) {
 		return ret;
 	};
 
-#ifdef DEBUG
-	printf("Setting up gyroscope... scale(%d)\n", scale);
-#endif
+	DEBUG_PRINT("Setting up gyroscope... scale(%d)\n", scale);
 	lsm9ds1_setup_gyro(scale);
 	if (ret < 0) {
 		return ret;
 	};
 
 	// Setup the magnetometer, this only needs to be done once.
+	DEBUG_PRINT("Setting up mag cs...\n");
 	ret = lsm9ds1_setup_mag_cs();
 	if (ret < 0) {
+		DEBUG_PRINT("Error setting up mag cs!\n");
 		return ret;
 	}
 
 	ret = lsm9ds1_setup_mag(gain);
 	if (ret < 0) {
+		DEBUG_PRINT("Error setting up mag!\n");
 		return ret;
 	};
 
@@ -567,7 +560,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
@@ -645,7 +638,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_MAG == sub_device)) {
@@ -723,7 +716,7 @@ lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void)set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {

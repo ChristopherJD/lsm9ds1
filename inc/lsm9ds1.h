@@ -34,6 +34,10 @@
  * Provides functions to read and write the data collected on the LSM9DS1.
  */
 
+/*
+ * TODO Currently crashing PI. Suspecting the mag CS
+ */
+
 #ifndef LSM9DS1_H_
 #define LSM9DS1_H_
 
