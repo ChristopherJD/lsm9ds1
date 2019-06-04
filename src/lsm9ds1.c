@@ -3,17 +3,17 @@
  *
  * Author: Christopher Jordan-Denny
  *
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -85,7 +85,7 @@ static lsm9ds1_status_t lsm9ds1_mag_cs(pin_state_t pin_state) {
 }
 
 static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
-		uint8_t address, uint8_t tx, uint8_t *rx) {
+                                 uint8_t address, uint8_t tx, uint8_t *rx) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
 
@@ -167,7 +167,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 }
 
 static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_devices_t device,
-		uint8_t register_addr, uint8_t tx) {
+                                      uint8_t register_addr, uint8_t tx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
@@ -178,7 +178,7 @@ static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_devices_t device,
 }
 
 static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_devices_t device,
-		uint8_t register_addr, uint8_t *rx) {
+                                     uint8_t register_addr, uint8_t *rx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
@@ -202,7 +202,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 
 	long page_size = sysconf(_SC_PAGESIZE);
 	gpio_virt_addr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-			fd_gpio, 0);
+	                      fd_gpio, 0);
 	if (gpio_virt_addr == MAP_FAILED) {
 		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
 	}
@@ -250,7 +250,7 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_CTRL_REG2_M,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -261,7 +261,7 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	write_status = lsm9ds1_write(LSM9DS1_MAG, LSM9DS1_REGISTER_CTRL_REG2_M,
-			reg);
+	                             reg);
 	if (write_status < 0) {
 		return write_status;
 	}
@@ -305,7 +305,7 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO,
-			LSM9DS1_REGISTER_CTRL_REG6_XL, &read_buffer);
+	                           LSM9DS1_REGISTER_CTRL_REG6_XL, &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -316,7 +316,7 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: %d\n", reg);
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
-			LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
+	                             LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
@@ -361,7 +361,7 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG1_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -372,7 +372,7 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
-			LSM9DS1_REGISTER_CTRL_REG1_G, reg);
+	                             LSM9DS1_REGISTER_CTRL_REG1_G, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
@@ -438,13 +438,13 @@ lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
 	// The mag accel and gyro id should be at the same offset, if not, we don't know what device we have.
 	// We are comparing enums of different types, cast first since we want to do this.
 	if (!((int) LSM9DS1_REGISTER_WHO_AM_I_XG
-			== (int) LSM9DS1_REGISTER_WHO_AM_I_M)) {
+	        == (int) LSM9DS1_REGISTER_WHO_AM_I_M)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
 	}
 
 	// Discover device
 	function_return = lsm9ds1_read(current_device, LSM9DS1_REGISTER_WHO_AM_I,
-			&read_buffer);
+	                               &read_buffer);
 	lsm9ds1_devices_t found_device = read_buffer;
 	DEBUG_PRINT("Sub-device: (%d)\n", found_device);
 	// Did we find a the gyro and accel combo or mag?
@@ -499,8 +499,8 @@ lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_bus_t bus_type) {
 }
 
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
-		lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
-		lsm9ds1_gyro_scale_t scale) {
+                              lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
+                              lsm9ds1_gyro_scale_t scale) {
 
 	DEBUG_PRINT("Build Version: %s\n", BUILD_VERSION);
 	DEBUG_PRINT("Build Date/Time: %s %s\n", __DATE__, __TIME__);
@@ -570,42 +570,42 @@ lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_X_L_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_X_H_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t xhi = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_Y_L_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t ylo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_Y_H_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t yhi = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_Z_L_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t zlo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_Z_H_XL,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -648,42 +648,42 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_X_L_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_X_H_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t xhi = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Y_L_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t ylo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Y_H_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t yhi = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Z_L_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t zlo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Z_H_G,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -726,14 +726,14 @@ lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp) {
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_L,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = read_buffer;
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_H,
-			&read_buffer);
+	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
 	}

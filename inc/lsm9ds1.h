@@ -62,13 +62,13 @@ typedef struct accelerometer_data {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-}accelerometer_data_t;
+} accelerometer_data_t;
 
 typedef struct mag_data {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-}mag_data_t;
+} mag_data_t;
 
 /**
  * @brief Contains the possible error codes returned by the functions.
@@ -98,11 +98,11 @@ typedef enum lsm9ds1_status {
 
 typedef enum {
 	LOW, HIGH
-}pin_state_t;
+} pin_state_t;
 
 typedef enum {
 	IN, OUT
-}pin_direction_t;
+} pin_direction_t;
 
 typedef enum {
 	LSM9DS1_READ, LSM9DS1_WRITE,
@@ -224,7 +224,7 @@ typedef struct lsm9ds1_settings {
 	lsm9ds1_accel_range_t range;
 	lsm9ds1_mag_gain_t gain;
 	lsm9ds1_gyro_scale_t scale;
-}lsm9ds1_settings_t;
+} lsm9ds1_settings_t;
 
 //TODO Make better header comments.
 
@@ -315,8 +315,8 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data);
  *  @return status
  */
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
-		lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
-		lsm9ds1_gyro_scale_t scale);
+                              lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
+                              lsm9ds1_gyro_scale_t scale);
 
 /** @brief Setup the accelerometer.
  *  @param range The accelerometer range.
