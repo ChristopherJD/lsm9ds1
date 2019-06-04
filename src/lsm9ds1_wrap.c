@@ -36,26 +36,28 @@ static PyObject* read_sub_device(PyObject *self, PyObject *args) {
 //          class method, or being a static method of a class.
 // ml_doc:  Contents of this method's docstring
 static PyMethodDef pylsm9ds1_methods[] = {
-		{
-			"read_sub_device",
-			read_sub_device,
-			METH_NOARGS,
-			"Get the sub-device from the lsm9ds1."
-		},
-		{
-			"init",
-			init,
-			METH_VARARGS,
-			"Initialize the lsm9ds1."
-		},
-		{ NULL, NULL, 0, NULL } };
+	{
+		"read_sub_device",
+		read_sub_device,
+		METH_NOARGS,
+		"Get the sub-device from the lsm9ds1."
+	},
+	{
+		"init",
+		init,
+		METH_VARARGS,
+		"Initialize the lsm9ds1."
+	},
+	{ NULL, NULL, 0, NULL }
+};
 
 // Module definition
 // The arguments of this structure tell Python what to call your extension,
 // what it's methods are and where to look for it's method definitions
 static struct PyModuleDef lsm9ds1_definition = { PyModuleDef_HEAD_INIT, "pylsm9ds1",
-		"A Python module for controlling the lsm9ds1.", -1,
-		pylsm9ds1_methods };
+	"A Python module for controlling the lsm9ds1.", -1,
+	pylsm9ds1_methods
+};
 
 // Module initialization
 // Python calls this function when importing your extension. It is important
@@ -65,7 +67,7 @@ PyMODINIT_FUNC PyInit_pylsm9ds1(void) {
 	PyObject *m = NULL;
 	Py_Initialize();
 	m = PyModule_Create(&lsm9ds1_definition);
-	if(m == NULL) {
+	if (m == NULL) {
 		return m;
 	}
 	PyModule_AddIntConstant(m, "LSM9DS1_SPI_BUS", 0);

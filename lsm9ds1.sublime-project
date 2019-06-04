@@ -10,7 +10,7 @@
   [
     {
       "name": "poky",
-      "working_dir": "${project_path:${folder}}",
+      "working_dir": "${project_path}",
       "shell_cmd": "source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi && ./build.sh"
     }
   ]
