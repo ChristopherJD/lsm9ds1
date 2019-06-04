@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<launchConfiguration type="org.eclipse.cdt.launch.remoteApplicationLaunchType">
-    <booleanAttribute key="org.eclipse.cdt.dsf.gdb.AUTO_SOLIB" value="false"/>
-    <stringAttribute key="org.eclipse.cdt.dsf.gdb.DEBUG_NAME" value="/opt/poky/2.6.2/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-gdb"/>
-    <stringAttribute key="org.eclipse.cdt.dsf.gdb.GDB_INIT" value="/home/christopher/Documents/poky/meta-user/recipes-apps/lsm9ds1/liblsm9ds1/.gdbinit"/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="Debug/lsm9ds1"/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="lsm9ds1"/>
-</launchConfiguration>
