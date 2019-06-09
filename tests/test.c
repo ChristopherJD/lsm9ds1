@@ -100,11 +100,12 @@ int main() {
 
 	/* add the tests to the suite */
 	if ((NULL
+					== CU_add_test(pSuite, "test read_sub_device for mag",
+							test_lsm9ds1_read_sub_device_mag))
+							 || (NULL
 			== CU_add_test(pSuite, "test read_sub_device for accel and gyro",
 					test_lsm9ds1_read_sub_device_accel_gryo))
-			|| (NULL
-					== CU_add_test(pSuite, "test read_sub_device for mag",
-							test_lsm9ds1_read_sub_device_mag))) {
+			) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}

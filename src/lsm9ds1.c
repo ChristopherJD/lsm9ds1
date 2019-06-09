@@ -52,11 +52,13 @@ static uint32_t *gpio_virt_addr = NULL;
 static lsm9ds1_devices_t current_device = LSM9DS1_ACCEL_GYRO;
 
 //TODO move these to the correct function
-static uint8_t mode;
+static uint8_t mode = 0;
 static uint8_t bits = 8;
 static uint32_t speed = 15000000;
 static uint16_t delay = 0;
 static int32_t fd = -1;	// File descriptor for LSM9DS1
+
+#define MAG_CS 27
 
 lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device) {
 	current_device = device;
@@ -71,11 +73,11 @@ static lsm9ds1_status_t lsm9ds1_mag_cs(pin_state_t pin_state) {
 	switch (pin_state) {
 	case HIGH:
 		temp_reg = gpio_virt_addr[7];
-		gpio_virt_addr[7] = temp_reg | (1 << 22);
+		gpio_virt_addr[7] = temp_reg | (1 << MAG_CS);
 		break;
 	case LOW:
 		temp_reg = gpio_virt_addr[10];
-		gpio_virt_addr[10] = temp_reg | (1 << 22);
+		gpio_virt_addr[10] = temp_reg | (1 << MAG_CS);
 		break;
 	default:
 		return -1;
@@ -97,17 +99,35 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
+#if DEBUG > 0
+		ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
+		if (ret == -1) {
+			return LSM9DS1_UNABLE_TO_SET_CS;
+		}
+		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+#endif
+
+		DEBUG_PRINT("Selecting LSM9DS1_MAG 0x%X\n", mode);
 
 		(void) lsm9ds1_mag_cs(LOW);
 
 		break;
 	case LSM9DS1_ACCEL_GYRO:
-		// Make sure CS is selected.
+		//Make sure CS is selected.
 		mode &= ~(SPI_NO_CS);
 		ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
+#if DEBUG > 0
+		ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
+		if (ret == -1) {
+			return LSM9DS1_UNABLE_TO_SET_CS;
+		}
+		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+#endif
+
+		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO 0x%X\n", mode);
 
 		break;
 	default:
@@ -216,11 +236,12 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 	// Setup CS as output
 	DEBUG_PRINT("Setting mag CS as output\n");
 	uint32_t temp_reg = 0;
+	//See BCM2835 data sheet in chapter 6
 #define GPIO_FUNCTION_MASK 0xFFFFFE3F
 	temp_reg = gpio_virt_addr[2];
 	DEBUG_PRINT("GPIO Read Settings 0x%X\n", temp_reg);
 	temp_reg &= GPIO_FUNCTION_MASK;
-	temp_reg |= (1 << 6);
+	temp_reg |= (1 << 21);
 	DEBUG_PRINT("GPIO Write Settings 0x%X\n", temp_reg);
 
 	gpio_virt_addr[2] = temp_reg;
@@ -403,11 +424,19 @@ static lsm9ds1_status_t init_spi(void) {
 	}
 
 	// Set to mode 3
-	mode |= SPI_CPOL | SPI_CPHA;
+	mode |= SPI_CPOL | SPI_CPHA | SPI_NO_CS;
 	ret = ioctl(fd, SPI_IOC_WR_MODE, &mode);
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
+
+#if DEBUG > 0
+	ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
+	if (ret == -1) {
+		return LSM9DS1_MODE_3_NOT_SET;
+	}
+	DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+#endif
 
 	// Set the number of bits per word.
 	ret = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &bits);
@@ -541,7 +570,7 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
 
 	ret = lsm9ds1_setup_mag(gain);
 	if (ret < 0) {
-		DEBUG_PRINT("Error setting up mag!\n");
+		DEBUG_PRINT("Error setting up mag! (%d)\n", ret);
 		return ret;
 	};
 
@@ -638,7 +667,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
+	(void) set_current_device(LSM9DS1_MAG);
 	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_MAG == sub_device)) {
