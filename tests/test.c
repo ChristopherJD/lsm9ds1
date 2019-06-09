@@ -79,6 +79,26 @@ void test_lsm9ds1_read_sub_device_mag(void) {
 	CU_ASSERT(LSM9DS1_MAG == found_device);
 }
 
+void test_lsm9ds1_read_temp(void) {
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+	lsm9ds1_temperature_t temperature = 0;
+	status = lsm9ds1_read_temp(&temperature);
+
+	CU_ASSERT(0 == status);
+	printf("Temperature is: %d\n", temperature);
+}
+
+void test_lsm9ds1_read_accel(void) {
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+	accelerometer_data_t accelerometer = {0};
+	status = lsm9ds1_read_accel(&accelerometer);
+
+	CU_ASSERT(0 == status);
+	printf("Accel X: %d\n", accelerometer.x);
+	printf("Accel Y: %d\n", accelerometer.y);
+	printf("Accel Z: %d\n", accelerometer.z);
+}
+
 /* The main() function for setting up and running the tests.
  * Returns a CUE_SUCCESS on successful running, another
  * CUnit error code on failure.
@@ -99,13 +119,12 @@ int main() {
 	}
 
 	/* add the tests to the suite */
-	if ((NULL
-					== CU_add_test(pSuite, "test read_sub_device for mag",
-							test_lsm9ds1_read_sub_device_mag))
-							 || (NULL
-			== CU_add_test(pSuite, "test read_sub_device for accel and gyro",
-					test_lsm9ds1_read_sub_device_accel_gryo))
-			) {
+	if ((NULL == CU_add_test(pSuite, "test read_sub_device for mag", test_lsm9ds1_read_sub_device_mag))
+		|| (NULL == CU_add_test(pSuite, "test read_sub_device for accel and gyro", test_lsm9ds1_read_sub_device_accel_gryo))
+		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_temp", test_lsm9ds1_read_temp))
+		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_accel", test_lsm9ds1_read_accel))
+
+	) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}

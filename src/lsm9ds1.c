@@ -104,7 +104,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
-		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
 #endif
 
 		DEBUG_PRINT("Selecting LSM9DS1_MAG 0x%X\n", mode);
@@ -124,7 +124,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
-		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
 #endif
 
 		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO 0x%X\n", mode);
@@ -435,7 +435,7 @@ static lsm9ds1_status_t init_spi(void) {
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
-	DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode)
+	DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
 #endif
 
 	// Set the number of bits per word.
@@ -604,6 +604,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
 		return read_status;
 	}
 	uint8_t xlo = read_buffer;
+	DEBUG_PRINT("Accel X_L_XL: %d\n", read_buffer);
 
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_X_H_XL,
 	                           &read_buffer);
