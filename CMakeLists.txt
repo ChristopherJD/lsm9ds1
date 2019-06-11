@@ -65,6 +65,8 @@ file(GLOB TEST_SOURCES
 #Generate the shared library from the sources
 add_library(lsm9ds1 SHARED ${SOURCES})
 
+target_link_libraries(lsm9ds1 wiringPi)
+
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 

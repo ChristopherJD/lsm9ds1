@@ -23,6 +23,7 @@
  * THE SOFTWARE.
  */
 
+
 //TODO Add doxygen comments.
 #include <unistd.h>
 #include <stdbool.h>
@@ -35,6 +36,7 @@
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <sys/mman.h>
+#include <wiringPi.h>
 
 #include "lsm9ds1.h"
 
@@ -55,10 +57,10 @@ static lsm9ds1_devices_t current_device = LSM9DS1_ACCEL_GYRO;
 static uint8_t mode = 0;
 static uint8_t bits = 8;
 static uint32_t speed = 15000000;
-static uint16_t delay = 0;
+static uint16_t spi_delay = 0;
 static int32_t fd = -1;	// File descriptor for LSM9DS1
 
-#define MAG_CS 27
+#define MAG_CS 21	//Wiring Pi Pin number
 
 lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device) {
 	current_device = device;
@@ -66,24 +68,8 @@ lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device) {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_mag_cs(pin_state_t pin_state) {
-
-	uint32_t temp_reg = 0;
-
-	switch (pin_state) {
-	case HIGH:
-		temp_reg = gpio_virt_addr[7];
-		gpio_virt_addr[7] = temp_reg | (1 << MAG_CS);
-		break;
-	case LOW:
-		temp_reg = gpio_virt_addr[10];
-		gpio_virt_addr[10] = temp_reg | (1 << MAG_CS);
-		break;
-	default:
-		return -1;
-	}
-
-	return LSM9DS1_SUCCESS;
+static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
+	digitalWrite(MAG_CS, pin_state);
 }
 
 static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
@@ -107,7 +93,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
 #endif
 
-		DEBUG_PRINT("Selecting LSM9DS1_MAG 0x%X\n", mode);
+		DEBUG_PRINT("Selecting LSM9DS1_MAG (0x%X)\n", device);
 
 		(void) lsm9ds1_mag_cs(LOW);
 
@@ -127,7 +113,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
 #endif
 
-		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO 0x%X\n", mode);
+		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO (0x%X)\n", device);
 
 		break;
 	default:
@@ -144,7 +130,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		tr[1].rx_buf = (unsigned long) rx;
 		tr[1].len = sizeof(*rx);
 		tr[1].speed_hz = speed;
-		tr[1].delay_usecs = delay;
+		tr[1].delay_usecs = spi_delay;
 		tr[1].bits_per_word = bits;
 
 		addr_xfer = (SPI_READ | address);
@@ -153,7 +139,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		tr[1].tx_buf = (unsigned long) &tx;
 		tr[1].len = sizeof(tx);
 		tr[1].speed_hz = speed;
-		tr[1].delay_usecs = delay;
+		tr[1].delay_usecs = spi_delay;
 		tr[1].bits_per_word = bits;
 
 		if (NULL != rx) {
@@ -170,7 +156,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 	tr[0].tx_buf = (unsigned long) &addr_xfer;
 	tr[0].len = sizeof(tx);
 	tr[0].speed_hz = speed;
-	tr[0].delay_usecs = delay;
+	tr[0].delay_usecs = spi_delay;
 	tr[0].bits_per_word = bits;
 
 	ret = ioctl(fd, SPI_IOC_MESSAGE(2), tr);
@@ -209,42 +195,12 @@ static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_devices_t device,
 }
 
 static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
+
+	//TODO, verify the documentation is a crappy as I think.
 	//Setup for Mag CS
-	static int fd_gpio = -1;
+	wiringPiSetup();
 
-	fd_gpio = open("/dev/gpiomem", O_RDWR);
-	if (fd_gpio < 0) {
-		DEBUG_PRINT("Error opening /dev/gpiomem\n");
-
-		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
-	}
-	DEBUG_PRINT("Opened /dev/gpiomem\n");
-
-	long page_size = sysconf(_SC_PAGESIZE);
-	gpio_virt_addr = mmap(NULL, page_size, PROT_READ | PROT_WRITE, MAP_SHARED,
-	                      fd_gpio, 0);
-	if (gpio_virt_addr == MAP_FAILED) {
-		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
-	}
-
-	if (NULL == gpio_virt_addr) {
-		return LSM9DS1_UNABLE_TO_OPEN_MAG_CS;
-	}
-
-	DEBUG_PRINT("mmap'd gpiomem at pointer %p\n", gpio_virt_addr);
-
-	// Setup CS as output
-	DEBUG_PRINT("Setting mag CS as output\n");
-	uint32_t temp_reg = 0;
-	//See BCM2835 data sheet in chapter 6
-#define GPIO_FUNCTION_MASK 0xFFFFFE3F
-	temp_reg = gpio_virt_addr[2];
-	DEBUG_PRINT("GPIO Read Settings 0x%X\n", temp_reg);
-	temp_reg &= GPIO_FUNCTION_MASK;
-	temp_reg |= (1 << 21);
-	DEBUG_PRINT("GPIO Write Settings 0x%X\n", temp_reg);
-
-	gpio_virt_addr[2] = temp_reg;
+	pinMode(MAG_CS, OUTPUT);
 
 	return LSM9DS1_SUCCESS;
 }

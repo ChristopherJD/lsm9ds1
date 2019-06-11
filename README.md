@@ -34,7 +34,7 @@ sudo apt install gdb-multiarch
 1. On the remote system, start the server.
 
 ```bash
-gdbserver lsm9ds1_test
+gdbserver localhost:5000 lsm9ds1_test
 ```
 
 1. On the local machine start gdbgui.

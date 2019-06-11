@@ -96,9 +96,9 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_UNABLE_TO_SET_CS = -18,
 } lsm9ds1_status_t;
 
-typedef enum {
-	LOW, HIGH
-} pin_state_t;
+// typedef enum {
+// 	LOW, HIGH
+// } pin_state_t;
 
 typedef enum {
 	IN, OUT
