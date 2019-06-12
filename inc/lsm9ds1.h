@@ -70,6 +70,12 @@ typedef struct mag_data {
 	int16_t z;
 } mag_data_t;
 
+typedef struct gyro_data {
+	int16_t x;
+	int16_t y;
+	int16_t z;
+} gyro_data_t;
+
 /**
  * @brief Contains the possible error codes returned by the functions.
  *
@@ -94,15 +100,9 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_UNABLE_TO_SET_CS_DIR = -16,
 	LSM9DS1_UNABLE_TO_OPEN_MAG_CS = -17,
 	LSM9DS1_UNABLE_TO_SET_CS = -18,
+	LSM9DS1_MALLOC_DEVICE_ERROR = -19,
+	LSM9DS1_NO_BUS_FOUND = -20,
 } lsm9ds1_status_t;
-
-// typedef enum {
-// 	LOW, HIGH
-// } pin_state_t;
-
-typedef enum {
-	IN, OUT
-} pin_direction_t;
 
 typedef enum {
 	LSM9DS1_READ, LSM9DS1_WRITE,
@@ -123,7 +123,7 @@ typedef enum {
 	LSM9DS1_UNKNOWN_DEVICE = 0,
 	LSM9DS1_ACCEL_GYRO = 0x68,
 	LSM9DS1_MAG = 0x3D,
-} lsm9ds1_devices_t;
+} lsm9ds1_sub_device_t;
 
 #define LSM9DS1_REGISTER_WHO_AM_I 0x0FU
 
@@ -226,6 +226,29 @@ typedef struct lsm9ds1_settings {
 	lsm9ds1_gyro_scale_t scale;
 } lsm9ds1_settings_t;
 
+typedef struct lsm9ds1_data_t
+{
+	lsm9ds1_temperature_t temperature;
+	accelerometer_data_t accelerometer;
+	mag_data_t magnetometer;
+	gyro_data_t gyroscope;
+}lsm9ds1_data_t;
+
+typedef struct lsm9ds1_converted_data_t {
+	float temperature;
+}lsm9ds1_converted_data_t;
+
+typedef struct lsm9ds1_device_t {
+	lsm9ds1_settings_t settings;
+	lsm9ds1_bus_t bus;
+	lsm9ds1_data_t data;
+	lsm9ds1_converted_data_t conv_data;
+	lsm9ds1_status_t (*update_temp)();
+	lsm9ds1_status_t (*update_accel)();
+	lsm9ds1_status_t (*update_mag)();
+	lsm9ds1_status_t (*update_gyro)();
+} lsm9ds1_device_t;
+
 //TODO Make better header comments.
 
 /**
@@ -234,7 +257,7 @@ typedef struct lsm9ds1_settings {
  * The sub-device can either be the gyroscope and accelerometer combo or a magnetometer.
  * The WHO_AMI register on the LSM9DS1 is read to determine which device is found.
  * The LSM9DS1 has two chip-selects, one for the gyroscope accelerometer combo and one,
- * for the magnetometer. @p device_id returns the device found see \ref lsm9ds1_devices_t.
+ * for the magnetometer. @p device_id returns the device found see \ref lsm9ds1_sub_device_t.
  *
  * Example Usage:
  * @code
@@ -242,7 +265,7 @@ typedef struct lsm9ds1_settings {
  *
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
- * 		lsm9ds1_devices_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
+ * 		lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
  *
  *		status = lsm9ds1_init(LSM9DS1_SPI_BUS);
  *		if(status < 0) {
@@ -258,11 +281,11 @@ typedef struct lsm9ds1_settings {
  * @param device_id The discovered device id.
  * @return Returns the function status.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_devices_t
+ * @see \ref lsm9ds1_sub_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id);
+lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id);
 
 /** @brief Read the accelerometer in the coordinates x,y,z.
  *  @param accel_data The values read from the accelerometer.
@@ -328,8 +351,13 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain);
 
 lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale);
 
-lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device);
+lsm9ds1_status_t set_current_device(lsm9ds1_sub_device_t device);
 
+lsm9ds1_status_t lsm9ds1_read_gyro(gyro_data_t *gyro_data);
+
+lsm9ds1_status_t update_temp(lsm9ds1_device_t *device);
+
+lsm9ds1_status_t init_lsm9ds1(lsm9ds1_device_t *device);
 
 #ifdef __cplusplus
 }

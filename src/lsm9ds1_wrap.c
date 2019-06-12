@@ -5,7 +5,7 @@
 // Module method definitions
 static PyObject* init(PyObject *self, PyObject *args) {
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
-	lsm9ds1_devices_t device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
 
 	int bus_type = 0;
 	int range = 0;
@@ -22,7 +22,7 @@ static PyObject* init(PyObject *self, PyObject *args) {
 // Module method definitions
 static PyObject* read_sub_device(PyObject *self, PyObject *args) {
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
-	lsm9ds1_devices_t device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
 	function_return = lsm9ds1_read_sub_device(&device);
 
 	return Py_BuildValue("i", device);

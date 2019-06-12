@@ -51,7 +51,7 @@ static bool bus_initialized = false;
 static uint8_t num_calls = 0;
 static lsm9ds1_settings_t device_settings = { 0 };
 static uint32_t *gpio_virt_addr = NULL;
-static lsm9ds1_devices_t current_device = LSM9DS1_ACCEL_GYRO;
+static lsm9ds1_sub_device_t current_device = LSM9DS1_ACCEL_GYRO;
 
 //TODO move these to the correct function
 static uint8_t mode = 0;
@@ -62,7 +62,7 @@ static int32_t fd = -1;	// File descriptor for LSM9DS1
 
 #define MAG_CS 21	//Wiring Pi Pin number
 
-lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device) {
+lsm9ds1_status_t set_current_device(lsm9ds1_sub_device_t device) {
 	current_device = device;
 
 	return LSM9DS1_SUCCESS;
@@ -70,9 +70,10 @@ lsm9ds1_status_t set_current_device(lsm9ds1_devices_t device) {
 
 static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
 	digitalWrite(MAG_CS, pin_state);
+	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
+static lsm9ds1_status_t transfer(lsm9ds1_sub_device_t device, lsm9ds1_xfer_t op,
                                  uint8_t address, uint8_t tx, uint8_t *rx) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
@@ -85,13 +86,6 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
-#if DEBUG > 0
-		ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
-		if (ret == -1) {
-			return LSM9DS1_UNABLE_TO_SET_CS;
-		}
-		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
-#endif
 
 		DEBUG_PRINT("Selecting LSM9DS1_MAG (0x%X)\n", device);
 
@@ -105,13 +99,6 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
-#if DEBUG > 0
-		ret = ioctl(fd, SPI_IOC_RD_MODE, &mode);
-		if (ret == -1) {
-			return LSM9DS1_UNABLE_TO_SET_CS;
-		}
-		DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", mode);
-#endif
 
 		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO (0x%X)\n", device);
 
@@ -172,7 +159,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_devices_t device, lsm9ds1_xfer_t op,
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_devices_t device,
+static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_sub_device_t device,
                                       uint8_t register_addr, uint8_t tx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
@@ -183,7 +170,7 @@ static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_devices_t device,
 	return ret;
 }
 
-static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_devices_t device,
+static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_sub_device_t device,
                                      uint8_t register_addr, uint8_t *rx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
@@ -218,7 +205,7 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 
 	// Ensure we have the correct device
 	(void) set_current_device(LSM9DS1_MAG);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_MAG == sub_device)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
@@ -228,20 +215,34 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_CTRL_REG2_M,
 	                           &read_buffer);
+
 	if (read_status < 0) {
 		return read_status;
 	}
+
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", read_buffer);
 
 	uint8_t reg = read_buffer;
 	reg &= ~(0b01100000);
 	reg |= gain;
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
+	DEBUG_PRINT("Writing LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", reg);
 	write_status = lsm9ds1_write(LSM9DS1_MAG, LSM9DS1_REGISTER_CTRL_REG2_M,
 	                             reg);
 	if (write_status < 0) {
 		return write_status;
 	}
+
+#if DEBUG > 0
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_CTRL_REG2_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", read_buffer);
+#endif
 
 	switch (gain) {
 	case LSM9DS1_MAGGAIN_4GAUSS:
@@ -273,7 +274,7 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 
 	// Ensure we have the correct device
 	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
@@ -283,20 +284,35 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO,
 	                           LSM9DS1_REGISTER_CTRL_REG6_XL, &read_buffer);
+
 	if (read_status < 0) {
 		return read_status;
 	}
+
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", read_buffer);
+
 	uint8_t reg = read_buffer;
 	reg &= ~(0b00011000);
 	reg |= range;
 
-	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: %d\n", reg);
+	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", reg);
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
 	                             LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
+
+#if DEBUG > 0
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO,
+	                           LSM9DS1_REGISTER_CTRL_REG6_XL, &read_buffer);
+
+	if (read_status < 0) {
+		return read_status;
+	}
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", read_buffer);
+#endif
 
 	switch (range) {
 	case LSM9DS1_ACCELRANGE_2G:
@@ -329,7 +345,7 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 
 	// Ensure we have the correct device
 	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
@@ -339,20 +355,35 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG1_G,
 	                           &read_buffer);
+
 	if (read_status < 0) {
 		return read_status;
 	}
+
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", read_buffer);
+
 	uint8_t reg = read_buffer;
 
 	reg &= ~(0b00011000);
 	reg |= scale;
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
+	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", reg);
 	write_status = lsm9ds1_write(LSM9DS1_ACCEL_GYRO,
 	                             LSM9DS1_REGISTER_CTRL_REG1_G, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
+
+#if DEBUG > 0
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_CTRL_REG1_G,
+	                           &read_buffer);
+
+	if (read_status < 0) {
+		return read_status;
+	}
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", read_buffer);
+#endif
 
 	switch (scale) {
 	case LSM9DS1_GYROSCALE_245DPS:
@@ -414,7 +445,7 @@ static lsm9ds1_status_t init_i2c(void) {
 	return LSM9DS1_BUS_NOT_SUPPORTED;
 }
 
-lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
+lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id) {
 
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
 	uint8_t read_buffer = LSM9DS1_UNKNOWN_DEVICE;
@@ -430,8 +461,8 @@ lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_devices_t *device_id) {
 	// Discover device
 	function_return = lsm9ds1_read(current_device, LSM9DS1_REGISTER_WHO_AM_I,
 	                               &read_buffer);
-	lsm9ds1_devices_t found_device = read_buffer;
-	DEBUG_PRINT("Sub-device: (%d)\n", found_device);
+	lsm9ds1_sub_device_t found_device = read_buffer;
+	DEBUG_PRINT("Sub-device: (0x%X)\n", found_device);
 	// Did we find a the gyro and accel combo or mag?
 	if ((LSM9DS1_ACCEL_GYRO == found_device) || (LSM9DS1_MAG == found_device)) {
 		*device_id = found_device;
@@ -481,6 +512,82 @@ lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_bus_t bus_type) {
 
 	bus_initialized = true;
 	return ret;
+}
+
+lsm9ds1_status_t update_temp(lsm9ds1_device_t *device) {
+	
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read_temp(&(device->data.temperature));
+
+	device->conv_data.temperature = (21.0 + (((float)device->data.temperature)/8));
+
+	return status;
+}
+
+lsm9ds1_status_t update_accel(lsm9ds1_device_t *device) {
+	
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read_accel(&(device->data.accelerometer));
+
+	//TODO convert data
+
+	return status;
+}
+
+lsm9ds1_status_t update_mag(lsm9ds1_device_t *device) {
+	
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read_mag(&(device->data.magnetometer));
+
+	//TODO convert data
+
+	return status;
+}
+
+lsm9ds1_status_t update_gyro(lsm9ds1_device_t *device) {
+	
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read_gyro(&(device->data.gyroscope));
+
+	//TODO convert data
+
+	return status;
+}
+
+lsm9ds1_status_t init_lsm9ds1(lsm9ds1_device_t *device) {
+
+	if(NULL == device) {
+		return LSM9DS1_MALLOC_DEVICE_ERROR;
+	}
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	// Setup functions
+	device->update_temp = update_temp;
+	device->update_accel = update_accel;
+	device->update_mag = update_mag;
+	device->update_gyro = update_gyro;
+
+	// lsm9ds1 settings
+	device->bus = LSM9DS1_SPI_BUS;
+	device->settings.range = LSM9DS1_ACCELRANGE_8G;
+	device->settings.gain = LSM9DS1_MAGGAIN_8GAUSS;
+	device->settings.scale = LSM9DS1_GYROSCALE_500DPS;
+
+	status = lsm9ds1_init(device->bus, device->settings.range, device->settings.gain, device->settings.scale);
+	if(status < 0) {
+		device->bus = LSM9DS1_I2C_BUS;
+		status = lsm9ds1_init(device->bus, device->settings.range, device->settings.gain, device->settings.scale);
+		if(status < 0) {
+			return LSM9DS1_NO_BUS_FOUND;
+		}
+	}
+
+	return LSM9DS1_SUCCESS;
 }
 
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
@@ -546,7 +653,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
 
 	// Ensure we have the correct device
 	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
@@ -625,7 +732,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 
 	// Ensure we have the correct device
 	(void) set_current_device(LSM9DS1_MAG);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
 	lsm9ds1_read_sub_device(&sub_device);
 	if (!(LSM9DS1_MAG == sub_device)) {
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
@@ -633,7 +740,133 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_X_L_G,
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_X_L_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	uint8_t xlo = read_buffer;
+
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_X_H_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	int16_t xhi = read_buffer;
+
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Y_L_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	uint8_t ylo = read_buffer;
+
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Y_H_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	int16_t yhi = read_buffer;
+
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Z_L_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	uint8_t zlo = read_buffer;
+
+	read_status = lsm9ds1_read(LSM9DS1_MAG, LSM9DS1_REGISTER_OUT_Z_H_M,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	int16_t zhi = read_buffer;
+
+	// Shift values to create properly formed integer (low byte first)
+	xhi <<= 8;
+	xhi |= xlo;
+	yhi <<= 8;
+	yhi |= ylo;
+	zhi <<= 8;
+	zhi |= zlo;
+
+	mag_data->x = xhi;
+	mag_data->y = yhi;
+	mag_data->z = zhi;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp) {
+
+	// Check that the lsm9ds1 has been initialized.
+	bool lsm9ds1_initialized = false;
+	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
+	if (!lsm9ds1_initialized) {
+		return LSM9DS1_NOT_INITIALIZED;
+	}
+
+	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
+
+	// Ensure we have the correct device
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_read_sub_device(&sub_device);
+	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
+		return LSM9DS1_UNKNOWN_SUB_DEVICE;
+	}
+
+	// Read the accelerometer.
+	uint8_t read_buffer = 0;
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_L,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	uint8_t xlo = read_buffer;
+
+	DEBUG_PRINT("Temp xlo: 0x%X\n", xlo);
+
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_H,
+	                           &read_buffer);
+	if (read_status < 0) {
+		return read_status;
+	}
+	lsm9ds1_temperature_t xhi = read_buffer;
+
+	DEBUG_PRINT("Temp xhi: 0x%X\n", xhi);
+
+	xhi <<= 8;
+	xhi |= xlo;
+
+	// Shift values to create properly formed integer (low byte first)
+	*temp = xhi;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t lsm9ds1_read_gyro(gyro_data_t *gyro_data) {
+
+	// Check that the lsm9ds1 has been initialized.
+	bool lsm9ds1_initialized = false;
+	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
+	if (!lsm9ds1_initialized) {
+		return LSM9DS1_NOT_INITIALIZED;
+	}
+
+	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
+
+	// Ensure we have the correct device
+	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
+	lsm9ds1_sub_device_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
+	lsm9ds1_read_sub_device(&sub_device);
+	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
+		return LSM9DS1_UNKNOWN_SUB_DEVICE;
+	}
+
+	// Read the gryo.
+	uint8_t read_buffer = 0;
+	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_OUT_X_L_G,
 	                           &read_buffer);
 	if (read_status < 0) {
 		return read_status;
@@ -683,54 +916,9 @@ lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
 	zhi <<= 8;
 	zhi |= zlo;
 
-	mag_data->x = xhi;
-	mag_data->y = yhi;
-	mag_data->z = zhi;
+	gyro_data->x = xhi;
+	gyro_data->y = yhi;
+	gyro_data->z = zhi;
 
 	return LSM9DS1_SUCCESS;
 }
-
-lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp) {
-
-	// Check that the lsm9ds1 has been initialized.
-	bool lsm9ds1_initialized = false;
-	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
-	if (!lsm9ds1_initialized) {
-		return LSM9DS1_NOT_INITIALIZED;
-	}
-
-	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
-
-	// Ensure we have the correct device
-	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
-	lsm9ds1_devices_t sub_device = LSM9DS1_UNKNOWN_DEVICE;
-	lsm9ds1_read_sub_device(&sub_device);
-	if (!(LSM9DS1_ACCEL_GYRO == sub_device)) {
-		return LSM9DS1_UNKNOWN_SUB_DEVICE;
-	}
-
-	// Read the accelerometer.
-	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_L,
-	                           &read_buffer);
-	if (read_status < 0) {
-		return read_status;
-	}
-	uint8_t xlo = read_buffer;
-
-	read_status = lsm9ds1_read(LSM9DS1_ACCEL_GYRO, LSM9DS1_REGISTER_TEMP_OUT_H,
-	                           &read_buffer);
-	if (read_status < 0) {
-		return read_status;
-	}
-	lsm9ds1_temperature_t xhi = read_buffer;
-
-	xhi <<= 8;
-	xhi |= xlo;
-
-	// Shift values to create properly formed integer (low byte first)
-	*temp = xhi;
-
-	return LSM9DS1_SUCCESS;
-}
-
