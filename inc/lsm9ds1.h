@@ -109,7 +109,7 @@ typedef enum {
 } lsm9ds1_xfer_t;
 
 typedef enum lsm9ds1_bus_t {
-	LSM9DS1_SPI_BUS, LSM9DS1_I2C_BUS,
+	LSM9DS1_SPI_BUS, LSM9DS1_I2C_BUS, NUM_BUS_TYPES,
 } lsm9ds1_bus_t;
 
 /**
@@ -238,15 +238,33 @@ typedef struct lsm9ds1_converted_data_t {
 	float temperature;
 }lsm9ds1_converted_data_t;
 
+typedef struct lsm9ds1_spi_settings_t {
+	uint8_t mode;
+	uint8_t bits;
+	uint32_t speed;
+	uint16_t spi_delay;
+}lsm9ds1_spi_settings_t;
+
+typedef struct lsm9ds1_i2c_settings_t {
+	uint8_t bits;
+}lsm9ds1_i2c_settings_t;
+
+typedef struct lsm9ds1_bus_settings_t {
+	lsm9ds1_spi_settings_t spi;
+	lsm9ds1_i2c_settings_t i2c;
+}lsm9ds1_bus_settings_t;
+
 typedef struct lsm9ds1_device_t {
 	lsm9ds1_settings_t settings;
 	lsm9ds1_bus_t bus;
-	lsm9ds1_data_t data;
-	lsm9ds1_converted_data_t conv_data;
+	lsm9ds1_data_t raw_data;
+	lsm9ds1_converted_data_t converted_data;
+	lsm9ds1_bus_settings_t bus_settings;
 	lsm9ds1_status_t (*update_temp)();
 	lsm9ds1_status_t (*update_accel)();
 	lsm9ds1_status_t (*update_mag)();
 	lsm9ds1_status_t (*update_gyro)();
+	lsm9ds1_status_t (*update)();
 } lsm9ds1_device_t;
 
 //TODO Make better header comments.
@@ -287,12 +305,6 @@ typedef struct lsm9ds1_device_t {
  */
 lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id);
 
-/** @brief Read the accelerometer in the coordinates x,y,z.
- *  @param accel_data The values read from the accelerometer.
- *  @return status
- */
-lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data);
-
 /**
  * @brief Read the temperature from the LSM9DS1.
  *
@@ -324,40 +336,23 @@ lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data);
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp);
 
-/** @brief Read the magnetometer in the coordinates x,y,z.
- *  @param mag_data The values read from the magnetometer.
- *  @return status
- */
-lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data);
+//TODO add doxygen
+lsm9ds1_status_t update_temp(lsm9ds1_device_t *self);
+lsm9ds1_status_t update_accel(lsm9ds1_device_t *self);
+lsm9ds1_status_t update_mag(lsm9ds1_device_t *self);
+lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
 
 /** @brief Initialize the lsm9ds1 in either SPI or I2C. Currently only SPI is supported.
  *  @param bus_type Either I2C or SPI.
  *  @param range The accelerometer range.
  *  @return status
  */
-lsm9ds1_status_t lsm9ds1_init(lsm9ds1_bus_t bus_type,
+lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
                               lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
                               lsm9ds1_gyro_scale_t scale);
 
-/** @brief Setup the accelerometer.
- *  @param range The accelerometer range.
- *  @return status
- */
-lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range);
-
-lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain);
-
-lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale);
-
-lsm9ds1_status_t set_current_device(lsm9ds1_sub_device_t device);
-
-lsm9ds1_status_t lsm9ds1_read_gyro(gyro_data_t *gyro_data);
-
-lsm9ds1_status_t update_temp(lsm9ds1_device_t *device);
-
-lsm9ds1_status_t init_lsm9ds1(lsm9ds1_device_t *device);
+lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_sub_device_t target_device, lsm9ds1_sub_device_t *found_device_id);
 
 #ifdef __cplusplus
 }

@@ -4,7 +4,6 @@
 
 // Module method definitions
 static PyObject* init(PyObject *self, PyObject *args) {
-	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
 	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
 
 	int bus_type = 0;
@@ -14,16 +13,16 @@ static PyObject* init(PyObject *self, PyObject *args) {
 	if (!PyArg_ParseTuple(args, "iiii", &bus_type, &range, &gain, &scale)) {
 		return NULL;
 	}
-	function_return = lsm9ds1_init(bus_type, range, gain, scale);
+	lsm9ds1_device_t *lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+	(void)lsm9ds1_init(lsm9ds1, bus_type, range, gain, scale);
 
 	return Py_BuildValue("i", device);
 }
 
 // Module method definitions
 static PyObject* read_sub_device(PyObject *self, PyObject *args) {
-	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
 	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
-	function_return = lsm9ds1_read_sub_device(&device);
+	(void)lsm9ds1_read_sub_device(&device);
 
 	return Py_BuildValue("i", device);
 }

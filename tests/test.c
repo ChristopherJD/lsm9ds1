@@ -37,10 +37,9 @@ static lsm9ds1_device_t *lsm9ds1 = NULL;
  *
  */
 int init_lsm9ds1_suite(void) {
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-	init_lsm9ds1(lsm9ds1);
+	(void)lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
 
 	return 0;
 }
@@ -62,8 +61,7 @@ void test_lsm9ds1_read_sub_device_accel_gryo(void) {
 	lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	(void) set_current_device(LSM9DS1_ACCEL_GYRO);
-	status = lsm9ds1_read_sub_device(&found_device);
+	status = lsm9ds1_select_sub_device(LSM9DS1_ACCEL_GYRO, &found_device);
 	CU_ASSERT(0 == status);
 	CU_ASSERT(LSM9DS1_ACCEL_GYRO == found_device);
 }
@@ -72,8 +70,7 @@ void test_lsm9ds1_read_sub_device_mag(void) {
 	lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	(void) set_current_device(LSM9DS1_MAG);
-	status = lsm9ds1_read_sub_device(&found_device);
+	status = lsm9ds1_select_sub_device(LSM9DS1_MAG, &found_device);
 	CU_ASSERT(0 == status);
 	CU_ASSERT(LSM9DS1_MAG == found_device);
 }
@@ -84,8 +81,8 @@ void test_lsm9ds1_read_temp(void) {
 	status = lsm9ds1->update_temp(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Raw Temp: %d\n", lsm9ds1->data.temperature);
-	printf("Temp: %f\n", lsm9ds1->conv_data.temperature);
+	printf("Raw Temp: %d\n", lsm9ds1->raw_data.temperature);
+	printf("Temp: %f\n", lsm9ds1->converted_data.temperature);
 }
 
 void test_lsm9ds1_read_accel(void) {
@@ -94,9 +91,9 @@ void test_lsm9ds1_read_accel(void) {
 	status = lsm9ds1->update_accel(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Accel X: %d\n", lsm9ds1->data.accelerometer.x);
-	printf("Accel Y: %d\n", lsm9ds1->data.accelerometer.y);
-	printf("Accel Z: %d\n", lsm9ds1->data.accelerometer.z);
+	printf("Accel X: %d\n", lsm9ds1->raw_data.accelerometer.x);
+	printf("Accel Y: %d\n", lsm9ds1->raw_data.accelerometer.y);
+	printf("Accel Z: %d\n", lsm9ds1->raw_data.accelerometer.z);
 }
 
 void test_lsm9ds1_read_gyro(void) {
@@ -105,9 +102,9 @@ void test_lsm9ds1_read_gyro(void) {
 	status = lsm9ds1->update_gyro(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Gyro X: %d\n", lsm9ds1->data.gyroscope.x);
-	printf("Gyro Y: %d\n", lsm9ds1->data.gyroscope.y);
-	printf("Gyro Z: %d\n", lsm9ds1->data.gyroscope.z);
+	printf("Gyro X: %d\n", lsm9ds1->raw_data.gyroscope.x);
+	printf("Gyro Y: %d\n", lsm9ds1->raw_data.gyroscope.y);
+	printf("Gyro Z: %d\n", lsm9ds1->raw_data.gyroscope.z);
 }
 
 void test_lsm9ds1_read_mag(void) {
@@ -116,9 +113,9 @@ void test_lsm9ds1_read_mag(void) {
 	status = lsm9ds1->update_mag(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Mag X: %d\n", lsm9ds1->data.magnetometer.x);
-	printf("Mag Y: %d\n", lsm9ds1->data.magnetometer.y);
-	printf("Mag Z: %d\n", lsm9ds1->data.magnetometer.z);
+	printf("Mag X: %d\n", lsm9ds1->raw_data.magnetometer.x);
+	printf("Mag Y: %d\n", lsm9ds1->raw_data.magnetometer.y);
+	printf("Mag Z: %d\n", lsm9ds1->raw_data.magnetometer.z);
 }
 
 /* The main() function for setting up and running the tests.
@@ -134,7 +131,7 @@ int main() {
 
 	/* add a suite to the registry */
 	pSuite = CU_add_suite("lsm9ds1 suite", init_lsm9ds1_suite,
-			clean_lsm9ds1_suite);
+	                      clean_lsm9ds1_suite);
 	if (NULL == pSuite) {
 		CU_cleanup_registry();
 		return CU_get_error();
@@ -142,13 +139,13 @@ int main() {
 
 	/* add the tests to the suite */
 	if ((NULL == CU_add_test(pSuite, "test read_sub_device for mag", test_lsm9ds1_read_sub_device_mag))
-		|| (NULL == CU_add_test(pSuite, "test read_sub_device for accel and gyro", test_lsm9ds1_read_sub_device_accel_gryo))
-		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_temp", test_lsm9ds1_read_temp))
-		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_accel", test_lsm9ds1_read_accel))
-		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_gyro", test_lsm9ds1_read_gyro))
-		|| (NULL == CU_add_test(pSuite, "test lsm9ds1_read_mag", test_lsm9ds1_read_mag))
+	        || (NULL == CU_add_test(pSuite, "test read_sub_device for accel and gyro", test_lsm9ds1_read_sub_device_accel_gryo))
+	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_temp", test_lsm9ds1_read_temp))
+	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_accel", test_lsm9ds1_read_accel))
+	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_gyro", test_lsm9ds1_read_gyro))
+	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_mag", test_lsm9ds1_read_mag))
 
-	) {
+	   ) {
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
