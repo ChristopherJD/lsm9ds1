@@ -91,9 +91,12 @@ void test_lsm9ds1_read_accel(void) {
 	status = lsm9ds1->update_accel(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Accel X: %d\n", lsm9ds1->raw_data.accelerometer.x);
-	printf("Accel Y: %d\n", lsm9ds1->raw_data.accelerometer.y);
-	printf("Accel Z: %d\n", lsm9ds1->raw_data.accelerometer.z);
+	printf("Raw Accel X: %d\n", lsm9ds1->raw_data.accelerometer.x);
+	printf("Raw Accel Y: %d\n", lsm9ds1->raw_data.accelerometer.y);
+	printf("Raw Accel Z: %d\n", lsm9ds1->raw_data.accelerometer.z);
+	printf("Accel X: %f\n", lsm9ds1->converted_data.accelerometer.x);
+	printf("Accel Y: %f\n", lsm9ds1->converted_data.accelerometer.y);
+	printf("Accel Z: %f\n", lsm9ds1->converted_data.accelerometer.z);
 }
 
 void test_lsm9ds1_read_gyro(void) {
@@ -102,9 +105,12 @@ void test_lsm9ds1_read_gyro(void) {
 	status = lsm9ds1->update_gyro(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Gyro X: %d\n", lsm9ds1->raw_data.gyroscope.x);
-	printf("Gyro Y: %d\n", lsm9ds1->raw_data.gyroscope.y);
-	printf("Gyro Z: %d\n", lsm9ds1->raw_data.gyroscope.z);
+	printf("Raw Gyro X: %d\n", lsm9ds1->raw_data.gyroscope.x);
+	printf("Raw Gyro Y: %d\n", lsm9ds1->raw_data.gyroscope.y);
+	printf("Raw Gyro Z: %d\n", lsm9ds1->raw_data.gyroscope.z);
+	printf("Gyro X: %f\n", lsm9ds1->converted_data.gyroscope.x);
+	printf("Gyro Y: %f\n", lsm9ds1->converted_data.gyroscope.y);
+	printf("Gyro Z: %f\n", lsm9ds1->converted_data.gyroscope.z);
 }
 
 void test_lsm9ds1_read_mag(void) {
@@ -113,9 +119,12 @@ void test_lsm9ds1_read_mag(void) {
 	status = lsm9ds1->update_mag(lsm9ds1);
 
 	CU_ASSERT(0 == status);
-	printf("Mag X: %d\n", lsm9ds1->raw_data.magnetometer.x);
-	printf("Mag Y: %d\n", lsm9ds1->raw_data.magnetometer.y);
-	printf("Mag Z: %d\n", lsm9ds1->raw_data.magnetometer.z);
+	printf("Raw Mag X: %d\n", lsm9ds1->raw_data.magnetometer.x);
+	printf("Raw Mag Y: %d\n", lsm9ds1->raw_data.magnetometer.y);
+	printf("Raw Mag Z: %d\n", lsm9ds1->raw_data.magnetometer.z);
+	printf("Mag X: %f\n", lsm9ds1->converted_data.magnetometer.x);
+	printf("Mag Y: %f\n", lsm9ds1->converted_data.magnetometer.y);
+	printf("Mag Z: %f\n", lsm9ds1->converted_data.magnetometer.z);
 }
 
 /* The main() function for setting up and running the tests.

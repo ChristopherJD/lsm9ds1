@@ -53,7 +53,6 @@
 
 static bool bus_initialized = false;
 static uint8_t num_calls = 0;
-static lsm9ds1_settings_t device_settings = { 0 };
 
 //TODO move these to the correct function
 static uint8_t mode = 0;
@@ -214,7 +213,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
+static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_gain_t gain) {
 
 	if (!bus_initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
@@ -265,18 +264,20 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", read_buffer);
 #endif
 
+	self->settings.gain = gain;
+
 	switch (gain) {
 	case LSM9DS1_MAGGAIN_4GAUSS:
-		device_settings.gain = gain;
+		self->settings.mag_mgauss = LSM9DS1_MAG_MGAUSS_4GAUSS;
 		break;
 	case LSM9DS1_MAGGAIN_8GAUSS:
-		device_settings.gain = gain;
+		self->settings.mag_mgauss = LSM9DS1_MAG_MGAUSS_8GAUSS;
 		break;
 	case LSM9DS1_MAGGAIN_12GAUSS:
-		device_settings.gain = gain;
+		self->settings.mag_mgauss = LSM9DS1_MAG_MGAUSS_12GAUSS;
 		break;
 	case LSM9DS1_MAGGAIN_16GAUSS:
-		device_settings.gain = gain;
+		self->settings.mag_mgauss = LSM9DS1_MAG_MGAUSS_16GAUSS;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_GAIN_RANGE;
@@ -285,7 +286,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_mag_gain_t gain) {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
+static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_accel_range_t range) {
 
 	if (!bus_initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
@@ -334,28 +335,29 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_accel_range_t range) {
 	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", read_buffer);
 #endif
 
+	self->settings.range = range;
+
 	switch (range) {
 	case LSM9DS1_ACCELRANGE_2G:
-		device_settings.range = range;
+		self->settings.accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_2G;
 		break;
 	case LSM9DS1_ACCELRANGE_4G:
-		device_settings.range = range;
+		self->settings.accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_4G;
 		break;
 	case LSM9DS1_ACCELRANGE_8G:
-		device_settings.range = range;
+		self->settings.accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_8G;
 		break;
 	case LSM9DS1_ACCELRANGE_16G:
-		device_settings.range = range;
+		self->settings.accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_16G;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_ACCEL_RANGE;
-		break;
 	}
 
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
+static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_scale_t scale) {
 
 	if (!bus_initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
@@ -404,15 +406,17 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_gyro_scale_t scale) {
 	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", read_buffer);
 #endif
 
+	self->settings.scale = scale;
+
 	switch (scale) {
 	case LSM9DS1_GYROSCALE_245DPS:
-		device_settings.scale = LSM9DS1_GYROSCALE_245DPS;
+		self->settings.gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_245DPS;
 		break;
 	case LSM9DS1_GYROSCALE_500DPS:
-		device_settings.scale = LSM9DS1_GYROSCALE_245DPS;
+		self->settings.gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_500DPS;
 		break;
 	case LSM9DS1_GYROSCALE_2000DPS:
-		device_settings.scale = LSM9DS1_GYROSCALE_245DPS;
+		self->settings.gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_2000DPS;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_GAIN_RANGE;
@@ -513,7 +517,7 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_device_t *self, lsm9ds1_bus_t b
 	return ret;
 }
 
-static lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
+static lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_raw_data_t *accel_data) {
 
 	// Check that the lsm9ds1 has been initialized.
 	bool lsm9ds1_initialized = false;
@@ -591,7 +595,7 @@ static lsm9ds1_status_t lsm9ds1_read_accel(accelerometer_data_t *accel_data) {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_read_mag(mag_data_t *mag_data) {
+static lsm9ds1_status_t lsm9ds1_read_mag(mag_raw_data_t *mag_data) {
 
 	// Check that the lsm9ds1 has been initialized.
 	bool lsm9ds1_initialized = false;
@@ -715,7 +719,7 @@ static lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_temperature_t *temp) {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_read_gyro(gyro_data_t *gyro_data) {
+static lsm9ds1_status_t lsm9ds1_read_gyro(gyro_raw_data_t *gyro_data) {
 
 	// Check that the lsm9ds1 has been initialized.
 	bool lsm9ds1_initialized = false;
@@ -807,9 +811,18 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
+	// Get the raw data
 	status = lsm9ds1_read_accel(&(self->raw_data.accelerometer));
 
-	//TODO convert raw_data
+	DEBUG_PRINT("accel_mg_lsb: %f\n", self->settings.accel_mg_lsb);
+	DEBUG_PRINT("Accel Raw (x): 0x%X\n", self->raw_data.accelerometer.x);
+	DEBUG_PRINT("Accel Raw (y): 0x%X\n", self->raw_data.accelerometer.y);
+	DEBUG_PRINT("Accel Raw (z): 0x%X\n", self->raw_data.accelerometer.z);
+
+	// Convert the raw data
+	self->converted_data.accelerometer.x = self->raw_data.accelerometer.x * self->settings.accel_mg_lsb;
+	self->converted_data.accelerometer.y = self->raw_data.accelerometer.y * self->settings.accel_mg_lsb;
+	self->converted_data.accelerometer.z = self->raw_data.accelerometer.z * self->settings.accel_mg_lsb;
 
 	return status;
 }
@@ -818,9 +831,18 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
+	// Get the raw data
 	status = lsm9ds1_read_mag(&(self->raw_data.magnetometer));
 
-	//TODO convert raw_data
+	DEBUG_PRINT("mag_mgauss: %f\n", self->settings.mag_mgauss);
+	DEBUG_PRINT("Mag Raw (x): 0x%X\n", self->raw_data.magnetometer.X);
+	DEBUG_PRINT("Mag Raw (y): 0x%X\n", self->raw_data.magnetometer.y);
+	DEBUG_PRINT("Mag Raw (z): 0x%X\n", self->raw_data.magnetometer.z);
+
+	// Convert the raw data
+	self->converted_data.magnetometer.x = self->raw_data.magnetometer.x * self->settings.mag_mgauss;
+	self->converted_data.magnetometer.y = self->raw_data.magnetometer.y * self->settings.mag_mgauss;
+	self->converted_data.magnetometer.z = self->raw_data.magnetometer.z * self->settings.mag_mgauss;
 
 	return status;
 }
@@ -829,9 +851,18 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
+	// Get the raw data
 	status = lsm9ds1_read_gyro(&(self->raw_data.gyroscope));
 
-	//TODO convert raw_data
+	DEBUG_PRINT("gyro_dps_digit: %f\n", self->settings.gyro_dps_digit);
+	DEBUG_PRINT("Gyro Raw (x): 0x%X\n", self->raw_data.gyroscope.x);
+	DEBUG_PRINT("Gyro Raw (y): 0x%X\n", self->raw_data.gyroscope.y);
+	DEBUG_PRINT("Gyro Raw (z): 0x%X\n", self->raw_data.gyroscope.z);
+
+	// Convert the raw data
+	self->converted_data.gyroscope.x = self->raw_data.gyroscope.x * self->settings.gyro_dps_digit;
+	self->converted_data.gyroscope.y = self->raw_data.gyroscope.y * self->settings.gyro_dps_digit;
+	self->converted_data.gyroscope.z = self->raw_data.gyroscope.z * self->settings.gyro_dps_digit;
 
 	return status;
 }
@@ -862,7 +893,7 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
 		return LSM9DS1_MALLOC_DEVICE_ERROR;
 	}
 
-	DEBUG_PRINT("Build Version: %s\n", BUILD_VERSION);
+	DEBUG_PRINT("Build Version: %s\n", _BUILD_VERSION);
 	DEBUG_PRINT("Build Date/Time: %s %s\n", __DATE__, __TIME__);
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
@@ -876,9 +907,6 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
 
 	// lsm9ds1 settings
 	self->bus = bus_type;
-	self->settings.range = range;
-	self->settings.gain = gain;
-	self->settings.scale = scale;
 
 	//reset number of calls if necessary
 	if (num_calls == UINT8_MAX) {
@@ -897,13 +925,13 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
 	};
 
 	DEBUG_PRINT("Setting up accelerometer... range(%d)\n", range);
-	ret = lsm9ds1_setup_accel(range);
+	ret = lsm9ds1_setup_accel(self, range);
 	if (ret < 0) {
 		return ret;
 	};
 
 	DEBUG_PRINT("Setting up gyroscope... scale(%d)\n", scale);
-	lsm9ds1_setup_gyro(scale);
+	lsm9ds1_setup_gyro(self, scale);
 	if (ret < 0) {
 		return ret;
 	};
@@ -916,7 +944,7 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
 		return ret;
 	}
 
-	ret = lsm9ds1_setup_mag(gain);
+	ret = lsm9ds1_setup_mag(self, gain);
 	if (ret < 0) {
 		DEBUG_PRINT("Error setting up mag! (%d)\n", ret);
 		return ret;

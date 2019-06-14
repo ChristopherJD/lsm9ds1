@@ -48,10 +48,31 @@ extern "C"
 
 #include <stdint.h>
 
+#ifndef _BUILD_VERSION
+#define _BUILD_VERSION BUILD_VERSION
+#endif
+
 #define DEVICE "/dev/spidev0.0"
 
 #define SPI_READ 0x80
 #define SPI_WRITE 0x0
+
+// Linear Acceleration: mg per LSB
+#define LSM9DS1_ACCEL_MG_LSB_2G (0.061F)
+#define LSM9DS1_ACCEL_MG_LSB_4G (0.122F)
+#define LSM9DS1_ACCEL_MG_LSB_8G (0.244F)
+#define LSM9DS1_ACCEL_MG_LSB_16G (0.732F)
+
+	// Magnetic Field Strength: gauss range
+#define LSM9DS1_MAG_MGAUSS_4GAUSS      (0.14F)
+#define LSM9DS1_MAG_MGAUSS_8GAUSS      (0.29F)
+#define LSM9DS1_MAG_MGAUSS_12GAUSS     (0.43F)
+#define LSM9DS1_MAG_MGAUSS_16GAUSS     (0.58F)
+
+// Angular Rate: dps per LSB
+#define LSM9DS1_GYRO_DPS_DIGIT_245DPS      (0.00875F)
+#define LSM9DS1_GYRO_DPS_DIGIT_500DPS      (0.01750F)
+#define LSM9DS1_GYRO_DPS_DIGIT_2000DPS	   (0.07000F)
 
 /**
  * @brief Temperature returned from the LSM9DS1
@@ -62,19 +83,37 @@ typedef struct accelerometer_data {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-} accelerometer_data_t;
+} accelerometer_raw_data_t;
+
+typedef struct accelerometer_converted_data_t {
+	float x;
+	float y;
+	float z;
+}accelerometer_converted_data_t;
 
 typedef struct mag_data {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-} mag_data_t;
+} mag_raw_data_t;
+
+typedef struct mag_converted_data_t {
+	float x;
+	float y;
+	float z;
+}mag_converted_data_t;
 
 typedef struct gyro_data {
 	int16_t x;
 	int16_t y;
 	int16_t z;
-} gyro_data_t;
+} gyro_raw_data_t;
+
+typedef struct gyro_converted_data_t {
+	float x;
+	float y;
+	float z;
+}gyro_converted_data_t;
 
 /**
  * @brief Contains the possible error codes returned by the functions.
@@ -222,20 +261,26 @@ typedef enum {
 
 typedef struct lsm9ds1_settings {
 	lsm9ds1_accel_range_t range;
+	float accel_mg_lsb;
 	lsm9ds1_mag_gain_t gain;
+	float mag_mgauss;
 	lsm9ds1_gyro_scale_t scale;
+	float gyro_dps_digit;
 } lsm9ds1_settings_t;
 
 typedef struct lsm9ds1_data_t
 {
 	lsm9ds1_temperature_t temperature;
-	accelerometer_data_t accelerometer;
-	mag_data_t magnetometer;
-	gyro_data_t gyroscope;
+	accelerometer_raw_data_t accelerometer;
+	mag_raw_data_t magnetometer;
+	gyro_raw_data_t gyroscope;
 }lsm9ds1_data_t;
 
 typedef struct lsm9ds1_converted_data_t {
 	float temperature;
+	accelerometer_converted_data_t accelerometer;
+	mag_converted_data_t magnetometer;
+	gyro_converted_data_t gyroscope;
 }lsm9ds1_converted_data_t;
 
 typedef struct lsm9ds1_spi_settings_t {
@@ -260,6 +305,7 @@ typedef struct lsm9ds1_device_t {
 	lsm9ds1_data_t raw_data;
 	lsm9ds1_converted_data_t converted_data;
 	lsm9ds1_bus_settings_t bus_settings;
+
 	lsm9ds1_status_t (*update_temp)();
 	lsm9ds1_status_t (*update_accel)();
 	lsm9ds1_status_t (*update_mag)();
