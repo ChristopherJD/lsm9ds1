@@ -58,27 +58,25 @@ int clean_lsm9ds1_suite(void) {
  */
 void test_lsm9ds1_read_sub_device_accel_gryo(void) {
 
-	lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(LSM9DS1_ACCEL_GYRO, &found_device);
+	status = lsm9ds1_select_sub_device(lsm9ds1, LSM9DS1_ACCEL_GYRO);
 	CU_ASSERT(0 == status);
-	CU_ASSERT(LSM9DS1_ACCEL_GYRO == found_device);
 }
 
 void test_lsm9ds1_read_sub_device_mag(void) {
-	lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(LSM9DS1_MAG, &found_device);
+	status = lsm9ds1_select_sub_device(lsm9ds1, LSM9DS1_MAG);
 	CU_ASSERT(0 == status);
-	CU_ASSERT(LSM9DS1_MAG == found_device);
 }
 
 void test_lsm9ds1_read_temp(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	status = lsm9ds1->update_temp(lsm9ds1);
+
+	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
 	printf("Raw Temp: %d\n", lsm9ds1->raw_data.temperature);
@@ -89,6 +87,7 @@ void test_lsm9ds1_read_accel(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	status = lsm9ds1->update_accel(lsm9ds1);
+	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
 	printf("Raw Accel X: %d\n", lsm9ds1->raw_data.accelerometer.x);
@@ -103,6 +102,7 @@ void test_lsm9ds1_read_gyro(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	status = lsm9ds1->update_gyro(lsm9ds1);
+	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
 	printf("Raw Gyro X: %d\n", lsm9ds1->raw_data.gyroscope.x);
@@ -117,6 +117,7 @@ void test_lsm9ds1_read_mag(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	status = lsm9ds1->update_mag(lsm9ds1);
+	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
 	printf("Raw Mag X: %d\n", lsm9ds1->raw_data.magnetometer.x);

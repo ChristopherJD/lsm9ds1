@@ -46,6 +46,7 @@ extern "C"
 {
 #endif
 
+#include <stdbool.h>
 #include <stdint.h>
 
 #ifndef _BUILD_VERSION
@@ -142,14 +143,6 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_MALLOC_DEVICE_ERROR = -19,
 	LSM9DS1_NO_BUS_FOUND = -20,
 } lsm9ds1_status_t;
-
-typedef enum {
-	LSM9DS1_READ, LSM9DS1_WRITE,
-} lsm9ds1_xfer_t;
-
-typedef enum lsm9ds1_bus_t {
-	LSM9DS1_SPI_BUS, LSM9DS1_I2C_BUS, NUM_BUS_TYPES,
-} lsm9ds1_bus_t;
 
 /**
  * @brief Sub device of the LSM9DS1
@@ -259,13 +252,25 @@ typedef enum {
 	LSM9DS1_GYROSCALE_2000DPS = (3 << 3) // +/- 2000 degrees per second rotation
 } lsm9ds1_gyro_scale_t;
 
-typedef struct lsm9ds1_settings {
+typedef struct lsm9ds1_accel_settings_t {
 	lsm9ds1_accel_range_t range;
 	float accel_mg_lsb;
+} lsm9ds1_accel_settings_t;
+
+typedef struct lsm9ds1_mag_settings_t {
 	lsm9ds1_mag_gain_t gain;
 	float mag_mgauss;
+}lsm9ds1_mag_settings_t;
+
+typedef struct lsm9ds1_gyro_settings_t {
 	lsm9ds1_gyro_scale_t scale;
 	float gyro_dps_digit;
+}lsm9ds1_gyro_settings_t;
+
+typedef struct lsm9ds1_settings {
+	lsm9ds1_accel_settings_t accelerometer;
+	lsm9ds1_mag_settings_t magnetometer;
+	lsm9ds1_gyro_settings_t gyroscope;
 } lsm9ds1_settings_t;
 
 typedef struct lsm9ds1_data_t
@@ -283,6 +288,14 @@ typedef struct lsm9ds1_converted_data_t {
 	gyro_converted_data_t gyroscope;
 }lsm9ds1_converted_data_t;
 
+typedef enum {
+	LSM9DS1_READ, LSM9DS1_WRITE,
+} lsm9ds1_xfer_t;
+
+typedef enum lsm9ds1_xfer_bus_t {
+	LSM9DS1_SPI_BUS, LSM9DS1_I2C_BUS, NUM_BUS_TYPES,
+} lsm9ds1_xfer_bus_t;
+
 typedef struct lsm9ds1_spi_settings_t {
 	uint8_t mode;
 	uint8_t bits;
@@ -294,17 +307,35 @@ typedef struct lsm9ds1_i2c_settings_t {
 	uint8_t bits;
 }lsm9ds1_i2c_settings_t;
 
-typedef struct lsm9ds1_bus_settings_t {
-	lsm9ds1_spi_settings_t spi;
-	lsm9ds1_i2c_settings_t i2c;
-}lsm9ds1_bus_settings_t;
+typedef struct lsm9ds1_spi_t {
+	lsm9ds1_spi_settings_t settings;
+	lsm9ds1_xfer_t op;
+	uint8_t address;
+	uint8_t tx;
+	uint8_t rx[1];
+}lsm9ds1_spi_t;
+
+typedef struct lsm9ds1_i2c_t {
+	lsm9ds1_i2c_settings_t settings;
+	lsm9ds1_xfer_t op;
+	uint8_t address;
+	uint8_t tx;
+	uint8_t rx[1];
+}lsm9ds1_i2c_t;
+
+typedef struct lsm9ds1_bus_t {
+	lsm9ds1_spi_t spi;
+	lsm9ds1_i2c_t i2c;
+}lsm9ds1_bus_t;
 
 typedef struct lsm9ds1_device_t {
+	bool initialized;
 	lsm9ds1_settings_t settings;
-	lsm9ds1_bus_t bus;
+	lsm9ds1_xfer_bus_t xfer_bus;
 	lsm9ds1_data_t raw_data;
 	lsm9ds1_converted_data_t converted_data;
-	lsm9ds1_bus_settings_t bus_settings;
+	lsm9ds1_bus_t bus;
+	lsm9ds1_sub_device_t current_sub_device;
 
 	lsm9ds1_status_t (*update_temp)();
 	lsm9ds1_status_t (*update_accel)();
@@ -394,11 +425,11 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
  *  @param range The accelerometer range.
  *  @return status
  */
-lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_bus_t bus_type,
+lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,
                               lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
                               lsm9ds1_gyro_scale_t scale);
 
-lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_sub_device_t target_device, lsm9ds1_sub_device_t *found_device_id);
+lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device);
 
 #ifdef __cplusplus
 }
