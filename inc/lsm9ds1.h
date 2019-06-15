@@ -34,10 +34,6 @@
  * Provides functions to read and write the data collected on the LSM9DS1.
  */
 
-/*
- * TODO Currently crashing PI. Suspecting the mag CS
- */
-
 #ifndef LSM9DS1_H_
 #define LSM9DS1_H_
 
@@ -142,6 +138,8 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_UNABLE_TO_SET_CS = -18,
 	LSM9DS1_MALLOC_DEVICE_ERROR = -19,
 	LSM9DS1_NO_BUS_FOUND = -20,
+	LSM9DS1_MAG_ALREADY_RESET = -21,
+	LSM9DS1_ACCEL_GYRO_ALREADY_RESET = -22,
 } lsm9ds1_status_t;
 
 /**
@@ -324,6 +322,9 @@ typedef struct lsm9ds1_i2c_t {
 }lsm9ds1_i2c_t;
 
 typedef struct lsm9ds1_bus_t {
+	bool initialized;
+	int32_t fd;
+	char device[256];
 	lsm9ds1_spi_t spi;
 	lsm9ds1_i2c_t i2c;
 }lsm9ds1_bus_t;
@@ -383,9 +384,10 @@ typedef struct lsm9ds1_device_t {
 lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id);
 
 /**
- * @brief Read the temperature from the LSM9DS1.
+ * @brief Read the temperature of the LSM9DS1.
  *
- * TODO Add description of temp
+ * Updates the lsm9ds1_device_t structure with the current temperature. You
+ * must first create this structure before reading.
  *
  * Example Usage:
  * @code
@@ -393,41 +395,172 @@ lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id);
  *
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
- * 		lsm9ds1_temperature_t temp = 0;
  *
- *		status = lsm9ds1_init(LSM9DS1_SPI_BUS);
+ *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+ *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- * 		status = lms9ds1_read_temp(temp);
+ * 		status = lsm9ds1.update_temp(lsm9ds1);
  * 		if(status < 0) {
- * 			fprintf(stderr, "Error getting sub-device!\n");
+ * 			fprintf(stderr, "Error reading temperature!\n");
  * 		}
+ *
+ *		free(lsm9ds1);
  * }
  * @endcode
- * @param device_id The discovered device id.
+ * @param self The created instance of the lsm9ds1_device_t.
  * @return Returns the function status.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_temperature_t
+ * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-
-//TODO add doxygen
 lsm9ds1_status_t update_temp(lsm9ds1_device_t *self);
+
+/**
+ * @brief Read the accelerometer of the LSM9DS1.
+ *
+ * Updates the lsm9ds1_device_t structure with the current accelerometer reading. You
+ * must first create this structure before reading.
+ *
+ * Example Usage:
+ * @code
+ * #include <lsm9ds1.h>
+ *
+ * int main() {
+ * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+ *
+ *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+ *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *		}
+ *
+ * 		status = lsm9ds1.update_accel(lsm9ds1);
+ * 		if(status < 0) {
+ * 			fprintf(stderr, "Error reading accelerometer!\n");
+ * 		}
+ *
+ *		free(lsm9ds1);
+ * }
+ * @endcode
+ * @param self The created instance of the lsm9ds1_device_t.
+ * @return Returns the function status.
+ * @see \ref lsm9ds1_status_t
+ * @see \ref lsm9ds1_device_t
+ * @note You must first initialize the lsm9ds1.
+ * @see lsm9ds1_init
+ */
 lsm9ds1_status_t update_accel(lsm9ds1_device_t *self);
+
+/**
+ * @brief Read the magnetometer of the LSM9DS1.
+ *
+ * Updates the lsm9ds1_device_t structure with the current magnetometer reading. You
+ * must first create this structure before reading.
+ *
+ * Example Usage:
+ * @code
+ * #include <lsm9ds1.h>
+ *
+ * int main() {
+ * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+ *
+ *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+ *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *		}
+ *
+ * 		status = lsm9ds1.update_mag(lsm9ds1);
+ * 		if(status < 0) {
+ * 			fprintf(stderr, "Error reading magnetometer!\n");
+ * 		}
+ *
+ *		free(lsm9ds1);
+ * }
+ * @endcode
+ * @param self The created instance of the lsm9ds1_device_t.
+ * @return Returns the function status.
+ * @see \ref lsm9ds1_status_t
+ * @see \ref lsm9ds1_device_t
+ * @note You must first initialize the lsm9ds1.
+ * @see lsm9ds1_init
+ */
 lsm9ds1_status_t update_mag(lsm9ds1_device_t *self);
+
+/**
+ * @brief Read the gyroscope from the LSM9DS1.
+ *
+ * Updates the lsm9ds1_device_t structure with the current gyroscope reading. You
+ * must first create this structure before reading.
+ *
+ * Example Usage:
+ * @code
+ * #include <lsm9ds1.h>
+ *
+ * int main() {
+ * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+ *
+ *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+ *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *		}
+ *
+ * 		status = lsm9ds1.update_accel(lsm9ds1);
+ * 		if(status < 0) {
+ * 			fprintf(stderr, "Error reading gyroscope!\n");
+ * 		}
+ *
+ *		free(lsm9ds1);
+ * }
+ * @endcode
+ * @param self The created instance of the lsm9ds1_device_t.
+ * @return Returns the function status.
+ * @see \ref lsm9ds1_status_t
+ * @see \ref lsm9ds1_device_t
+ * @note You must first initialize the lsm9ds1.
+ * @see lsm9ds1_init
+ */
 lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
 
-/** @brief Initialize the lsm9ds1 in either SPI or I2C. Currently only SPI is supported.
- *  @param bus_type Either I2C or SPI.
- *  @param range The accelerometer range.
- *  @return status
+/**
+ * @brief Initialize the LSM9DS1.
+ *
+ * TODO Add description of initialization
+ *
+ * Example Usage:
+ * @code
+ * #include <lsm9ds1.h>
+ *
+ * int main() {
+ * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+ *
+ *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+ *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *		}
+ *
+ *		free(lsm9ds1);
+ * }
+ * @endcode
+ * @param self The created instance of the lsm9ds1_device_t.
+ * @return Returns the function status.
+ * @see \ref lsm9ds1_status_t
+ * @see \ref lsm9ds1_device_t
+ * @see \ref lsm9ds1_xfer_bus_t
+ * @see \ref lsm9ds1_accel_range_t
+ # @see \ref lsm9ds1_mag_gain_t
+ * @see \ref lsm9ds1_gyro_scale_t
  */
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,
                               lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
                               lsm9ds1_gyro_scale_t scale);
+
 
 lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device);
 

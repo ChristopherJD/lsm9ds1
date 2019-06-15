@@ -35,6 +35,7 @@
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <sys/mman.h>
+#include <time.h>
 #include <wiringPi.h>
 
 #include "lsm9ds1.h"
@@ -50,17 +51,7 @@
 #define DEBUG_PRINT(fmt, ...) /* Don't do anything in release builds */
 #endif
 
-static bool bus_initialized = false;
-static uint8_t num_calls = 0;
-
-//TODO move these to the correct function
-// static uint8_t mode = 0;
-// static uint8_t bits = 8;
-// static uint32_t speed = 15000000;
-// static uint16_t spi_delay = 0;
-static int32_t fd = -1;	// File descriptor for LSM9DS1
-
-#define MAG_CS 21	//Wiring Pi Pin number
+#define MAG_CS 21	//Wiring Pi Pin number for the magnetometer CS.
 
 static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
 	digitalWrite(MAG_CS, pin_state);
@@ -76,7 +67,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	case LSM9DS1_MAG:
 
 		self->bus.spi.settings.mode |= SPI_NO_CS;
-		ret = ioctl(fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
+		ret = ioctl(self->bus.fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
@@ -89,7 +80,7 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	case LSM9DS1_ACCEL_GYRO:
 		//Make sure CS is selected.
 		self->bus.spi.settings.mode &= ~(SPI_NO_CS);
-		ret = ioctl(fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
+		ret = ioctl(self->bus.fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
@@ -140,13 +131,13 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	tr[0].delay_usecs = self->bus.spi.settings.spi_delay;
 	tr[0].bits_per_word = self->bus.spi.settings.bits;
 
-	ret = ioctl(fd, SPI_IOC_MESSAGE(2), tr);
+	ret = ioctl(self->bus.fd, SPI_IOC_MESSAGE(2), tr);
 	if (LSM9DS1_MAG == self->current_sub_device) {
 		// Set back to high after the message was sent.
 		(void) lsm9ds1_mag_cs(HIGH);
 	}
-	DEBUG_PRINT("TX: %d\n", self->bus.spi.tx);
-	DEBUG_PRINT("RX: %d\n", self->bus.spi.rx[0]);
+	DEBUG_PRINT("TX: 0x%X\n", self->bus.spi.tx);
+	DEBUG_PRINT("RX: 0x%X\n", self->bus.spi.rx[0]);
 	if (ret < 1) {
 		return LSM9DS1_SPI_BUS_XFER_ERROR;
 	}
@@ -182,6 +173,8 @@ lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_d
 
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
 
+	if(!self->bus.initialized) return LSM9DS1_BUS_NOT_INTIALIZED;
+
 	// The mag accel and gyro id should be at the same offset, if not, we don't know what device we have.
 	// We are comparing enums of different types, cast first since we want to do this.
 	if (!((int) LSM9DS1_REGISTER_WHO_AM_I_XG
@@ -201,6 +194,46 @@ lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_d
 	return function_return;
 }
 
+static lsm9ds1_status_t lsm9ds1_soft_reset(lsm9ds1_device_t *self) {
+
+	// We will only reset once.
+	static bool accel_gyro_reset = false;
+	static bool mag_reset = false;
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	if(accel_gyro_reset && (self->current_sub_device == LSM9DS1_ACCEL_GYRO)) {
+		return LSM9DS1_ACCEL_GYRO_ALREADY_RESET;
+	}
+
+	if(mag_reset && (self->current_sub_device == LSM9DS1_MAG)) {
+		return LSM9DS1_MAG_ALREADY_RESET;
+	}
+
+	switch(self->current_sub_device) {
+		case LSM9DS1_ACCEL_GYRO:
+			// Soft reset on the accelerometer and gyroscope
+			status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x05);
+			if(status < 0) return status;
+			accel_gyro_reset = true;
+			break;
+		case LSM9DS1_MAG:
+			// Soft reset on the magnetometer
+			status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x0C);
+			if(status < 0) return status;
+			mag_reset = true;
+			break;
+		default:
+			return LSM9DS1_UNKNOWN_SUB_DEVICE;
+	}
+
+	// Sleep for 10 microseconds to allow the lsm9ds1 to reset
+	struct timespec sleep_time = {.tv_sec = 0, .tv_nsec = 10000}; 
+	(void)nanosleep(&sleep_time, NULL);
+
+	return LSM9DS1_SUCCESS;
+}
+
 static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 
 	//TODO, verify the documentation is a crappy as I think.
@@ -214,7 +247,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 
 static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_gain_t gain) {
 
-	if (!bus_initialized) {
+	if (!self->bus.initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
 	}
 
@@ -228,6 +261,12 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 	if (read_status < 0) {
 		return read_status;
 	}
+
+	read_status = lsm9ds1_soft_reset(self);
+	if(read_status < 0) return read_status;
+
+	// Setup Mag continuous
+	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
@@ -283,7 +322,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 
 static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_accel_range_t range) {
 
-	if (!bus_initialized) {
+	if (!self->bus.initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
 	}
 
@@ -296,11 +335,8 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 	}
 
 	//TODO Figure out how to make this happen when setting up the gyro
-	// Soft reset on the accelerometer and gyroscope
-	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x05);
-
-	// enable gyro continuous
-  	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
+	read_status = lsm9ds1_soft_reset(self);
+	if(read_status < 0) return read_status;
 
   	// Enable the accelerometer continous
   	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
@@ -361,7 +397,7 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 
 static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_scale_t scale) {
 
-	if (!bus_initialized) {
+	if (!self->bus.initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
 	}
 
@@ -373,11 +409,12 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 		return read_status;
 	}
 
-	//TODO Cleanup
-	// Soft reset on the magnetometer
-	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x0C);
+	read_status = lsm9ds1_soft_reset(self);
+	if(read_status < 0) return read_status;
 
-	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
+	//TODO Cleanup
+	// enable gyro continuous
+  	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
@@ -437,21 +474,26 @@ static lsm9ds1_status_t init_spi(lsm9ds1_device_t *self) {
 	self->bus.spi.settings.speed 		= 15000000;
 	self->bus.spi.settings.spi_delay 	= 0;
 
+	strncpy(self->bus.device, DEVICE, sizeof(self->bus.device));
 
-	fd = open(DEVICE, O_RDWR);
-	if (fd < 0) {
+	DEBUG_PRINT("Device fd: %s\n", self->bus.device);
+
+	self->bus.fd = open(self->bus.device, O_RDWR);
+	if (self->bus.fd <= 0) {
 		return LSM9DS1_NOT_FOUND;
 	}
 
+	DEBUG_PRINT("Device fd: %d\n", self->bus.fd);
+
 	// Set to mode 3
 	self->bus.spi.settings.mode |= SPI_CPOL | SPI_CPHA | SPI_NO_CS;
-	ret = ioctl(fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
+	ret = ioctl(self->bus.fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
 
 #if DEBUG > 0
-	ret = ioctl(fd, SPI_IOC_RD_MODE, &(self->bus.spi.settings.mode));
+	ret = ioctl(self->bus.fd, SPI_IOC_RD_MODE, &(self->bus.spi.settings.mode));
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
@@ -459,13 +501,13 @@ static lsm9ds1_status_t init_spi(lsm9ds1_device_t *self) {
 #endif
 
 	// Set the number of bits per word.
-	ret = ioctl(fd, SPI_IOC_WR_BITS_PER_WORD, &(self->bus.spi.settings.bits));
+	ret = ioctl(self->bus.fd, SPI_IOC_WR_BITS_PER_WORD, &(self->bus.spi.settings.bits));
 	if (ret == -1) {
 		return LSM9DS1_NUM_BITS_NOT_SET;
 	}
 
 	// Set the max clock speed in hz
-	ret = ioctl(fd, SPI_IOC_WR_MAX_SPEED_HZ, &(self->bus.spi.settings.speed));
+	ret = ioctl(self->bus.fd, SPI_IOC_WR_MAX_SPEED_HZ, &(self->bus.spi.settings.speed));
 	if (ret == -1) {
 		return LSM9DS1_CLOCK_NOT_SET;
 	}
@@ -478,27 +520,15 @@ static lsm9ds1_status_t init_i2c(lsm9ds1_device_t *self) {
 	return LSM9DS1_BUS_NOT_SUPPORTED;
 }
 
-static lsm9ds1_status_t lsm9ds1_is_init(bool *initialized) {
-
-	bool has_been_init = false;
-	if (num_calls > 0) {
-		has_been_init = true;
-	}
-
-	*initialized = has_been_init;
-
-	return LSM9DS1_SUCCESS;
-}
-
 static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type) {
 
-	if (bus_initialized) {
+	if (self->bus.initialized) {
 		return LSM9DS1_SUCCESS;
 	}
 
 	//TODO decide if we need to remove
 	// If we have already opened the fd then return early
-	if (fd >= 0) {
+	if (self->bus.fd > 0) {
 		return LSM9DS1_SUCCESS;
 	}
 
@@ -510,9 +540,11 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_device_t *self, lsm9ds1_xfer_bu
 	switch (self->xfer_bus) {
 	case LSM9DS1_SPI_BUS:
 		ret = init_spi(self);
+		if(ret < 0) return ret;
 		break;
 	case LSM9DS1_I2C_BUS:
 		ret = init_i2c(self);
+		if(ret < 0) return ret;
 		break;
 	default:
 		ret = LSM9DS1_BUS_NOT_SUPPORTED;
@@ -520,16 +552,14 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_device_t *self, lsm9ds1_xfer_bu
 
 	}
 
-	bus_initialized = true;
-	return ret;
+	self->bus.initialized = true;
+	return LSM9DS1_SUCCESS;
 }
 
 static lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_device_t *self) {
 
 	// Check that the lsm9ds1 has been initialized.
-	bool lsm9ds1_initialized = false;
-	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
-	if (!lsm9ds1_initialized) {
+	if (!self->initialized) {
 		return LSM9DS1_NOT_INITIALIZED;
 	}
 
@@ -596,9 +626,7 @@ static lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_device_t *self) {
 static lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_device_t *self) {
 
 	// Check that the lsm9ds1 has been initialized.
-	bool lsm9ds1_initialized = false;
-	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
-	if (!lsm9ds1_initialized) {
+	if (!self->initialized) {
 		return LSM9DS1_NOT_INITIALIZED;
 	}
 
@@ -665,11 +693,11 @@ static lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_device_t *self) {
 static lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_device_t *self) {
 
 	// Check that the lsm9ds1 has been initialized.
-	bool lsm9ds1_initialized = false;
-	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
-	if (!lsm9ds1_initialized) {
+	if (!self->initialized) {
 		return LSM9DS1_NOT_INITIALIZED;
 	}
+
+	DEBUG_PRINT("Temp initialized\n");
 
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -708,9 +736,7 @@ static lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_device_t *self) {
 static lsm9ds1_status_t lsm9ds1_read_gyro(lsm9ds1_device_t *self) {
 
 	// Check that the lsm9ds1 has been initialized.
-	bool lsm9ds1_initialized = false;
-	(void) lsm9ds1_is_init(&lsm9ds1_initialized);
-	if (!lsm9ds1_initialized) {
+	if (!self->initialized) {
 		return LSM9DS1_NOT_INITIALIZED;
 	}
 
@@ -871,6 +897,8 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 		return LSM9DS1_MALLOC_DEVICE_ERROR;
 	}
 
+	self->initialized = false;
+
 	DEBUG_PRINT("Build Version: %s\n", _BUILD_VERSION);
 	DEBUG_PRINT("Build Date/Time: %s %s\n", __DATE__, __TIME__);
 
@@ -883,17 +911,12 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 	self->update_gyro = update_gyro;
 	self->update = update;
 
-	//reset number of calls if necessary
-	if (num_calls == UINT8_MAX) {
-		num_calls = 0;
-	}
-	num_calls++;
-
 #if DEBUG > 0
 	const char *bus_names[NUM_BUS_TYPES] = {"SPI", "I2C"};
 	DEBUG_PRINT("Initializing the lsm9ds1 %s bus...\n", bus_names[bus_type]);
 #endif
 
+	self->bus.initialized = false;
 	ret = lsm9ds1_init_bus(self, bus_type);
 	if (ret < 0) {
 		return ret;
@@ -924,6 +947,8 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 		DEBUG_PRINT("Error setting up mag! (%d)\n", ret);
 		return ret;
 	};
+
+	self->initialized = true;
 
 	return LSM9DS1_SUCCESS;
 }
