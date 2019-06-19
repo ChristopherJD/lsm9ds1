@@ -329,59 +329,32 @@ typedef struct lsm9ds1_bus_t {
 	lsm9ds1_i2c_t i2c;
 }lsm9ds1_bus_t;
 
+/**
+ * @brief Store data and configurations for the lsm9ds1 device.
+ *
+ * This structure stores all the information pertaining to the lsm9ds1.
+ *	- Bus configuration (SPI/I2C) information
+ *	- Gyroscope configuration information
+ *	- Magnetometer configuration information
+ *	- Accelerometer configuration information
+ */
 typedef struct lsm9ds1_device_t {
-	bool initialized;
-	lsm9ds1_settings_t settings;
-	lsm9ds1_xfer_bus_t xfer_bus;
-	lsm9ds1_data_t raw_data;
-	lsm9ds1_converted_data_t converted_data;
-	lsm9ds1_bus_t bus;
-	lsm9ds1_sub_device_t current_sub_device;
+	bool initialized;	/* Set to true if the lsm9ds1 was able to setup the Gyroscope, accelerometer, and magnetometer. False otherwise. */
+	lsm9ds1_settings_t settings;	/* Please see \ref lsm9ds1_settings_t for more information */
+	lsm9ds1_xfer_bus_t xfer_bus;	/* Please see \ref lsm9ds1_xfer_bus_t for more information */
+	lsm9ds1_data_t raw_data;	/* Please see \ref lsm9ds1_data_t for more information */
+	lsm9ds1_converted_data_t converted_data;	/* Please see \ref lsm9ds1_converted_data_t for more information */
+	lsm9ds1_bus_t bus;	/* Please see \ref lsm9ds1_bus_t for more information */
+	lsm9ds1_sub_device_t current_sub_device;	/* Please see \ref lsm9ds1_sub_device_t for more information */
 
-	lsm9ds1_status_t (*update_temp)();
-	lsm9ds1_status_t (*update_accel)();
-	lsm9ds1_status_t (*update_mag)();
-	lsm9ds1_status_t (*update_gyro)();
-	lsm9ds1_status_t (*update)();
+	lsm9ds1_status_t (*update_temp)();	/* Please see \ref update_temp for more information */
+	lsm9ds1_status_t (*update_accel)();	/* Please see \ref update_accel for more information */
+	lsm9ds1_status_t (*update_mag)();	/* Please see \ref update_mag for more information */
+	lsm9ds1_status_t (*update_gyro)();	/* Please see \ref update_gyro for more information */
+	lsm9ds1_status_t (*update)();		/* Please see \ref update for more information */
 } lsm9ds1_device_t;
 
 //TODO Make better header comments.
-
-/**
- * @brief Determine which subdevice of the LSM9DS1 we are reading from.
- *
- * The sub-device can either be the gyroscope and accelerometer combo or a magnetometer.
- * The WHO_AMI register on the LSM9DS1 is read to determine which device is found.
- * The LSM9DS1 has two chip-selects, one for the gyroscope accelerometer combo and one,
- * for the magnetometer. @p device_id returns the device found see \ref lsm9ds1_sub_device_t.
- *
- * Example Usage:
- * @code
- * #include <lsm9ds1.h>
- *
- * int main() {
- * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
- * 		lsm9ds1_sub_device_t found_device = LSM9DS1_UNKNOWN_SUB_DEVICE;
- *
- *		status = lsm9ds1_init(LSM9DS1_SPI_BUS);
- *		if(status < 0) {
- *			fprinf(stderr, "Error initializing lsm9ds1!\n");
- *		}
- *
- * 		status = lms9ds1_read_sub_device(found_device);
- * 		if(status < 0) {
- * 			fprintf(stderr, "Error getting sub-device!\n");
- * 		}
- * }
- * @endcode
- * @param device_id The discovered device id.
- * @return Returns the function status.
- * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_sub_device_t
- * @note You must first initialize the lsm9ds1.
- * @see lsm9ds1_init
- */
-lsm9ds1_status_t lsm9ds1_read_sub_device(lsm9ds1_sub_device_t *device_id);
 
 /**
  * @brief Read the temperature of the LSM9DS1.
@@ -560,9 +533,6 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,
                               lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
                               lsm9ds1_gyro_scale_t scale);
-
-
-lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device);
 
 #ifdef __cplusplus
 }

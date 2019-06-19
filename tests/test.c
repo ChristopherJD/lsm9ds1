@@ -30,6 +30,7 @@
 #include "CUnit/Basic.h"
 #include <stdlib.h>
 #include "lsm9ds1.h"
+#include "lsm9ds1_private.h"
 
 static lsm9ds1_device_t *lsm9ds1 = NULL;
 

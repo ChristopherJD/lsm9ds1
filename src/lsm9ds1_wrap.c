@@ -2,6 +2,8 @@
 #include <Python.h>
 #include "lsm9ds1.h"
 
+lsm9ds1_device_t *lsm9ds1 = NULL;
+
 // Module method definitions
 static PyObject* init(PyObject *self, PyObject *args) {
 	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
@@ -13,18 +15,46 @@ static PyObject* init(PyObject *self, PyObject *args) {
 	if (!PyArg_ParseTuple(args, "iiii", &bus_type, &range, &gain, &scale)) {
 		return NULL;
 	}
-	lsm9ds1_device_t *lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+	lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
 	(void)lsm9ds1_init(lsm9ds1, bus_type, range, gain, scale);
 
 	return Py_BuildValue("i", device);
 }
 
 // Module method definitions
-static PyObject* read_sub_device(PyObject *self, PyObject *args) {
-	lsm9ds1_sub_device_t device = LSM9DS1_UNKNOWN_DEVICE;
-	(void)lsm9ds1_read_sub_device(&device);
+static PyObject* get_temp(PyObject *self, PyObject *args) {
 
-	return Py_BuildValue("i", device);
+	lsm9ds1->update_temp(lsm9ds1);
+
+	return Py_BuildValue("f", lsm9ds1->converted_data.temperature);
+}
+
+static PyObject* get_accel(PyObject *self, PyObject *args) {
+
+	lsm9ds1->update_accel(lsm9ds1);
+
+	return Py_BuildValue("f", lsm9ds1->converted_data.accelerometer);
+}
+
+static PyObject* get_mag(PyObject *self, PyObject *args) {
+
+	lsm9ds1->update_mag(lsm9ds1);
+
+	return Py_BuildValue("f", lsm9ds1->converted_data.magnetometer);
+}
+
+static PyObject* get_gyro(PyObject *self, PyObject *args) {
+
+	lsm9ds1->update_gyro(lsm9ds1);
+
+	return Py_BuildValue("f", lsm9ds1->converted_data.gyroscope);
+}
+
+static PyObject* get_all(PyObject *self, PyObject *args) {
+
+	lsm9ds1->update(lsm9ds1);
+
+	return Py_BuildValue("ffff", lsm9ds1->converted_data.temperature, lsm9ds1->converted_data.accelerometer, lsm9ds1->converted_data.magnetometer, lsm9ds1->converted_data.gyroscope);
 }
 
 // Method definition object for this extension, these argumens mean:
@@ -36,10 +66,34 @@ static PyObject* read_sub_device(PyObject *self, PyObject *args) {
 // ml_doc:  Contents of this method's docstring
 static PyMethodDef pylsm9ds1_methods[] = {
 	{
-		"read_sub_device",
-		read_sub_device,
+		"get_temp",
+		get_temp,
 		METH_NOARGS,
-		"Get the sub-device from the lsm9ds1."
+		"Read the temperature from the lsm9ds1."
+	},
+	{
+		"get_accel",
+		get_accel,
+		METH_NOARGS,
+		"Read the accelerometer from the lsm9ds1."
+	},
+	{
+		"get_mag",
+		get_mag,
+		METH_NOARGS,
+		"Read the magnetometer from the lsm9ds1."
+	},
+	{
+		"get_gyro",
+		get_gyro,
+		METH_NOARGS,
+		"Read the gyroscope from the lsm9ds1."
+	},
+	{
+		"get_all",
+		get_all,
+		METH_NOARGS,
+		"Read the temperature, accelerometer, magnetometer, and gyroscope from the lsm9ds1."
 	},
 	{
 		"init",
@@ -69,6 +123,22 @@ PyMODINIT_FUNC PyInit_pylsm9ds1(void) {
 	if (m == NULL) {
 		return m;
 	}
-	PyModule_AddIntConstant(m, "LSM9DS1_SPI_BUS", 0);
+	PyModule_AddIntConstant(m, "LSM9DS1_SPI_BUS", LSM9DS1_SPI_BUS);
+	PyModule_AddIntConstant(m, "LSM9DS1_I2C_BUS", LSM9DS1_I2C_BUS);
+
+	PyModule_AddIntConstant(m, "LSM9DS1_ACCELRANGE_2G", LSM9DS1_ACCELRANGE_2G);
+	PyModule_AddIntConstant(m, "LSM9DS1_ACCELRANGE_16G", LSM9DS1_ACCELRANGE_16G);
+	PyModule_AddIntConstant(m, "LSM9DS1_ACCELRANGE_4G", LSM9DS1_ACCELRANGE_4G);
+	PyModule_AddIntConstant(m, "LSM9DS1_ACCELRANGE_8G", LSM9DS1_ACCELRANGE_8G);
+
+	PyModule_AddIntConstant(m, "LSM9DS1_MAGGAIN_4GAUSS", LSM9DS1_MAGGAIN_4GAUSS);
+	PyModule_AddIntConstant(m, "LSM9DS1_MAGGAIN_8GAUSS", LSM9DS1_MAGGAIN_8GAUSS);
+	PyModule_AddIntConstant(m, "LSM9DS1_MAGGAIN_12GAUSS", LSM9DS1_MAGGAIN_12GAUSS);
+	PyModule_AddIntConstant(m, "LSM9DS1_MAGGAIN_16GAUSS", LSM9DS1_MAGGAIN_16GAUSS);
+
+	PyModule_AddIntConstant(m, "LSM9DS1_GYROSCALE_245DPS", LSM9DS1_GYROSCALE_245DPS);
+	PyModule_AddIntConstant(m, "LSM9DS1_GYROSCALE_500DPS", LSM9DS1_GYROSCALE_500DPS);
+	PyModule_AddIntConstant(m, "LSM9DS1_GYROSCALE_2000DPS", LSM9DS1_GYROSCALE_2000DPS);
+
 	return m;
 }

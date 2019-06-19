@@ -19,7 +19,6 @@ if ${DEBUG}; then
 	mkdir ${DEBUG_DIR}
 	pushd ${DEBUG_DIR}
 	cmake -DCMAKE_BUILD_TYPE=Debug ..
-	echo $PWD
 fi
 
 if ${RELEASE}; then
@@ -27,7 +26,7 @@ if ${RELEASE}; then
 	mkdir ${RELEASE_DIR}
 	pushd ${RELEASE_DIR}
 	cmake -DBUILD_DOCUMENTATION=ON -DCMAKE_BUILD_TYPE=Release ..
-	echo $PWD
+	make doc
 fi
 
 make
