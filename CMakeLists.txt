@@ -32,7 +32,7 @@ endif(BUILD_DOCUMENTATION)
 
 ######## Project settings ########
 PROJECT(liblsm9ds1)
-SET(LICENSE "MIT")
+SET(LICENSE "GPLV3")
 
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
