@@ -50,16 +50,15 @@ static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
-                                 uint8_t address, uint8_t tx, uint8_t *rx) {
+static lsm9ds1_status_t cs_arbiter(lsm9ds1_bus_t *self) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
 
 	switch (self->current_sub_device) {
 	case LSM9DS1_MAG:
 
-		self->bus.spi.settings.mode |= SPI_NO_CS;
-		ret = ioctl(self->bus.fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
+		self->spi.settings.mode |= SPI_NO_CS;
+		ret = ioctl(self->fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
@@ -71,8 +70,8 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 		break;
 	case LSM9DS1_ACCEL_GYRO:
 		//Make sure CS is selected.
-		self->bus.spi.settings.mode &= ~(SPI_NO_CS);
-		ret = ioctl(self->bus.fd, SPI_IOC_WR_MODE, &(self->bus.spi.settings.mode));
+		self->spi.settings.mode &= ~(SPI_NO_CS);
+		ret = ioctl(self->fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
 		if (ret == -1) {
 			return LSM9DS1_UNABLE_TO_SET_CS;
 		}
@@ -84,6 +83,17 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
 	}
 
+	return LSM9DS1_SUCCESS;
+}
+
+static lsm9ds1_status_t transfer(lsm9ds1_bus_t *self, lsm9ds1_xfer_t op,
+                                 uint8_t address, uint8_t tx, uint8_t *rx) {
+
+	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
+
+	// Select the chip select based on the current_sub_device.
+	self->cs_arbiter(self);
+
 	uint8_t addr_xfer = 0;
 
 	//TODO ensure sizes are correct
@@ -93,18 +103,18 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	case LSM9DS1_READ:
 		tr[1].rx_buf = (unsigned long) rx;
 		tr[1].len = sizeof(*rx);
-		tr[1].speed_hz = self->bus.spi.settings.speed;
-		tr[1].delay_usecs = self->bus.spi.settings.spi_delay;
-		tr[1].bits_per_word = self->bus.spi.settings.bits;
+		tr[1].speed_hz = self->spi.settings.speed;
+		tr[1].delay_usecs = self->spi.settings.spi_delay;
+		tr[1].bits_per_word = self->spi.settings.bits;
 
 		addr_xfer = (SPI_READ | address);
 		break;
 	case LSM9DS1_WRITE:
 		tr[1].tx_buf = (unsigned long) &tx;
 		tr[1].len = sizeof(tx);
-		tr[1].speed_hz = self->bus.spi.settings.speed;
-		tr[1].delay_usecs = self->bus.spi.settings.spi_delay;
-		tr[1].bits_per_word = self->bus.spi.settings.bits;
+		tr[1].speed_hz = self->spi.settings.speed;
+		tr[1].delay_usecs = self->spi.settings.spi_delay;
+		tr[1].bits_per_word = self->spi.settings.bits;
 
 		if (NULL != rx) {
 			rx = NULL;
@@ -119,17 +129,17 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	// Setup the address to w/r
 	tr[0].tx_buf = (unsigned long) &addr_xfer;
 	tr[0].len = sizeof(tx);
-	tr[0].speed_hz = self->bus.spi.settings.speed;
-	tr[0].delay_usecs = self->bus.spi.settings.spi_delay;
-	tr[0].bits_per_word = self->bus.spi.settings.bits;
+	tr[0].speed_hz = self->spi.settings.speed;
+	tr[0].delay_usecs = self->spi.settings.spi_delay;
+	tr[0].bits_per_word = self->spi.settings.bits;
 
-	ret = ioctl(self->bus.fd, SPI_IOC_MESSAGE(2), tr);
+	ret = ioctl(self->fd, SPI_IOC_MESSAGE(2), tr);
 	if (LSM9DS1_MAG == self->current_sub_device) {
 		// Set back to high after the message was sent.
 		(void) lsm9ds1_mag_cs(HIGH);
 	}
-	DEBUG_PRINT("TX: 0x%X\n", self->bus.spi.tx);
-	DEBUG_PRINT("RX: 0x%X\n", self->bus.spi.rx[0]);
+	DEBUG_PRINT("TX: 0x%X\n", self->spi.tx);
+	DEBUG_PRINT("RX: 0x%X\n", self->spi.rx[0]);
 	if (ret < 1) {
 		return LSM9DS1_SPI_BUS_XFER_ERROR;
 	}
@@ -137,26 +147,26 @@ static lsm9ds1_status_t transfer(lsm9ds1_device_t *self, lsm9ds1_xfer_t op,
 	return LSM9DS1_SUCCESS;
 }
 
-static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_device_t *self, uint8_t register_addr, uint8_t tx) {
+static lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8_t tx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
 	//RX doesn't matter so give it NULL
-	self->bus.spi.op = LSM9DS1_WRITE;
-	self->bus.spi.tx = tx;
-	ret = transfer(self, self->bus.spi.op, self->bus.spi.address, self->bus.spi.tx, NULL);
+	self->spi.op = LSM9DS1_WRITE;
+	self->spi.tx = tx;
+	ret = self->transfer(self, self->spi.op, self->spi.address, self->spi.tx, NULL);
 
 	return ret;
 }
 
-static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_device_t *self, uint8_t address) {
+static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
 	// tx doesn't matter, so just use 0.
-	self->bus.spi.op = LSM9DS1_READ;
-	self->bus.spi.address = address;
-	ret = transfer(self, self->bus.spi.op, self->bus.spi.address, 0, self->bus.spi.rx);
+	self->spi.op = LSM9DS1_READ;
+	self->spi.address = address;
+	ret = self->transfer(self, self->spi.op, self->spi.address, 0, self->spi.rx);
 
 	return ret;
 }
@@ -174,10 +184,10 @@ lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_d
 		return LSM9DS1_UNKNOWN_SUB_DEVICE;
 	}
 
-	self->current_sub_device = sub_device;
+	self->bus.current_sub_device = sub_device;
 
 	// Discover device
-	function_return = lsm9ds1_read(self, LSM9DS1_REGISTER_WHO_AM_I);
+	function_return = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_WHO_AM_I);
 	lsm9ds1_sub_device_t found_device = self->bus.spi.rx[0];
 	DEBUG_PRINT("Sub-device: (0x%X)\n", found_device);
 
@@ -194,24 +204,24 @@ static lsm9ds1_status_t lsm9ds1_soft_reset(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	if(accel_gyro_reset && (self->current_sub_device == LSM9DS1_ACCEL_GYRO)) {
+	if(accel_gyro_reset && (self->bus.current_sub_device == LSM9DS1_ACCEL_GYRO)) {
 		return LSM9DS1_ACCEL_GYRO_ALREADY_RESET;
 	}
 
-	if(mag_reset && (self->current_sub_device == LSM9DS1_MAG)) {
+	if(mag_reset && (self->bus.current_sub_device == LSM9DS1_MAG)) {
 		return LSM9DS1_MAG_ALREADY_RESET;
 	}
 
-	switch(self->current_sub_device) {
+	switch(self->bus.current_sub_device) {
 		case LSM9DS1_ACCEL_GYRO:
 			// Soft reset on the accelerometer and gyroscope
-			status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x05);
+			status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG8, 0x05);
 			if(status < 0) return status;
 			accel_gyro_reset = true;
 			break;
 		case LSM9DS1_MAG:
 			// Soft reset on the magnetometer
-			status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG8, 0x0C);
+			status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG8, 0x0C);
 			if(status < 0) return status;
 			mag_reset = true;
 			break;
@@ -258,11 +268,11 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 	if(read_status < 0) return read_status;
 
 	// Setup Mag continuous
-	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
+	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG2_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
 
 	if (read_status < 0) {
 		return read_status;
@@ -276,13 +286,13 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	DEBUG_PRINT("Writing LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", reg);
-	write_status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG2_M, reg);
+	write_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
 
 #if DEBUG > 0
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG2_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -331,12 +341,12 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 	if(read_status < 0) return read_status;
 
   	// Enable the accelerometer continous
-  	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
-	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG6_XL, 0xC0); // 1 KHz out data rate, BW set by ODR, 408Hz anti-aliasing
+  	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
+	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL, 0xC0); // 1 KHz out data rate, BW set by ODR, 408Hz anti-aliasing
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG6_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
 
 	if (read_status < 0) {
 		return read_status;
@@ -350,13 +360,13 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 
 	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", reg);
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
-	write_status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
+	write_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
 
 #if DEBUG > 0
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG6_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
 
 	if (read_status < 0) {
 		return read_status;
@@ -406,11 +416,11 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 
 	//TODO Cleanup
 	// enable gyro continuous
-  	lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
+  	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
 
 	// Read the accelerometer.
 	uint8_t read_buffer = 0;
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG1_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G);
 
 	if (read_status < 0) {
 		return read_status;
@@ -425,13 +435,13 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", reg);
-	write_status = lsm9ds1_write(self, LSM9DS1_REGISTER_CTRL_REG1_G, reg);
+	write_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G, reg);
 	if (write_status < 0) {
 		return write_status;
 	}
 
 #if DEBUG > 0
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_CTRL_REG1_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G);
 
 	if (read_status < 0) {
 		return read_status;
@@ -564,37 +574,37 @@ static lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_device_t *self) {
 	}
 
 	// Read the accelerometer.
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_L_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_L_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_H_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_H_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t xhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_L_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_L_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t ylo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_H_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_H_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t yhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_L_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_L_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t zlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_H_XL);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_H_XL);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -631,37 +641,37 @@ static lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_device_t *self) {
 	}
 
 	// Read the accelerometer.
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_L_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_L_M);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_H_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_H_M);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t xhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_L_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_L_M);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t ylo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_H_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_H_M);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t yhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_L_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_L_M);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t zlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_H_M);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_H_M);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -700,7 +710,7 @@ static lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_device_t *self) {
 	}
 
 	// Read the accelerometer.
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_TEMP_OUT_L);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_TEMP_OUT_L);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -708,7 +718,7 @@ static lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_device_t *self) {
 
 	DEBUG_PRINT("Temp xlo: 0x%X\n", xlo);
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_TEMP_OUT_H);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_TEMP_OUT_H);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -741,37 +751,37 @@ static lsm9ds1_status_t lsm9ds1_read_gyro(lsm9ds1_device_t *self) {
 	}
 
 	// Read the gryo.
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_L_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_L_G);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t xlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_X_H_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_X_H_G);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t xhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_L_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_L_G);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t ylo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Y_H_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Y_H_G);
 	if (read_status < 0) {
 		return read_status;
 	}
 	int16_t yhi = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_L_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_L_G);
 	if (read_status < 0) {
 		return read_status;
 	}
 	uint8_t zlo = self->bus.spi.rx[0];
 
-	read_status = lsm9ds1_read(self, LSM9DS1_REGISTER_OUT_Z_H_G);
+	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_OUT_Z_H_G);
 	if (read_status < 0) {
 		return read_status;
 	}
@@ -902,6 +912,8 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 	self->update_mag = update_mag;
 	self->update_gyro = update_gyro;
 	self->update = update;
+	self->bus.transfer = transfer;
+	self->bus.cs_arbiter = cs_arbiter;
 
 #if DEBUG > 0
 	const char *bus_names[NUM_BUS_TYPES] = {"SPI", "I2C"};

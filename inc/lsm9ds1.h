@@ -319,6 +319,10 @@ typedef struct lsm9ds1_bus_t {
 	char device[256];
 	lsm9ds1_spi_t spi;
 	lsm9ds1_i2c_t i2c;
+	lsm9ds1_sub_device_t current_sub_device;
+
+	lsm9ds1_status_t (*transfer)(struct lsm9ds1_bus_t *self, lsm9ds1_xfer_t op, uint8_t address, uint8_t tx, uint8_t *rx);
+	lsm9ds1_status_t (*cs_arbiter)(struct lsm9ds1_bus_t *self);
 }lsm9ds1_bus_t;
 
 /**
@@ -337,13 +341,12 @@ typedef struct lsm9ds1_device_t {
 	lsm9ds1_data_t raw_data;	/* Please see \ref lsm9ds1_data_t for more information */
 	lsm9ds1_converted_data_t converted_data;	/* Please see \ref lsm9ds1_converted_data_t for more information */
 	lsm9ds1_bus_t bus;	/* Please see \ref lsm9ds1_bus_t for more information */
-	lsm9ds1_sub_device_t current_sub_device;	/* Please see \ref lsm9ds1_sub_device_t for more information */
 
-	lsm9ds1_status_t (*update_temp)();	/* Please see \ref update_temp for more information */
-	lsm9ds1_status_t (*update_accel)();	/* Please see \ref update_accel for more information */
-	lsm9ds1_status_t (*update_mag)();	/* Please see \ref update_mag for more information */
-	lsm9ds1_status_t (*update_gyro)();	/* Please see \ref update_gyro for more information */
-	lsm9ds1_status_t (*update)();		/* Please see \ref update for more information */
+	lsm9ds1_status_t (*update_temp)(struct lsm9ds1_device_t *self);	/* Please see \ref update_temp for more information */
+	lsm9ds1_status_t (*update_accel)(struct lsm9ds1_device_t *self);	/* Please see \ref update_accel for more information */
+	lsm9ds1_status_t (*update_mag)(struct lsm9ds1_device_t *self);	/* Please see \ref update_mag for more information */
+	lsm9ds1_status_t (*update_gyro)(struct lsm9ds1_device_t *self);	/* Please see \ref update_gyro for more information */
+	lsm9ds1_status_t (*update)(struct lsm9ds1_device_t *self);		/* Please see \ref update for more information */
 } lsm9ds1_device_t;
 
 //TODO Make better header comments.
