@@ -271,16 +271,15 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
 
 	// Read the accelerometer.
-	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
 
 	if (read_status < 0) {
 		return read_status;
 	}
 
-	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", self->bus.spi.rx[0]);
 
-	uint8_t reg = read_buffer;
+	uint8_t reg = self->bus.spi.rx[0];
 	reg &= ~(__extension__ 0b01100000);
 	reg |= gain;
 
@@ -297,7 +296,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 		return read_status;
 	}
 
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", self->bus.spi.rx[0]);
 #endif
 
 	self->settings.magnetometer.gain = gain;
@@ -338,23 +337,25 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 
 	//TODO Figure out how to make this happen when setting up the gyro
 	read_status = lsm9ds1_soft_reset(self);
-	if(read_status < 0) return read_status;
+	read_status = lsm9ds1_soft_reset(self);
+	if((read_status != LSM9DS1_ACCEL_GYRO_ALREADY_RESET) && (read_status < 0)) {
+		return read_status;
+	}
 
   	// Enable the accelerometer continous
   	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
 	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL, 0xC0); // 1 KHz out data rate, BW set by ODR, 408Hz anti-aliasing
 
 	// Read the accelerometer.
-	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
 
 	if (read_status < 0) {
 		return read_status;
 	}
 
-	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", self->bus.spi.rx[0]);
 
-	uint8_t reg = read_buffer;
+	uint8_t reg = self->bus.spi.rx[0];
 	reg &= ~( __extension__ 0b00011000);
 	reg |= range;
 
@@ -372,7 +373,7 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 		return read_status;
 	}
 
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", self->bus.spi.rx[0]);
 #endif
 
 	self->settings.accelerometer.range = range;
@@ -412,23 +413,29 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 	}
 
 	read_status = lsm9ds1_soft_reset(self);
-	if(read_status < 0) return read_status;
+	if((read_status != LSM9DS1_ACCEL_GYRO_ALREADY_RESET) && (read_status < 0)) {
+		return read_status;
+	}
 
 	//TODO Cleanup
 	// enable gyro continuous
-  	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
+  	read_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
+  	if(read_status < 0) return read_status;
+
+#if DEBUG > 0
+  	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG4);
+  	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG4: 0x%X\n", self->bus.spi.rx[0]);
+#endif
 
 	// Read the accelerometer.
-	uint8_t read_buffer = 0;
 	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G);
-
 	if (read_status < 0) {
 		return read_status;
 	}
 
-	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", self->bus.spi.rx[0]);
 
-	uint8_t reg = read_buffer;
+	uint8_t reg = self->bus.spi.rx[0];
 
 	reg &= ~(__extension__ 0b00011000);
 	reg |= scale;
@@ -446,7 +453,7 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 	if (read_status < 0) {
 		return read_status;
 	}
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", read_buffer);
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", self->bus.spi.rx[0]);
 #endif
 
 	self->settings.gyroscope.scale = scale;
@@ -929,12 +936,14 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 	DEBUG_PRINT("Setting up accelerometer... range(%d)\n", range);
 	ret = lsm9ds1_setup_accel(self, range);
 	if (ret < 0) {
+		DEBUG_PRINT("Error setting up accelerometer (%d)!\n", ret);
 		return ret;
 	};
 
 	DEBUG_PRINT("Setting up gyroscope... scale(%d)\n", scale);
 	lsm9ds1_setup_gyro(self, scale);
 	if (ret < 0) {
+		DEBUG_PRINT("Error setting up gyroscope (%d)!\n", ret);
 		return ret;
 	};
 
