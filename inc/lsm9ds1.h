@@ -206,19 +206,15 @@ typedef enum {
 	LSM9DS1_ACCELRANGE_8G = (3 << 3),
 } lsm9ds1_accel_range_t;
 
-typedef enum {
-	LSM9DS1_ACCELDATARATE_POWERDOWN = (1 << 4),
-	LSM9DS1_ACCELDATARATE_3_125HZ = (2 << 4),
-	LSM9DS1_ACCELDATARATE_6_25HZ = (3 << 4),
-	LSM9DS1_ACCELDATARATE_12_5HZ = (4 << 4),
-	LSM9DS1_ACCELDATARATE_25HZ = (5 << 4),
-	LSM9DS1_ACCELDATARATE_50HZ = (6 << 4),
-	LSM9DS1_ACCELDATARATE_100HZ = (7 << 4),
-	LSM9DS1_ACCELDATARATE_200HZ = (8 << 4),
-	LSM9DS1_ACCELDATARATE_400HZ = (9 << 4),
-	LSM9DS1_ACCELDATARATE_800HZ = (10 << 4),
-	LSM9DS1_ACCELDATARATE_1600HZ = (11 << 4)
-} lm9ds1AccelDataRate_t;
+typedef enum lsm9ds1_xl_odr_t{
+	LSM9DS1_XL_ODR_POWERDOWN = (0 << 5),
+	LSM9DS1_XL_10HZ = (1 <<5),
+	LSM9DS1_XL_50HZ = (2 << 5),
+	LSM9DS1_XL_119HZ = (3 << 5),
+	LSM9DS1_XL_238HZ = (4 << 5),
+	LSM9DS1_XL_476HZ = (5 << 5),
+	LSM9DS1_XL_952HZ = (6 << 5),
+} lsm9ds1_xl_odr_t;
 
 typedef enum {
 	LSM9DS1_MAGGAIN_4GAUSS = (0 << 5),  // +/- 4 gauss
@@ -227,14 +223,16 @@ typedef enum {
 	LSM9DS1_MAGGAIN_16GAUSS = (3 << 5)   // +/- 16 gauss
 } lsm9ds1_mag_gain_t;
 
-typedef enum {
-	LSM9DS1_MAGDATARATE_3_125HZ = (0 << 2),
-	LSM9DS1_MAGDATARATE_6_25HZ = (1 << 2),
-	LSM9DS1_MAGDATARATE_12_5HZ = (2 << 2),
-	LSM9DS1_MAGDATARATE_25HZ = (3 << 2),
-	LSM9DS1_MAGDATARATE_50HZ = (4 << 2),
-	LSM9DS1_MAGDATARATE_100HZ = (5 << 2)
-} lsm9ds1_mag_data_rate_t;
+typedef enum lsm9ds1_mag_odr_t{
+	LSM9DS1_MAG_ODR_0_625HZ = (0 << 2),
+	LSM9DS1_MAG_ODR_1_25HZ = (1 << 2),
+	LSM9DS1_MAG_ODR_2_5HZ = (2 << 2),
+	LSM9DS1_MAG_ODR_5HZ = (3 << 2),
+	LSM9DS1_MAG_ODR_10HZ = (4 << 2),
+	LSM9DS1_MAG_ODR_20HZ = (5 << 2),
+	LSM9DS1_MAG_ODR_40HZ = (6 << 2),
+	LSM9DS1_MAG_ODR_80HZ = (7 << 2)
+} lsm9ds1_mag_odr_t;
 
 typedef enum {
 	LSM9DS1_GYROSCALE_245DPS = (0 << 3), // +/- 245 degrees per second rotation
@@ -245,16 +243,36 @@ typedef enum {
 typedef struct lsm9ds1_accel_settings_t {
 	lsm9ds1_accel_range_t range;
 	float accel_mg_lsb;
+	lsm9ds1_xl_odr_t odr;
 } lsm9ds1_accel_settings_t;
+
+typedef enum lsm9ds1_gyro_odr_t {
+	LSM9DS1_GYRO_ODR_POWERDOWN = (0 << 5),
+	LSM9DS1_GYRO_ODR_14_9HZ = (1 << 5),
+	LSM9DS1_GYRO_ODR_59_5HZ = (2 << 5),
+	LSM9DS1_GYRO_ODR_119HZ = (3 << 5),
+	LSM9DS1_GYRO_ODR_238HZ = (4 << 5),
+	LSM9DS1_GYRO_ODR_476HZ = (5 << 5),
+	LSM9DS1_GYRO_ODR_952HZ = (6 << 5),
+} lsm9ds1_gyro_odr_t;
+
+typedef enum lsm9ds1_mag_op_mode_t {
+	LSM9DS1_MAG_OP_MODE_CONTINUOUS = (0 << 0),
+	LSM9DS1_MAG_OP_MODE_SINGLE_CONVERSION = (1 << 0),
+	LSM9DS1_MAG_OP_MODE_POWER_DOWN = (2 << 0),
+}lsm9ds1_mag_op_mode_t;
 
 typedef struct lsm9ds1_mag_settings_t {
 	lsm9ds1_mag_gain_t gain;
 	float mag_mgauss;
+	lsm9ds1_mag_odr_t odr;
+	lsm9ds1_mag_op_mode_t op_mode;
 }lsm9ds1_mag_settings_t;
 
 typedef struct lsm9ds1_gyro_settings_t {
 	lsm9ds1_gyro_scale_t scale;
 	float gyro_dps_digit;
+	lsm9ds1_gyro_odr_t odr;	//output data rate
 }lsm9ds1_gyro_settings_t;
 
 typedef struct lsm9ds1_settings {

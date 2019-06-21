@@ -171,6 +171,26 @@ static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address) {
 	return ret;
 }
 
+static lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, uint8_t mask, uint8_t value) {
+
+	uint8_t reg = 0;
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	// Get the initial register state
+	status = lsm9ds1_read(self, address);
+	if(status < 0) return status;
+	reg = self->spi.rx[0];
+
+	// Mask off with the value to be written
+	reg &= ~(mask);
+	reg |= value;
+
+	status = lsm9ds1_write(self, address, value);
+	if(status < 0) return status;
+
+	return LSM9DS1_SUCCESS;
+}
+
 lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device) {
 
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
@@ -254,6 +274,7 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 	}
 
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
+	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// CS logic low, so set to high to ignore.
 	(void) lsm9ds1_mag_cs(HIGH);
@@ -268,27 +289,19 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 	if(read_status < 0) return read_status;
 
 	// Setup Mag continuous
-	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M, 0x00); // continuous mode
+	self->settings.magnetometer.op_mode = LSM9DS1_MAG_OP_MODE_CONTINUOUS;
+	read_status = lsm9ds1_register_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M, __extension__ 0b00000011, self->settings.magnetometer.op_mode);
+	if(read_status < 0) return read_status;
 
-	// Read the accelerometer.
-	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
+	// Setup the output data rate
+	self->settings.magnetometer.odr = LSM9DS1_MAG_ODR_80HZ;
+	read_status = lsm9ds1_register_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_M, __extension__ 0b00011100, self->settings.magnetometer.odr);
+	if(read_status < 0) return read_status;
 
-	if (read_status < 0) {
-		return read_status;
-	}
-
-	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", self->bus.spi.rx[0]);
-
-	uint8_t reg = self->bus.spi.rx[0];
-	reg &= ~(__extension__ 0b01100000);
-	reg |= gain;
-
-	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
-	DEBUG_PRINT("Writing LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", reg);
-	write_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M, reg);
-	if (write_status < 0) {
-		return write_status;
-	}
+	// Setup the Gain
+	self->settings.magnetometer.gain = gain;
+	read_status = lsm9ds1_register_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M, __extension__ 0b01100000, self->settings.magnetometer.gain);
+	if(read_status < 0) return read_status;
 
 #if DEBUG > 0
 	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
@@ -298,8 +311,6 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self, lsm9ds1_mag_ga
 
 	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n", self->bus.spi.rx[0]);
 #endif
-
-	self->settings.magnetometer.gain = gain;
 
 	switch (gain) {
 	case LSM9DS1_MAGGAIN_4GAUSS:
@@ -342,9 +353,7 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 		return read_status;
 	}
 
-  	// Enable the accelerometer continous
-  	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
-	lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL, 0xC0); // 1 KHz out data rate, BW set by ODR, 408Hz anti-aliasing
+  	//lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_XL, 0x38); // enable X Y and Z axis
 
 	// Read the accelerometer.
 	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
@@ -356,8 +365,11 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self, lsm9ds1_acce
 	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", self->bus.spi.rx[0]);
 
 	uint8_t reg = self->bus.spi.rx[0];
-	reg &= ~( __extension__ 0b00011000);
-	reg |= range;
+
+	// Enable the accelerometer continous
+	self->settings.accelerometer.odr = LSM9DS1_XL_952HZ;
+	reg &= ~( __extension__ 0b11111000);
+	reg |= range | self->settings.accelerometer.odr;
 
 	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n", reg);
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
@@ -417,11 +429,6 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 		return read_status;
 	}
 
-	//TODO Cleanup
-	// enable gyro continuous
-  	read_status = lsm9ds1_write(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_G, 0xC0); // on XYZ
-  	if(read_status < 0) return read_status;
-
 #if DEBUG > 0
   	read_status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG4);
   	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG4: 0x%X\n", self->bus.spi.rx[0]);
@@ -435,10 +442,13 @@ static lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_device_t *self, lsm9ds1_gyro_
 
 	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", self->bus.spi.rx[0]);
 
+	// enable gyro continuous
+	self->settings.gyroscope.odr = LSM9DS1_GYRO_ODR_952HZ;
+
 	uint8_t reg = self->bus.spi.rx[0];
 
-	reg &= ~(__extension__ 0b00011000);
-	reg |= scale;
+	reg &= ~(__extension__ 0b11111000);
+	reg |= scale | self->settings.gyroscope.odr;
 
 	lsm9ds1_status_t write_status = LSM9DS1_UNKNOWN_ERROR;
 	DEBUG_PRINT("Setting LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n", reg);
