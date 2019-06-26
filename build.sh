@@ -27,6 +27,7 @@ if ${RELEASE}; then
 	pushd ${RELEASE_DIR}
 	cmake -DBUILD_DOCUMENTATION=ON -DCMAKE_BUILD_TYPE=Release ..
 	make doc
+	cp -r docs/* ../docs
 fi
 
 make
