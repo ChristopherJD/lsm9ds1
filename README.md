@@ -1,6 +1,10 @@
 # lsm9ds1
 C and Python extension library for the LSM9DS1
 
+# API Documentation
+
+You can find the documentation [here](https://christopherjd.github.io/lsm9ds1/html/index.html).
+
 # Building
 
 1. You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)
@@ -37,7 +41,7 @@ sudo apt install gdb-multiarch
 gdbserver localhost:5000 lsm9ds1_test
 ```
 
-1. On the local machine start gdbgui.
+2. On the local machine start gdbgui.
 
 ```bash
 gdbgui -r -g gdb-multiarch
