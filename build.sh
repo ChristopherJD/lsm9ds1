@@ -28,6 +28,7 @@ if ${RELEASE}; then
 	cmake -DBUILD_DOCUMENTATION=ON -DCMAKE_BUILD_TYPE=Release ..
 	make doc
 	cp -r docs/* ../docs
+	make package
 fi
 
 make
