@@ -1,9 +1,32 @@
-# lsm9ds1
-C and Python extension library for the LSM9DS1
+C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
 
 # API Documentation
 
 You can find the documentation [here](https://christopherjd.github.io/lsm9ds1/html/index.html).
+
+The API is simple to use. Here is a quick example of getting the reading from the accelerometer.
+
+```c
+#include <lsm9ds1.h>
+int main() {
+
+    lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+    lsm9ds1_device_t lsm9ds1 = {0};
+
+    status = lsm9ds1_init(&lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    if(status < 0) {
+        fprinf(stderr, "Error initializing lsm9ds1!\n");
+    }
+    status = lsm9ds1.update_accel(lsm9ds1);
+    if(status < 0) {
+   		fprintf(stderr, "Error reading accelerometer!\n");
+    }
+}
+```
+
+# Dependencies
+
+This library depends on the WiringPi library.
 
 # Building
 
@@ -13,7 +36,7 @@ You can find the documentation [here](https://christopherjd.github.io/lsm9ds1/ht
 source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
 ```
 
-2. Use the build shell script. This will use cmake and make to build for your system.
+1. Use the build shell script. This will use cmake and make to build for your system.
 
 If building for release.
 
@@ -21,7 +44,7 @@ If building for release.
 ./build.sh release
 ```
 
-If building for debugging purposes.
+If building for debugging.
 
 ```bash
 ./build.sh debug
@@ -41,9 +64,27 @@ sudo apt install gdb-multiarch
 gdbserver localhost:5000 lsm9ds1_test
 ```
 
-2. On the local machine start gdbgui.
+1. On the local machine start gdbgui.
 
 ```bash
 gdbgui -r -g gdb-multiarch
 ```
+
+# Device Pinout
+
+| Pin Label | Pin Function                                            | Notes                                                                                                                                                                                                        |
+|-----------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| GND       | Ground                                                  | 0V voltage supply                                                                                                                                                                                            |
+| VDD       | Power Supply                                            | Supply voltage to the chip. Should be regulated between 2.4V and 3.6V.                                                                                                                                       |
+| SDA       | SPI: MOSI I2C: Serial Data                              | SPI: Device data in (MOSI) I2C: Serial data (bi-directional)                                                                                                                                                 |
+| SCL       | Serial Clock                                            | I2C and SPI serial clock.                                                                                                                                                                                    |
+| DEN       | Gyroscope Data Enable                                   | Mostly unknown. The LSM9DS1 datasheet doesn't have much to say about this pin.                                                                                                                               |
+| INT2      | Accel/Gyro Interrupt 2                                  | INT1 and INT2 are programmable interrupts for the accelerometer and gyroscope. They can be set to alert on over/under thresholds, data ready, or FIFO overruns.                                              |
+| INT1      | Accel/Gyro Interrupt 1                                  |                                                                                                                                                                                                              |
+| INTM      | Magnetometer Interrupt                                  | A programmable interrupt for the magnetometer. Can be set to alert on over-under thresholds.                                                                                                                 |
+| RDY       | Magnetometer Data Ready                                 | An interrupt indicating new magnetometer data is available. Non-programmable.                                                                                                                                |
+| CS M      | Magnetometer Chip Select                                | This pin selects between I2C and SPI on the magnetometer. Keep it HIGH for I2C, or use it as an (active-low) chip select for SPI. HIGH (1): SPI idle mode / I2C enabled LOW (0): SPI enabled / I2C disabled. |
+| CS AG     | Accel/Gyro Chip Select                                  | This pin selects between I2C and SPI on the accel/gyro. Keep it HIGH for I2C, or use it as an (active-low) chip select for SPI. HIGH (1): SPI idle mode / I2C enabled LOW (0): SPI enabled / I2C disabled.   |
+| SDO M     | SPI: Magnetometer MISO I2C: Magnetometer Address Select | In SPI mode, this is the magnetometer data output (SDO_M). In I2C mode, this selects the LSb of the I2C address (SA0_M)                                                                                      |
+| SDO AG    | SPI: Accel/Gyro MISO I2C: Accel/Gryo Address Select     | In SPI mode, this is the accel/gryo data output (SDO_AG). In I2C mode, this selects the LSb of the I2C address (SA0_AG)                                                                                      |
 

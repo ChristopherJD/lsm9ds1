@@ -1,0 +1,67 @@
+.TH "lsm9ds1_device_t" 3 "Wed Jun 26 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.ad l
+.nh
+.SH NAME
+lsm9ds1_device_t \- Store data and configurations for the lsm9ds1 device\&.  
+
+.SH SYNOPSIS
+.br
+.PP
+.PP
+\fC#include <lsm9ds1\&.h>\fP
+.SS "Data Fields"
+
+.in +1c
+.ti -1c
+.RI "bool \fBinitialized\fP"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_settings_t\fP \fBsettings\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_xfer_bus_t \fBxfer_bus\fP"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_data_t\fP \fBraw_data\fP"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_converted_data_t\fP \fBconverted_data\fP"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_bus_t\fP \fBbus\fP"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP(* \fBupdate_temp\fP )(struct \fBlsm9ds1_device_t\fP *self)"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP(* \fBupdate_accel\fP )(struct \fBlsm9ds1_device_t\fP *self)"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP(* \fBupdate_mag\fP )(struct \fBlsm9ds1_device_t\fP *self)"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP(* \fBupdate_gyro\fP )(struct \fBlsm9ds1_device_t\fP *self)"
+.br
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP(* \fBupdate\fP )(struct \fBlsm9ds1_device_t\fP *self)"
+.br
+.in -1c
+.SH "Detailed Description"
+.PP 
+Store data and configurations for the lsm9ds1 device\&. 
+
+This structure stores all the information pertaining to the lsm9ds1\&.
+.IP "\(bu" 2
+Bus configuration (SPI/I2C) information
+.IP "\(bu" 2
+Gyroscope configuration information
+.IP "\(bu" 2
+Magnetometer configuration information
+.IP "\(bu" 2
+Accelerometer configuration information 
+.PP
+
+
+.SH "Author"
+.PP 
+Generated automatically by Doxygen for LSM9DS1 Library from the source code\&.
