@@ -7,7 +7,9 @@ SET(LSM9DS1_VERSION_MINOR 1)
 SET(LSM9DS1_VERSION_PATCH 0)
 SET(LSM9DS1_VERSION_STRING 
     ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
-ADD_DEFINITIONS(-DBUILD_VERSION="${LSM9DS1_VERSION_STRING}")
+SET(BUILD_VERSION ${LSM9DS1_VERSION_STRING} CACHE STRING "Build Version")
+OPTION(BUILD_VERSION "Set the version being built." ${BUILD_VERSION})
+ADD_DEFINITIONS(-DBUILD_VERSION="${BUILD_VERSION}")
 ###############################################################################
 
 
@@ -44,7 +46,8 @@ SET(LICENSE "GPLV3")
 
 ########################### Build and include settings ########################
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
+STRING(CONCAT CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic"
+    " -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
 
 ########################### Python Settings ###################################
 FIND_PACKAGE(PythonLibs REQUIRED)
@@ -85,29 +88,31 @@ TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
 
 ########################## C Library ##########################################
 INSTALL(TARGETS lsm9ds1
-	DESTINATION /usr/lib/
+	DESTINATION usr/lib/
 )
 
 ########################### Python Settings ###################################
 SET_TARGET_PROPERTIES(pylsm9ds1 PROPERTIES PREFIX "")
 INSTALL(TARGETS pylsm9ds1
-	DESTINATION /usr/lib/python3.5/site-packages
+	DESTINATION usr/lib/python3.5/site-packages
 )
 
 ######################### Tests ###############################################
 INSTALL(TARGETS lsm9ds1_test
-	DESTINATION /usr/bin
+	DESTINATION usr/bin
 )
 ###############################################################################
 
 ######################## RPM Package ##########################################
-SET(CPACK_PACKAGE_VERSION ${LSM9DS1_VERSION_STRING})
-SET(CPACK_GENERATOR "RPM")
+SET(CPACK_PACKAGE_VERSION ${BUILD_VERSION})
+SET(CPACK_GENERATOR "RPM;TGZ")
 SET(CPACK_PACKAGE_NAME ${PROJECT})
 SET(CPACK_PACKAGE_RELEASE 1)
 SET(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
 SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
-SET(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+SET(CPACK_PACKAGING_INSTALL_PREFIX ${DESTDIR})
+STRING(CONCAT CPACK_PACKAGE_FILE_NAME 
+    "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
+    ".${CMAKE_SYSTEM_PROCESSOR}")
 INCLUDE(CPack)
 ###############################################################################

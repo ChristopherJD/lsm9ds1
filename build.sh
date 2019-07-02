@@ -23,9 +23,10 @@ fi
 
 if ${RELEASE}; then
 	if [ -d "${RELEASE_DIR}" ]; then rm -Rf ${RELEASE_DIR}; fi
+	VERSION=$(git tag)
 	mkdir ${RELEASE_DIR}
 	pushd ${RELEASE_DIR}
-	cmake -DBUILD_DOCUMENTATION=ON -DCMAKE_BUILD_TYPE=Release ..
+	cmake -DBUILD_VERSION=${VERSION} -DBUILD_DOCUMENTATION=ON -DCMAKE_BUILD_TYPE=Release ..
 	make doc
 	cp -r docs/* ../docs
 	make package
