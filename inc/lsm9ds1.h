@@ -262,11 +262,57 @@ typedef enum lsm9ds1_mag_op_mode_t {
 	LSM9DS1_MAG_OP_MODE_POWER_DOWN = (2 << 0),
 }lsm9ds1_mag_op_mode_t;
 
+typedef enum lsm9ds1_mag_xy_op_mode_t {
+	LSM9DS1_MAG_XY_OP_MODE_LOW_POWER = (0 << 5),
+	LSM9DS1_MAG_XY_OP_MODE_MEDIUM_PERF = (1 << 5),
+	LSM9DS1_MAG_XY_OP_MODE_HIGH_PERF = (2 << 5),
+	LSM9DS1_MAG_XY_OP_MODE_ULTRA_PERF = (3 << 5),
+}lsm9ds1_mag_xy_op_mode_t;
+
+#define LSM9DS1_MAG_TEMP_COMP_ENABLE (1 << 7);
+#define LSM9DS1_MAG_TEMP_COMP_DISABLE (0 << 7);
+
+#define LSM9DS1_MAG_FAST_ODR_ENABLE (1 << 1);
+#define LSM9DS1_MAG_FAST_ODR_DISABLE (0 << 1);
+
+#define LSM9DS1_MAG_SELF_TEST_ENABLE (1 << 0);
+#define LSM9DS1_MAG_SELF_TEST_DISABLE (0 << 0);
+
+#define LSM9DS1_MAG_REBOOT (1 << 3);
+
+#define LSM9DS1_MAG_RESET (1 << 2);
+
+typedef enum lsm9ds1_mag_spi_mode_t {
+	LSM9DS1_MAG_ONLY_WRITE = (0 << 2),
+	LSM9DS1_MAG_READ_WRITE = (1 << 2),
+}lsm9ds1_mag_spi_mode_t;
+
 typedef struct lsm9ds1_mag_settings_t {
-	lsm9ds1_mag_gain_t gain;
 	float mag_mgauss;
+
+	//CTRL REG 1
+	uint8_t temp_comp_enable;
+	lsm9ds1_mag_xy_op_mode_t xy_op_mode;
 	lsm9ds1_mag_odr_t odr;
+	uint8_t fast_odr_enable;
+	uint8_t self_test_enable;
+
+	//CTRL REG 2
+	lsm9ds1_mag_gain_t gain;
+	uint8_t reboot;
+	uint8_t reset;
+
+	//CTRL REG 3
+	uint8_t i2c_disable;
+	uint8_t low_power_mode;
+	lsm9ds1_mag_spi_mode_t spi_mode;
 	lsm9ds1_mag_op_mode_t op_mode;
+
+	//CTRL REG 4
+
+	//CTRL REG 5
+
+
 }lsm9ds1_mag_settings_t;
 
 typedef struct lsm9ds1_gyro_settings_t {
