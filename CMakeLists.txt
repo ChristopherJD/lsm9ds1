@@ -1,103 +1,113 @@
-cmake_minimum_required (VERSION 2.8.1)
+############################## Project Version ################################
+
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.1)
 
 SET(LSM9DS1_VERSION_MAJOR 0)
 SET(LSM9DS1_VERSION_MINOR 1)
 SET(LSM9DS1_VERSION_PATCH 0)
-SET(LSM9DS1_VERSION_STRING ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
+SET(LSM9DS1_VERSION_STRING 
+    ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
+ADD_DEFINITIONS(-DBUILD_VERSION="${LSM9DS1_VERSION_STRING}")
+###############################################################################
 
-add_definitions(-DBUILD_VERSION="${LSM9DS1_VERSION_STRING}")
 
-option(BUILD_DOCUMENTATION "Build lsm9ds1 documentation" OFF)
+############################ Doxygen Documentation #############################
+OPTION(BUILD_DOCUMENTATION "Build lsm9ds1 doxygen documentation" OFF)
 
 if(BUILD_DOCUMENTATION)
 
 	# add a target to generate API documentation with Doxygen
-	find_package(Doxygen)
+	FIND_PACKAGE(Doxygen)
 
     if(NOT DOXYGEN_FOUND)
-        message(FATAL_ERROR "Doxygen is needed to build the documentation.")
+        MESSAGE(FATAL_ERROR "Doxygen is needed to build the documentation.")
     endif()
 
-    set(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
-    set(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    SET(doxyfile_in ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
+    SET(doxyfile ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
-    configure_file(${doxyfile_in} ${doxyfile} @ONLY)
+    CONFIGURE_FILE(${doxyfile_in} ${doxyfile} @ONLY)
 
-    add_custom_target(doc
+    ADD_CUSTOM_TARGET(doc
         COMMAND ${DOXYGEN_EXECUTABLE} ${doxyfile}
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
         COMMENT "Generating API documentation with Doxygen"
         VERBATIM)
 endif(BUILD_DOCUMENTATION)
+###############################################################################
 
-######## Project settings ########
+############################ Project Settings #################################
 PROJECT(liblsm9ds1)
 SET(PROJECT liblsm9ds1)
 SET(LICENSE "GPLV3")
+###############################################################################
 
+########################### Build and include settings ########################
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
-set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
-
-######## Build and include settings ########
-find_package(PythonLibs REQUIRED)
-include_directories(${PYTHON_INCLUDE_DIRS})
-include_directories(
+########################### Python Settings ###################################
+FIND_PACKAGE(PythonLibs REQUIRED)
+INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
+INCLUDE_DIRECTORIES(
 	inc
 )
 
-link_directories(
+LINK_DIRECTORIES(
 	${LINK_DIRECTORIES}
 )
 
-file(GLOB SOURCES
+FILE(GLOB PYTHON_EXTENSION_SOURCES
+    "src/lsm9ds1_wrap.c"
+    "src/lsm9ds1.c"
+)
+ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
+
+########################## C Library ##########################################
+FILE(GLOB SOURCES
 	"src/lsm9ds1.c"
 )
-
-file(GLOB PYTHON_EXTENSION_SOURCES
-	"src/lsm9ds1_wrap.c"
-	"src/lsm9ds1.c"
-)
-
-file(GLOB TEST_SOURCES
-	"tests/test.c"
-)
-
-#Generate the shared library from the sources
-add_library(lsm9ds1 SHARED ${SOURCES})
-
-target_link_libraries(lsm9ds1 wiringPi)
-
+ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES})
+TARGET_LINK_LIBRARIES(lsm9ds1 wiringPi)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 
-add_library(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
+######################### Tests ###############################################
+FILE(GLOB TEST_SOURCES
+	"tests/test.c"
+)
+ADD_EXECUTABLE(lsm9ds1_test ${TEST_SOURCES})
+TARGET_LINK_LIBRARIES(lsm9ds1_test cunit)
+TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
+###############################################################################
 
-enable_testing()
-add_executable(lsm9ds1_test ${TEST_SOURCES})
-target_link_libraries(lsm9ds1_test cunit)
-target_link_libraries(lsm9ds1_test lsm9ds1)
+######################## Install targets ######################################
 
-######## Install targets ########
+########################## C Library ##########################################
 INSTALL(TARGETS lsm9ds1
 	DESTINATION /usr/lib/
 )
 
+########################### Python Settings ###################################
 SET_TARGET_PROPERTIES(pylsm9ds1 PROPERTIES PREFIX "")
 INSTALL(TARGETS pylsm9ds1
 	DESTINATION /usr/lib/python3.5/site-packages
 )
 
+######################### Tests ###############################################
 INSTALL(TARGETS lsm9ds1_test
 	DESTINATION /usr/bin
 )
+###############################################################################
 
-set(CPACK_PACKAGE_VERSION ${LSM9DS1_VERSION_STRING})
-set(CPACK_GENERATOR "RPM")
-set(CPACK_PACKAGE_NAME ${PROJECT})
-set(CPACK_PACKAGE_RELEASE 1)
-set(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
-set(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
-set(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
-set(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
-include(CPack)
+######################## RPM Package ##########################################
+SET(CPACK_PACKAGE_VERSION ${LSM9DS1_VERSION_STRING})
+SET(CPACK_GENERATOR "RPM")
+SET(CPACK_PACKAGE_NAME ${PROJECT})
+SET(CPACK_PACKAGE_RELEASE 1)
+SET(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
+SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
+SET(CPACK_PACKAGING_INSTALL_PREFIX ${CMAKE_INSTALL_PREFIX})
+SET(CPACK_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}-${CPACK_PACKAGE_RELEASE}.${CMAKE_SYSTEM_PROCESSOR}")
+INCLUDE(CPack)
+###############################################################################
