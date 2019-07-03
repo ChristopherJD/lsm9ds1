@@ -50,7 +50,7 @@ fi
 
 if ${RELEASE}; then
 	if [ -d "${RELEASE_DIR}" ]; then rm -Rf ${RELEASE_DIR}; fi
-	VERSION=$(git tag)
+	VERSION=$(git describe --tags --abbrev=0)
 	mkdir ${RELEASE_DIR}
 	pushd ${RELEASE_DIR}
 	cmake ${EXTRA_CMAKE_OPTIONS} -DBUILD_VERSION=${VERSION} -DCMAKE_BUILD_TYPE=Release ..

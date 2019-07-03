@@ -1,4 +1,4 @@
-.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Wed Jun 26 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Wed Jul 3 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,37 +11,22 @@
 .br
 \fC#include <stdint\&.h>\fP
 .br
+\fC#include 'lsm9ds1_mag\&.h'\fP
+.br
+\fC#include 'lsm9ds1_gyro\&.h'\fP
+.br
+\fC#include 'lsm9ds1_accel\&.h'\fP
+.br
+\fC#include 'lsm9ds1_error\&.h'\fP
+.br
+\fC#include 'lsm9ds1_regs\&.h'\fP
+.br
+\fC#include 'lsm9ds1_bus\&.h'\fP
+.br
 
 .SS "Data Structures"
 
 .in +1c
-.ti -1c
-.RI "struct \fBaccelerometer_data\fP"
-.br
-.ti -1c
-.RI "struct \fBaccelerometer_converted_data_t\fP"
-.br
-.ti -1c
-.RI "struct \fBmag_data\fP"
-.br
-.ti -1c
-.RI "struct \fBmag_converted_data_t\fP"
-.br
-.ti -1c
-.RI "struct \fBgyro_data\fP"
-.br
-.ti -1c
-.RI "struct \fBgyro_converted_data_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_accel_settings_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_mag_settings_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_gyro_settings_t\fP"
-.br
 .ti -1c
 .RI "struct \fBlsm9ds1_settings\fP"
 .br
@@ -50,21 +35,6 @@
 .br
 .ti -1c
 .RI "struct \fBlsm9ds1_converted_data_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_spi_settings_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_i2c_settings_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_spi_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_i2c_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_bus_t\fP"
 .br
 .ti -1c
 .RI "struct \fBlsm9ds1_device_t\fP"
@@ -77,51 +47,6 @@
 .ti -1c
 .RI "#define \fB_BUILD_VERSION\fP   BUILD_VERSION"
 .br
-.ti -1c
-.RI "#define \fBDEVICE\fP   '/dev/spidev0\&.0'"
-.br
-.ti -1c
-.RI "#define \fBSPI_READ\fP   0x80"
-.br
-.ti -1c
-.RI "#define \fBSPI_WRITE\fP   0x0"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_ACCEL_MG_LSB_2G\fP   (0\&.061F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_ACCEL_MG_LSB_4G\fP   (0\&.122F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_ACCEL_MG_LSB_8G\fP   (0\&.244F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_ACCEL_MG_LSB_16G\fP   (0\&.732F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_MAG_MGAUSS_4GAUSS\fP   (0\&.14F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_MAG_MGAUSS_8GAUSS\fP   (0\&.29F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_MAG_MGAUSS_12GAUSS\fP   (0\&.43F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_MAG_MGAUSS_16GAUSS\fP   (0\&.58F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_GYRO_DPS_DIGIT_245DPS\fP   (0\&.00875F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_GYRO_DPS_DIGIT_500DPS\fP   (0\&.01750F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_GYRO_DPS_DIGIT_2000DPS\fP   (0\&.07000F)"
-.br
-.ti -1c
-.RI "#define \fBLSM9DS1_REGISTER_WHO_AM_I\fP   0x0FU"
-.br
 .in -1c
 .SS "Typedefs"
 
@@ -130,49 +55,6 @@
 .RI "typedef int16_t \fBlsm9ds1_temperature_t\fP"
 .br
 .RI "Temperature returned from the LSM9DS1\&. "
-.ti -1c
-.RI "typedef struct \fBaccelerometer_data\fP \fBaccelerometer_raw_data_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBaccelerometer_converted_data_t\fP \fBaccelerometer_converted_data_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBmag_data\fP \fBmag_raw_data_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBmag_converted_data_t\fP \fBmag_converted_data_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBgyro_data\fP \fBgyro_raw_data_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBgyro_converted_data_t\fP \fBgyro_converted_data_t\fP"
-.br
-.ti -1c
-.RI "typedef enum \fBlsm9ds1_status\fP \fBlsm9ds1_status_t\fP"
-.br
-.RI "Contains the possible error codes returned by the functions\&. "
-.ti -1c
-.RI "typedef enum lsm9ds1_xl_odr_t \fBlsm9ds1_xl_odr_t\fP"
-.br
-.ti -1c
-.RI "typedef enum lsm9ds1_mag_odr_t \fBlsm9ds1_mag_odr_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_accel_settings_t\fP \fBlsm9ds1_accel_settings_t\fP"
-.br
-.ti -1c
-.RI "typedef enum lsm9ds1_gyro_odr_t \fBlsm9ds1_gyro_odr_t\fP"
-.br
-.ti -1c
-.RI "typedef enum lsm9ds1_mag_op_mode_t \fBlsm9ds1_mag_op_mode_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_mag_settings_t\fP \fBlsm9ds1_mag_settings_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_gyro_settings_t\fP \fBlsm9ds1_gyro_settings_t\fP"
-.br
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_settings\fP \fBlsm9ds1_settings_t\fP"
 .br
@@ -183,94 +65,31 @@
 .RI "typedef struct \fBlsm9ds1_converted_data_t\fP \fBlsm9ds1_converted_data_t\fP"
 .br
 .ti -1c
-.RI "typedef enum lsm9ds1_xfer_bus_t \fBlsm9ds1_xfer_bus_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_spi_settings_t\fP \fBlsm9ds1_spi_settings_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_i2c_settings_t\fP \fBlsm9ds1_i2c_settings_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_spi_t\fP \fBlsm9ds1_spi_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_i2c_t\fP \fBlsm9ds1_i2c_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_bus_t\fP \fBlsm9ds1_bus_t\fP"
-.br
-.ti -1c
 .RI "typedef struct \fBlsm9ds1_device_t\fP \fBlsm9ds1_device_t\fP"
 .br
 .RI "Store data and configurations for the lsm9ds1 device\&. "
-.in -1c
-.SS "Enumerations"
-
-.in +1c
-.ti -1c
-.RI "enum \fBlsm9ds1_status\fP { \fBLSM9DS1_SUCCESS\fP = 0, \fBLSM9DS1_NOT_FOUND\fP = -1, \fBLSM9DS1_SPI_BUS_XFER_ERROR\fP = -2, \fBLSM9DS1_UNABLE_TO_GET_SPI_MODE\fP = -3, \fBLSM9DS1_MODE_3_NOT_SET\fP = -4, \fBLSM9DS1_NUM_BITS_NOT_SET\fP = -5, \fBLSM9DS1_CLOCK_NOT_SET\fP = -6, \fBLSM9DS1_BUS_NOT_SUPPORTED\fP = -7, \fBLSM9DS1_UNKNOWN_ERROR\fP = -8, \fBLSM9DS1_ALREADY_INIT_ERROR\fP = -9, \fBLSM9DS1_UNKNOWN_SUB_DEVICE\fP = -10, \fBLSM9DS1_NOT_INITIALIZED\fP = -11, \fBLSM9DS1_UNSUPPORTED_OP\fP = -12, \fBLSM9DS1_UKNOWN_ACCEL_RANGE\fP = -13, \fBLSM9DS1_BUS_NOT_INTIALIZED\fP = -14, \fBLSM9DS1_UKNOWN_GAIN_RANGE\fP = -15, \fBLSM9DS1_UNABLE_TO_SET_CS_DIR\fP = -16, \fBLSM9DS1_UNABLE_TO_OPEN_MAG_CS\fP = -17, \fBLSM9DS1_UNABLE_TO_SET_CS\fP = -18, \fBLSM9DS1_MALLOC_DEVICE_ERROR\fP = -19, \fBLSM9DS1_NO_BUS_FOUND\fP = -20, \fBLSM9DS1_MAG_ALREADY_RESET\fP = -21, \fBLSM9DS1_ACCEL_GYRO_ALREADY_RESET\fP = -22 }
-.RI "Contains the possible error codes returned by the functions\&. ""
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_sub_device_t\fP { \fBLSM9DS1_UNKNOWN_DEVICE\fP = 0, \fBLSM9DS1_ACCEL_GYRO\fP = 0x68, \fBLSM9DS1_MAG\fP = 0x3D }
-.RI "Sub device of the LSM9DS1\&. ""
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1AccGyroRegisters_t\fP { \fBLSM9DS1_REGISTER_WHO_AM_I_XG\fP = 0x0F, \fBLSM9DS1_REGISTER_CTRL_REG1_G\fP = 0x10, \fBLSM9DS1_REGISTER_CTRL_REG2_G\fP = 0x11, \fBLSM9DS1_REGISTER_CTRL_REG3_G\fP = 0x12, \fBLSM9DS1_REGISTER_TEMP_OUT_L\fP = 0x15, \fBLSM9DS1_REGISTER_TEMP_OUT_H\fP = 0x16, \fBLSM9DS1_REGISTER_STATUS_REG\fP = 0x17, \fBLSM9DS1_REGISTER_OUT_X_L_G\fP = 0x18, \fBLSM9DS1_REGISTER_OUT_X_H_G\fP = 0x19, \fBLSM9DS1_REGISTER_OUT_Y_L_G\fP = 0x1A, \fBLSM9DS1_REGISTER_OUT_Y_H_G\fP = 0x1B, \fBLSM9DS1_REGISTER_OUT_Z_L_G\fP = 0x1C, \fBLSM9DS1_REGISTER_OUT_Z_H_G\fP = 0x1D, \fBLSM9DS1_REGISTER_CTRL_REG4\fP = 0x1E, \fBLSM9DS1_REGISTER_CTRL_REG5_XL\fP = 0x1F, \fBLSM9DS1_REGISTER_CTRL_REG6_XL\fP = 0x20, \fBLSM9DS1_REGISTER_CTRL_REG7_XL\fP = 0x21, \fBLSM9DS1_REGISTER_CTRL_REG8\fP = 0x22, \fBLSM9DS1_REGISTER_CTRL_REG9\fP = 0x23, \fBLSM9DS1_REGISTER_CTRL_REG10\fP = 0x24, \fBLSM9DS1_REGISTER_OUT_X_L_XL\fP = 0x28, \fBLSM9DS1_REGISTER_OUT_X_H_XL\fP = 0x29, \fBLSM9DS1_REGISTER_OUT_Y_L_XL\fP = 0x2A, \fBLSM9DS1_REGISTER_OUT_Y_H_XL\fP = 0x2B, \fBLSM9DS1_REGISTER_OUT_Z_L_XL\fP = 0x2C, \fBLSM9DS1_REGISTER_OUT_Z_H_XL\fP = 0x2D }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1MagRegisters_t\fP { \fBLSM9DS1_REGISTER_WHO_AM_I_M\fP = 0x0F, \fBLSM9DS1_REGISTER_CTRL_REG1_M\fP = 0x20, \fBLSM9DS1_REGISTER_CTRL_REG2_M\fP = 0x21, \fBLSM9DS1_REGISTER_CTRL_REG3_M\fP = 0x22, \fBLSM9DS1_REGISTER_CTRL_REG4_M\fP = 0x23, \fBLSM9DS1_REGISTER_CTRL_REG5_M\fP = 0x24, \fBLSM9DS1_REGISTER_STATUS_REG_M\fP = 0x27, \fBLSM9DS1_REGISTER_OUT_X_L_M\fP = 0x28, \fBLSM9DS1_REGISTER_OUT_X_H_M\fP = 0x29, \fBLSM9DS1_REGISTER_OUT_Y_L_M\fP = 0x2A, \fBLSM9DS1_REGISTER_OUT_Y_H_M\fP = 0x2B, \fBLSM9DS1_REGISTER_OUT_Z_L_M\fP = 0x2C, \fBLSM9DS1_REGISTER_OUT_Z_H_M\fP = 0x2D, \fBLSM9DS1_REGISTER_CFG_M\fP = 0x30, \fBLSM9DS1_REGISTER_INT_SRC_M\fP = 0x31 }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_accel_range_t\fP { \fBLSM9DS1_ACCELRANGE_2G\fP = (0 << 3), \fBLSM9DS1_ACCELRANGE_16G\fP = (1 << 3), \fBLSM9DS1_ACCELRANGE_4G\fP = (2 << 3), \fBLSM9DS1_ACCELRANGE_8G\fP = (3 << 3) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_xl_odr_t\fP { \fBLSM9DS1_XL_ODR_POWERDOWN\fP = (0 << 5), \fBLSM9DS1_XL_10HZ\fP = (1 <<5), \fBLSM9DS1_XL_50HZ\fP = (2 << 5), \fBLSM9DS1_XL_119HZ\fP = (3 << 5), \fBLSM9DS1_XL_238HZ\fP = (4 << 5), \fBLSM9DS1_XL_476HZ\fP = (5 << 5), \fBLSM9DS1_XL_952HZ\fP = (6 << 5) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_mag_gain_t\fP { \fBLSM9DS1_MAGGAIN_4GAUSS\fP = (0 << 5), \fBLSM9DS1_MAGGAIN_8GAUSS\fP = (1 << 5), \fBLSM9DS1_MAGGAIN_12GAUSS\fP = (2 << 5), \fBLSM9DS1_MAGGAIN_16GAUSS\fP = (3 << 5) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_mag_odr_t\fP { \fBLSM9DS1_MAG_ODR_0_625HZ\fP = (0 << 2), \fBLSM9DS1_MAG_ODR_1_25HZ\fP = (1 << 2), \fBLSM9DS1_MAG_ODR_2_5HZ\fP = (2 << 2), \fBLSM9DS1_MAG_ODR_5HZ\fP = (3 << 2), \fBLSM9DS1_MAG_ODR_10HZ\fP = (4 << 2), \fBLSM9DS1_MAG_ODR_20HZ\fP = (5 << 2), \fBLSM9DS1_MAG_ODR_40HZ\fP = (6 << 2), \fBLSM9DS1_MAG_ODR_80HZ\fP = (7 << 2) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_gyro_scale_t\fP { \fBLSM9DS1_GYROSCALE_245DPS\fP = (0 << 3), \fBLSM9DS1_GYROSCALE_500DPS\fP = (1 << 3), \fBLSM9DS1_GYROSCALE_2000DPS\fP = (3 << 3) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_gyro_odr_t\fP { \fBLSM9DS1_GYRO_ODR_POWERDOWN\fP = (0 << 5), \fBLSM9DS1_GYRO_ODR_14_9HZ\fP = (1 << 5), \fBLSM9DS1_GYRO_ODR_59_5HZ\fP = (2 << 5), \fBLSM9DS1_GYRO_ODR_119HZ\fP = (3 << 5), \fBLSM9DS1_GYRO_ODR_238HZ\fP = (4 << 5), \fBLSM9DS1_GYRO_ODR_476HZ\fP = (5 << 5), \fBLSM9DS1_GYRO_ODR_952HZ\fP = (6 << 5) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_mag_op_mode_t\fP { \fBLSM9DS1_MAG_OP_MODE_CONTINUOUS\fP = (0 << 0), \fBLSM9DS1_MAG_OP_MODE_SINGLE_CONVERSION\fP = (1 << 0), \fBLSM9DS1_MAG_OP_MODE_POWER_DOWN\fP = (2 << 0) }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_xfer_t\fP { \fBLSM9DS1_READ\fP, \fBLSM9DS1_WRITE\fP }"
-.br
-.ti -1c
-.RI "enum \fBlsm9ds1_xfer_bus_t\fP { \fBLSM9DS1_SPI_BUS\fP, \fBLSM9DS1_I2C_BUS\fP, \fBNUM_BUS_TYPES\fP }"
-.br
 .in -1c
 .SS "Functions"
 
 .in +1c
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_temp\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "lsm9ds1_status_t \fBupdate_temp\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the temperature of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_accel\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "lsm9ds1_status_t \fBupdate_accel\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the accelerometer of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_mag\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "lsm9ds1_status_t \fBupdate_mag\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the magnetometer of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_gyro\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "lsm9ds1_status_t \fBupdate_gyro\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the gyroscope from the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBlsm9ds1_init\fP (\fBlsm9ds1_device_t\fP *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.RI "lsm9ds1_status_t \fBlsm9ds1_init\fP (\fBlsm9ds1_device_t\fP *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
 .br
 .RI "Initialize the LSM9DS1\&. "
 .in -1c
@@ -307,15 +126,9 @@ Magnetometer configuration information
 Accelerometer configuration information 
 .PP
 
-.SH "Enumeration Type Documentation"
-.PP 
-.SS "enum \fBlsm9ds1_sub_device_t\fP"
-
-.PP
-Sub device of the LSM9DS1\&. The LSM9DS1 contains two sub-devices\&. The accelerometer gyroscope combo and the magnetometer\&. The value 0 is used as an uknown device\&. 
 .SH "Function Documentation"
 .PP 
-.SS "\fBlsm9ds1_status_t\fP lsm9ds1_init (\fBlsm9ds1_device_t\fP * self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.SS "lsm9ds1_status_t lsm9ds1_init (\fBlsm9ds1_device_t\fP * self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
 
 .PP
 Initialize the LSM9DS1\&. TODO Add description of initialization
@@ -367,7 +180,7 @@ Returns the function status\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_accel (\fBlsm9ds1_device_t\fP * self)"
+.SS "lsm9ds1_status_t update_accel (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the accelerometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current accelerometer reading\&. You must first create this structure before reading\&.
@@ -426,7 +239,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_gyro (\fBlsm9ds1_device_t\fP * self)"
+.SS "lsm9ds1_status_t update_gyro (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the gyroscope from the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current gyroscope reading\&. You must first create this structure before reading\&.
@@ -485,7 +298,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_mag (\fBlsm9ds1_device_t\fP * self)"
+.SS "lsm9ds1_status_t update_mag (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the magnetometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current magnetometer reading\&. You must first create this structure before reading\&.
@@ -544,7 +357,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_temp (\fBlsm9ds1_device_t\fP * self)"
+.SS "lsm9ds1_status_t update_temp (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the temperature of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current temperature\&. You must first create this structure before reading\&.
