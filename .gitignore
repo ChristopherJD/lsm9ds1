@@ -56,5 +56,6 @@ dkms.conf
 Debug/
 Release/
 toolchain.cmake
-
+docs/man
+lsm9ds1.sublime-workspace
 /.metadata/

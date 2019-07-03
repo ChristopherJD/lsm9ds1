@@ -7,8 +7,8 @@ SET(LSM9DS1_VERSION_MINOR 1)
 SET(LSM9DS1_VERSION_PATCH 0)
 SET(LSM9DS1_VERSION_STRING 
     ${LSM9DS1_VERSION_MAJOR}.${LSM9DS1_VERSION_MINOR}.${LSM9DS1_VERSION_PATCH})
-SET(BUILD_VERSION ${LSM9DS1_VERSION_STRING} CACHE STRING "Build Version")
-OPTION(BUILD_VERSION "Set the version being built." ${BUILD_VERSION})
+SET(LIB_BUILD_VERSION ${LSM9DS1_VERSION_STRING} CACHE STRING "Build Version")
+OPTION(BUILD_VERSION "Set the version being built." ${LIB_BUILD_VERSION})
 ADD_DEFINITIONS(-DBUILD_VERSION="${BUILD_VERSION}")
 ###############################################################################
 
@@ -46,8 +46,7 @@ SET(LICENSE "GPLV3")
 
 ########################### Build and include settings ########################
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
-STRING(CONCAT CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic"
-    " -DBUILD_VERSION=${LSM9DS1_VERSION_STRING}")
+STRING(CONCAT CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
 
 ########################### Python Settings ###################################
 FIND_PACKAGE(PythonLibs REQUIRED)
