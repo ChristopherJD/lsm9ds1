@@ -171,6 +171,13 @@ static lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address) {
 	return ret;
 }
 
+static lsm9ds1_status_t read_bit_value(uint8_t value, uint8_t mask, uint8_t offset, uint8_t *read_value) {
+
+	*read_value = ((value & mask) >> offset);
+
+	return LSM9DS1_SUCCESS;
+}
+
 static lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, uint8_t mask, uint8_t value) {
 
 	uint8_t reg = 0;
@@ -267,6 +274,117 @@ static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 	return LSM9DS1_SUCCESS;
 }
 
+static lsm9ds1_status_t lsm9ds1_read_mag_settings(lsm9ds1_device_t *self) {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_M);
+	if (status < 0) {
+		return status;
+	}
+	uint8_t bit_value = 0;
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_TEMP_COMP_BIT_MASK, 
+		LSM9DS1_MAG_TEMP_COMP_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.temp_comp_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_XY_OP_MODE_BIT_MASK, 
+		LSM9DS1_MAG_XY_OP_MODE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.xy_op_mode = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_ODR_BIT_MASK, 
+		LSM9DS1_MAG_ODR_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.odr = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_FAST_ODR_BIT_MASK, 
+		LSM9DS1_MAG_FAST_ODR_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.fast_odr_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_SELF_TEST_BIT_MASK, 
+		LSM9DS1_MAG_SELF_TEST_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.self_test_enable = bit_value;
+	
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_M: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_GAIN_BIT_MASK, 
+		LSM9DS1_MAG_GAIN_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.gain = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_REBOOT_BIT_MASK, 
+		LSM9DS1_MAG_REBOOT_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.reboot = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_RESET_BIT_MASK, 
+		LSM9DS1_MAG_RESET_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.reset = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_I2C_DISABLE_BIT_MASK, 
+		LSM9DS1_MAG_I2C_DISABLE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.i2c_disable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_LOW_POWER_MODE_BIT_MASK, 
+		LSM9DS1_MAG_LOW_POWER_MODE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.low_power_mode = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_SPI_MODE_BIT_MASK, 
+		LSM9DS1_MAG_SPI_MODE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.spi_mode = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_OP_MODE_BIT_MASK, 
+		LSM9DS1_MAG_OP_MODE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.op_mode = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG3_M: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG4_M);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_Z_OP_MODE_BIT_MASK, 
+		LSM9DS1_MAG_Z_OP_MODE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.z_op_mode = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_LITTLE_ENDIAN_BIT_MASK, 
+		LSM9DS1_MAG_LITTLE_ENDIAN_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.little_endian_enable = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG4_M: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_M);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_FAST_READ_BIT_MASK, 
+		LSM9DS1_MAG_FAST_READ_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.fast_read_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_MAG_BLOCK_DATA_UPDATE_BIT_MASK, 
+		LSM9DS1_MAG_BLOCK_DATA_UPDATE_BIT_OFFSET, &bit_value);
+	self->settings.magnetometer.block_data_update_enable = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG5_M: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	return LSM9DS1_SUCCESS;
+}
+
 static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self,
         lsm9ds1_mag_gain_t gain) {
 
@@ -285,6 +403,11 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self,
 	// Ensure we have the correct device
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 	status = lsm9ds1_select_sub_device(self, LSM9DS1_MAG);
+	if (status < 0) {
+		return status;
+	}
+
+	status = lsm9ds1_read_mag_settings(self);
 	if (status < 0) {
 		return status;
 	}
@@ -317,30 +440,6 @@ static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self,
 	                                __extension__ 0b01100000,
 	                                self->settings.magnetometer.gain);
 	if (status < 0) return status;
-
-#if DEBUG > 0
-	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG1_M);
-	if (status < 0) {
-		return status;
-	}
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_M: 0x%X\n",
-	            self->bus.spi.rx[0]);
-
-	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG2_M);
-	if (status < 0) {
-		return status;
-	}
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG2_M: 0x%X\n",
-	            self->bus.spi.rx[0]);
-
-	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG3_M);
-	if (status < 0) {
-		return status;
-	}
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG3_M: 0x%X\n",
-	            self->bus.spi.rx[0]);
-
-#endif
 
 	// Decide the conversion value used based on provided gain
 	switch (self->settings.magnetometer.gain) {
