@@ -385,6 +385,81 @@ static lsm9ds1_status_t lsm9ds1_read_mag_settings(lsm9ds1_device_t *self) {
 	return LSM9DS1_SUCCESS;
 }
 
+static lsm9ds1_status_t lsm9ds1_read_accel_settings(lsm9ds1_device_t *self) {
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG5_XL);
+	if (status < 0) {
+		return status;
+	}
+
+	uint8_t bit_value = 0;
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_DECIMATION_BIT_MASK, 
+		LSM9DS1_XL_DECIMATION_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.decimation = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_Z_ENABLE_BIT_MASK, 
+		LSM9DS1_XL_Z_ENABLE_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.z_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_Y_ENABLE_BIT_MASK, 
+		LSM9DS1_XL_Y_ENABLE_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.y_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_X_ENABLE_BIT_MASK, 
+		LSM9DS1_XL_X_ENABLE_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.x_enable = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG5_XL: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_ODR_BIT_MASK, 
+		LSM9DS1_XL_ODR_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.odr = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_RANGE_BIT_MASK, 
+		LSM9DS1_XL_RANGE_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.range = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_BANDWIDTH_SELECT_BIT_MASK, 
+		LSM9DS1_XL_BANDWIDTH_SELECT_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.bw_select = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_FILTER_BIT_MASK, 
+		LSM9DS1_XL_FILTER_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.bw_filter = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG7_XL);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_HIGH_RESOLUTION_BIT_MASK, 
+		LSM9DS1_XL_HIGH_RESOLUTION_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.high_resolution_enable = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_FDL_BIT_MASK, 
+		LSM9DS1_XL_FDL_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.filtered_data_selection = bit_value;
+
+	(void)read_bit_value(self->bus.spi.rx[0], LSM9DS1_XL_HIGH_PASS_FILTER_BIT_MASK, 
+		LSM9DS1_XL_HIGH_PASS_FILTER_BIT_OFFSET, &bit_value);
+	self->settings.accelerometer.high_pass_filter_enable = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG7_XL: 0x%X\n",
+	            self->bus.spi.rx[0]);
+
+	return LSM9DS1_SUCCESS;
+}
+
 static lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_device_t *self,
         lsm9ds1_mag_gain_t gain) {
 
@@ -486,6 +561,10 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self,
 		return status;
 	}
 
+	status = lsm9ds1_read_accel_settings(self);
+	if (status < 0) {
+		return status;
+	}
 	/**************************************************************************
 	 * Setup output data rate to 952 HZ (maximum), and the provided range.
 	 *************************************************************************/
@@ -497,18 +576,7 @@ static lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_device_t *self,
 	                                __extension__ 0b11111000, reg);
 	if (status < 0) return status;
 
-#if DEBUG > 0
-	status = lsm9ds1_read(&(self->bus), LSM9DS1_REGISTER_CTRL_REG6_XL);
-
-	if (status < 0) {
-		return status;
-	}
-
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG6_XL: 0x%X\n",
-	            self->bus.spi.rx[0]);
-#endif
-
-// Decide on the conversion value based on the provided range.
+	// Decide on the conversion value based on the provided range.
 	switch (self->settings.accelerometer.range) {
 	case LSM9DS1_ACCELRANGE_2G:
 		self->settings.accelerometer.accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_2G;
