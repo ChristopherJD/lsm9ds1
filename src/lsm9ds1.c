@@ -16,7 +16,6 @@
 */
 
 
-//TODO Add doxygen comments.
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -96,7 +95,6 @@ static lsm9ds1_status_t transfer(lsm9ds1_bus_t *self, lsm9ds1_xfer_t op,
 
 	uint8_t addr_xfer = 0;
 
-	//TODO ensure sizes are correct
 	struct spi_ioc_transfer tr[2] = { 0 };
 
 	switch (op) {
@@ -265,11 +263,10 @@ static lsm9ds1_status_t lsm9ds1_soft_reset(lsm9ds1_device_t *self) {
 
 static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
 
-	//TODO, verify the documentation is a crappy as I think.
 	//Setup for Mag CS
-	wiringPiSetup();
+	(void)wiringPiSetup();
 
-	pinMode(MAG_CS, OUTPUT);
+	(void)pinMode(MAG_CS, OUTPUT);
 
 	return LSM9DS1_SUCCESS;
 }
@@ -727,10 +724,9 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_device_t *self, lsm9ds1_xfer_bu
 		return LSM9DS1_SUCCESS;
 	}
 
-	//TODO decide if we need to remove
 	// If we have already opened the fd then return early
 	if (self->bus.fd > 0) {
-		return LSM9DS1_SUCCESS;
+		return LSM9DS1_BUS_ALREADY_OPEN;
 	}
 
 	// lsm9ds1 settings
@@ -1121,7 +1117,7 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 
 	self->bus.initialized = false;
 	ret = lsm9ds1_init_bus(self, bus_type);
-	if (ret < 0) {
+	if ((ret < 0) && (ret != LSM9DS1_BUS_ALREADY_OPEN) {
 		return ret;
 	};
 

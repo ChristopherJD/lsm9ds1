@@ -53,6 +53,7 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_NO_BUS_FOUND = -20,
 	LSM9DS1_MAG_ALREADY_RESET = -21,
 	LSM9DS1_ACCEL_GYRO_ALREADY_RESET = -22,
+	LSM9DS1_BUS_ALREADY_OPEN = -23,
 } lsm9ds1_status_t;
 
 #endif
