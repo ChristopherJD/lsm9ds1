@@ -31,9 +31,9 @@
 #include "lsm9ds1_error.h"
 
 // Angular Rate: dps per LSB
-#define LSM9DS1_GYRO_DPS_DIGIT_245DPS      (0.00875F)
-#define LSM9DS1_GYRO_DPS_DIGIT_500DPS      (0.01750F)
-#define LSM9DS1_GYRO_DPS_DIGIT_2000DPS	   (0.07000F)
+#define SENSITIVITY_GYROSCOPE_245    0.00875
+#define SENSITIVITY_GYROSCOPE_500    0.0175
+#define SENSITIVITY_GYROSCOPE_2000   0.07
 
 typedef struct gyro_data {
 	int16_t x;
@@ -65,7 +65,7 @@ typedef enum lsm9ds1_gyro_odr_t {
 
 typedef struct lsm9ds1_gyro_settings_t {
 	lsm9ds1_gyro_scale_t scale;
-	float gyro_dps_digit;
+	float gyro_resolution;
 	lsm9ds1_gyro_odr_t odr;	//output data rate
 }lsm9ds1_gyro_settings_t;
 

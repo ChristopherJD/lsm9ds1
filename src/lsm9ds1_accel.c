@@ -127,25 +127,27 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_bus_t *bus,
 	 *************************************************************************/
 	settings->odr = LSM9DS1_XL_952HZ;
 	settings->range = range;
-	uint8_t reg = (settings->range |
-	               settings->odr);
+	uint8_t reg = 0;
+	reg = (settings->range << LSM9DS1_XL_RANGE_BIT_OFFSET) | 
+		(settings->odr << LSM9DS1_XL_ODR_BIT_OFFSET);
+
 	status = lsm9ds1_register_write(bus, LSM9DS1_REGISTER_CTRL_REG6_XL,
-	                                __extension__ 0b11111000, reg);
+		(LSM9DS1_XL_ODR_BIT_MASK | LSM9DS1_XL_RANGE_BIT_MASK), reg);
 	if (status < 0) return status;
 
 	// Decide on the conversion value based on the provided range.
 	switch (settings->range) {
 	case LSM9DS1_ACCELRANGE_2G:
-		settings->accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_2G;
+		settings->accel_resolution = SENSITIVITY_ACCELEROMETER_2;
 		break;
 	case LSM9DS1_ACCELRANGE_4G:
-		settings->accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_4G;
+		settings->accel_resolution = SENSITIVITY_ACCELEROMETER_4;
 		break;
 	case LSM9DS1_ACCELRANGE_8G:
-		settings->accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_8G;
+		settings->accel_resolution = SENSITIVITY_ACCELEROMETER_8;
 		break;
 	case LSM9DS1_ACCELRANGE_16G:
-		settings->accel_mg_lsb = LSM9DS1_ACCEL_MG_LSB_16G;
+		settings->accel_resolution = SENSITIVITY_ACCELEROMETER_16;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_ACCEL_RANGE;
@@ -180,7 +182,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_bus_t *bus, accelerometer_raw_data_t
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t xhi = bus->spi.rx[0];
+	uint8_t xhi = bus->spi.rx[0];
 
 	read_status = lsm9ds1_read(bus, LSM9DS1_REGISTER_OUT_Y_L_XL);
 	if (read_status < 0) {
@@ -192,7 +194,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_bus_t *bus, accelerometer_raw_data_t
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t yhi = bus->spi.rx[0];
+	uint8_t yhi = bus->spi.rx[0];
 
 	read_status = lsm9ds1_read(bus, LSM9DS1_REGISTER_OUT_Z_L_XL);
 	if (read_status < 0) {
@@ -204,19 +206,12 @@ lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_bus_t *bus, accelerometer_raw_data_t
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t zhi = bus->spi.rx[0];
+	uint8_t zhi = bus->spi.rx[0];
 
 	// Shift values to create properly formed integer (low byte first)
-	xhi <<= 8;
-	xhi |= xlo;
-	yhi <<= 8;
-	yhi |= ylo;
-	zhi <<= 8;
-	zhi |= zlo;
-
-	raw_data->x = xhi;
-	raw_data->y = yhi;
-	raw_data->z = zhi;
+	raw_data->x = (int16_t)((xhi << 8) | (xlo & 0xFF));
+	raw_data->y = (int16_t)((yhi << 8) | (ylo & 0xFF));
+	raw_data->z = (int16_t)((zhi << 8) | (zlo & 0xFF));
 
 	return LSM9DS1_SUCCESS;
 }

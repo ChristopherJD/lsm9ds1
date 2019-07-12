@@ -133,10 +133,10 @@ typedef enum lsm9ds1_mag_z_op_mode_t {
 #define LSM9DS1_MAG_BLOCK_DATA_UPDATE_DISABLE (0 << LSM9DS1_MAG_BLOCK_DATA_UPDATE_BIT_OFFSET);
 
 // Magnetic Field Strength: gauss range
-#define LSM9DS1_MAG_MGAUSS_4GAUSS      (0.14F)
-#define LSM9DS1_MAG_MGAUSS_8GAUSS      (0.29F)
-#define LSM9DS1_MAG_MGAUSS_12GAUSS     (0.43F)
-#define LSM9DS1_MAG_MGAUSS_16GAUSS     (0.58F)
+#define SENSITIVITY_MAGNETOMETER_4   0.00014
+#define SENSITIVITY_MAGNETOMETER_8   0.00029
+#define SENSITIVITY_MAGNETOMETER_12  0.00043
+#define SENSITIVITY_MAGNETOMETER_16  0.00058
 
 typedef struct mag_data {
 	int16_t x;
@@ -152,7 +152,7 @@ typedef struct mag_converted_data_t {
 
 
 typedef struct lsm9ds1_mag_settings_t {
-	float mag_mgauss;
+	float mag_resolution;
 
 	//CTRL REG 1
 	uint8_t temp_comp_enable;

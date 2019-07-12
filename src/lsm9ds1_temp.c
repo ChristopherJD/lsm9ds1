@@ -49,15 +49,12 @@ lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_bus_t *bus, lsm9ds1_temperature_t *te
 	if (read_status < 0) {
 		return read_status;
 	}
-	lsm9ds1_temperature_t xhi = bus->spi.rx[0];
+	uint8_t xhi = bus->spi.rx[0];
 
 	DEBUG_PRINT("Temp xhi: 0x%X\n", xhi);
 
-	xhi <<= 8;
-	xhi |= xlo;
-
-	// Shift values to create properly formed integer (low byte first)
-	*temperature = xhi;
+	// Temperature is a 12-bit signed integer
+	*temperature = (int16_t)((xhi << 8) | (xlo & 0xFF));
 
 	return LSM9DS1_SUCCESS;
 }

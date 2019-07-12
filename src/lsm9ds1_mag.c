@@ -185,16 +185,16 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_bus_t *bus,
 	// Decide the conversion value used based on provided gain
 	switch (settings->gain) {
 	case LSM9DS1_MAGGAIN_4GAUSS:
-		settings->mag_mgauss = LSM9DS1_MAG_MGAUSS_4GAUSS;
+		settings->mag_resolution = SENSITIVITY_MAGNETOMETER_4;
 		break;
 	case LSM9DS1_MAGGAIN_8GAUSS:
-		settings->mag_mgauss = LSM9DS1_MAG_MGAUSS_8GAUSS;
+		settings->mag_resolution = SENSITIVITY_MAGNETOMETER_8;
 		break;
 	case LSM9DS1_MAGGAIN_12GAUSS:
-		settings->mag_mgauss = LSM9DS1_MAG_MGAUSS_12GAUSS;
+		settings->mag_resolution = SENSITIVITY_MAGNETOMETER_12;
 		break;
 	case LSM9DS1_MAGGAIN_16GAUSS:
-		settings->mag_mgauss = LSM9DS1_MAG_MGAUSS_16GAUSS;
+		settings->mag_resolution = SENSITIVITY_MAGNETOMETER_16;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_GAIN_RANGE;
@@ -229,7 +229,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_bus_t *bus, mag_raw_data_t *raw_data) 
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t xhi = bus->spi.rx[0];
+	uint8_t xhi = bus->spi.rx[0];
 
 	read_status = lsm9ds1_read(bus, LSM9DS1_REGISTER_OUT_Y_L_M);
 	if (read_status < 0) {
@@ -241,7 +241,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_bus_t *bus, mag_raw_data_t *raw_data) 
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t yhi = bus->spi.rx[0];
+	uint8_t yhi = bus->spi.rx[0];
 
 	read_status = lsm9ds1_read(bus, LSM9DS1_REGISTER_OUT_Z_L_M);
 	if (read_status < 0) {
@@ -253,19 +253,11 @@ lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_bus_t *bus, mag_raw_data_t *raw_data) 
 	if (read_status < 0) {
 		return read_status;
 	}
-	int16_t zhi = bus->spi.rx[0];
+	uint8_t zhi = bus->spi.rx[0];
 
-	// Shift values to create properly formed integer (low byte first)
-	xhi <<= 8;
-	xhi |= xlo;
-	yhi <<= 8;
-	yhi |= ylo;
-	zhi <<= 8;
-	zhi |= zlo;
-
-	raw_data->x = xhi;
-	raw_data->y = yhi;
-	raw_data->z = zhi;
+	raw_data->x = (int16_t)((xhi << 8) | (xlo & 0xFF));
+	raw_data->y = (int16_t)((yhi << 8) | (ylo & 0xFF));
+	raw_data->z = (int16_t)((zhi << 8) | (zlo & 0xFF));
 
 	return LSM9DS1_SUCCESS;
 }

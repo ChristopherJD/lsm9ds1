@@ -48,7 +48,7 @@ int main() {
 ```python
 import pylsm9ds1
 
-pylsm9ds1.init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS)
+pylsm9ds1.init(pylsm9ds1.LSM9DS1_SPI_BUS, pylsm9ds1.LSM9DS1_ACCELRANGE_8G, pylsm9ds1.LSM9DS1_MAGGAIN_8GAUSS, pylsm9ds1.LSM9DS1_GYROSCALE_500DPS)
 
 x, y, z = pylsm9ds1.get_accel()
 

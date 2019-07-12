@@ -63,6 +63,7 @@ FILE(GLOB PYTHON_EXTENSION_SOURCES
     "src/*.c"
 )
 ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
+TARGET_LINK_LIBRARIES(pylsm9ds1 wiringPi)
 
 ########################## C Library ##########################################
 SET(SOURCES 

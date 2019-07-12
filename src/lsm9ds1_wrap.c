@@ -50,7 +50,7 @@ static PyObject* get_accel(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_accel(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.accelerometer.x,
+	return Py_BuildValue("[fff]", lsm9ds1->converted_data.accelerometer.x,
 	                     lsm9ds1->converted_data.accelerometer.y,
 	                     lsm9ds1->converted_data.accelerometer.z);
 }
@@ -59,7 +59,7 @@ static PyObject* get_mag(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_mag(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.magnetometer.x,
+	return Py_BuildValue("[fff]", lsm9ds1->converted_data.magnetometer.x,
 	                     lsm9ds1->converted_data.magnetometer.y,
 	                     lsm9ds1->converted_data.magnetometer.z);
 }
@@ -68,7 +68,7 @@ static PyObject* get_gyro(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_gyro(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.gyroscope.x,
+	return Py_BuildValue("[fff]", lsm9ds1->converted_data.gyroscope.x,
 	                     lsm9ds1->converted_data.gyroscope.y,
 	                     lsm9ds1->converted_data.gyroscope.z);
 }

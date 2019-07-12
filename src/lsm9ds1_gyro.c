@@ -140,13 +140,13 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_bus_t *bus,
 	// Decide on the conversion value based on the provided scale
 	switch (settings->scale) {
 	case LSM9DS1_GYROSCALE_245DPS:
-		settings->gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_245DPS;
+		settings->gyro_resolution = SENSITIVITY_GYROSCOPE_245;
 		break;
 	case LSM9DS1_GYROSCALE_500DPS:
-		settings->gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_500DPS;
+		settings->gyro_resolution = SENSITIVITY_GYROSCOPE_500;
 		break;
 	case LSM9DS1_GYROSCALE_2000DPS:
-		settings->gyro_dps_digit = LSM9DS1_GYRO_DPS_DIGIT_2000DPS;
+		settings->gyro_resolution = SENSITIVITY_GYROSCOPE_2000;
 		break;
 	default:
 		return LSM9DS1_UKNOWN_GAIN_RANGE;

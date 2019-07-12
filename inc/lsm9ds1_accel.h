@@ -108,11 +108,10 @@ typedef enum lsm9ds1_xl_fdl_t {
 #define LSM9DS1_XL_HIGH_PASS_FILTER_ENABLE (1 << LSM9DS1_XL_HIGH_PASS_FILETER_BIT_OFFSET)
 #define LSM9DS1_XL_HIGH_PASS_FILTER_DISABLE (0 << LSM9DS1_XL_HIGH_PASS_FILETER_BIT_OFFSET)
 
-// Linear Acceleration: mg per LSB
-#define LSM9DS1_ACCEL_MG_LSB_2G (0.061F)
-#define LSM9DS1_ACCEL_MG_LSB_4G (0.122F)
-#define LSM9DS1_ACCEL_MG_LSB_8G (0.244F)
-#define LSM9DS1_ACCEL_MG_LSB_16G (0.732F)
+#define SENSITIVITY_ACCELEROMETER_2  0.000061
+#define SENSITIVITY_ACCELEROMETER_4  0.000122
+#define SENSITIVITY_ACCELEROMETER_8  0.000244
+#define SENSITIVITY_ACCELEROMETER_16 0.000732
 
 typedef struct accelerometer_data {
 	int16_t x;
@@ -145,7 +144,7 @@ typedef struct lsm9ds1_accel_settings_t {
 	lsm9ds1_xl_fdl_t filtered_data_selection;
 	uint8_t high_pass_filter_enable;
 
-	float accel_mg_lsb;
+	float accel_resolution;
 } lsm9ds1_accel_settings_t;
 
 lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_bus_t *bus, accelerometer_raw_data_t *raw_data);

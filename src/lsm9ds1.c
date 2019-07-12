@@ -92,9 +92,9 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
 	DEBUG_PRINT("Accel Raw (z): 0x%X\n", self->raw_data.accelerometer.z);
 
 	// Convert the raw data
-	self->converted_data.accelerometer.x = self->raw_data.accelerometer.x * self->settings.accelerometer.accel_mg_lsb;
-	self->converted_data.accelerometer.y = self->raw_data.accelerometer.y * self->settings.accelerometer.accel_mg_lsb;
-	self->converted_data.accelerometer.z = self->raw_data.accelerometer.z * self->settings.accelerometer.accel_mg_lsb;
+	self->converted_data.accelerometer.x = self->raw_data.accelerometer.x * self->settings.accelerometer.accel_resolution;
+	self->converted_data.accelerometer.y = self->raw_data.accelerometer.y * self->settings.accelerometer.accel_resolution;
+	self->converted_data.accelerometer.z = self->raw_data.accelerometer.z * self->settings.accelerometer.accel_resolution;
 
 	return status;
 }
@@ -117,9 +117,9 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
 	DEBUG_PRINT("Mag Raw (z): 0x%X\n", self->raw_data.magnetometer.z);
 
 	// Convert the raw data
-	self->converted_data.magnetometer.x = self->raw_data.magnetometer.x * self->settings.magnetometer.mag_mgauss;
-	self->converted_data.magnetometer.y = self->raw_data.magnetometer.y * self->settings.magnetometer.mag_mgauss;
-	self->converted_data.magnetometer.z = self->raw_data.magnetometer.z * self->settings.magnetometer.mag_mgauss;
+	self->converted_data.magnetometer.x = self->raw_data.magnetometer.x * self->settings.magnetometer.mag_resolution;
+	self->converted_data.magnetometer.y = self->raw_data.magnetometer.y * self->settings.magnetometer.mag_resolution;
+	self->converted_data.magnetometer.z = self->raw_data.magnetometer.z * self->settings.magnetometer.mag_resolution;
 
 	return status;
 }
@@ -142,9 +142,9 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 	DEBUG_PRINT("Gyro Raw (z): 0x%X\n", self->raw_data.gyroscope.z);
 
 	// Convert the raw data
-	self->converted_data.gyroscope.x = self->raw_data.gyroscope.x * self->settings.gyroscope.gyro_dps_digit;
-	self->converted_data.gyroscope.y = self->raw_data.gyroscope.y * self->settings.gyroscope.gyro_dps_digit;
-	self->converted_data.gyroscope.z = self->raw_data.gyroscope.z * self->settings.gyroscope.gyro_dps_digit;
+	self->converted_data.gyroscope.x = self->raw_data.gyroscope.x * self->settings.gyroscope.gyro_resolution;
+	self->converted_data.gyroscope.y = self->raw_data.gyroscope.y * self->settings.gyroscope.gyro_resolution;
+	self->converted_data.gyroscope.z = self->raw_data.gyroscope.z * self->settings.gyroscope.gyro_resolution;
 
 	return status;
 }
