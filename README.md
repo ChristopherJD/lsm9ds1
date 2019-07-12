@@ -1,13 +1,24 @@
+# LSM9DS1 C & Python Library
+
+![lsm9ds1_axes.png](https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/lsm9ds1_axes.png)
+
+## About
+
 C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
 
-# API Documentation
+## API Documentation
 
 You can find the documentation [here](https://christopherjd.github.io/lsm9ds1/html/index.html).
 
-The API is simple to use. Here is a quick example of getting the reading from the accelerometer.
+The API is simple to use. Here is a quick example of reading from the accelerometer.
+
+### C API
 
 ```c
 #include <lsm9ds1.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 int main() {
 
     lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
@@ -16,41 +27,74 @@ int main() {
     status = lsm9ds1_init(&lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
+        exit(EXIT_FAILURE);
     }
     status = lsm9ds1.update_accel(lsm9ds1);
     if(status < 0) {
    		fprintf(stderr, "Error reading accelerometer!\n");
+        exit(EXIT_FAILURE);
     }
+    
+    printf("Accelerometer x: %f\n", lsm9ds1.converted_data.accelerometer.x);
+    printf("Accelerometer y: %f\n", lsm9ds1.converted_data.accelerometer.y);
+    printf("Accelerometer z: %f\n", lsm9ds1.converted_data.accelerometer.z);
+    
+    return EXIT_SUCCESS;
 }
 ```
 
-# Dependencies
+### Python API
 
-This library depends on the WiringPi library.
+```python
+import pylsm9ds1
 
-# Building
+pylsm9ds1.init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS)
+
+x, y, z = pylsm9ds1.get_accel()
+
+print("Accelerometer x: {}".format(x))
+print("Accelerometer y: {}".format(y))
+print("Accelerometer z: {}".format(z))
+```
+
+## Dependencies
+
+This library depends on the WiringPi library for Chip Select Arbitration. You can find out more information about the library at the [wiringpi](http://wiringpi.com/) website.
+
+## Building
+
+There are 2 options when building the LSM9DS1 Library.
+
+* Build for release
+    When building for release you will build the source code, doxygen documentation, CUnit tests, and package for the RPM format.
+* Build for debug
+    When building for debug purposes you will build the source code with debugging symbols and additional print statements as well as the CUnit tests.
 
 1. You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)
 
-```bash
-source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
-```
+    ```bash
+    source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
+    ```
 
-1. Use the build shell script. This will use cmake and make to build for your system.
+1. Use the build shell script. This will use cmake and make to build for your system. 
 
-If building for release.
+    If building for release.
 
-```bash
-./build.sh release
-```
+    ```bash
+    ./build.sh release
+    ```
 
-If building for debugging.
+    If building for debugging purposes.
 
-```bash
-./build.sh debug
-```
+    ```bash
+    ./build.sh debug
+    ```
+    
+## Testing
 
-# Debugging
+This project uses the the CUnit Testing Framwork. Tests can be run by running the lms9ds1_test program installed in the `/usr/bin` directory.
+
+## Debugging
 
 You can remotely debug the application on the raspberry pi using gdbserver. A nice application to aid in debugging is gdbgui. You can install from the instructions foun [here](https://www.gdbgui.com/installation/). In ubuntu also make sure you install gdb-multiarch if using ubuntu.
 
@@ -60,17 +104,17 @@ sudo apt install gdb-multiarch
 
 1. On the remote system, start the server.
 
-```bash
-gdbserver localhost:5000 lsm9ds1_test
-```
+    ```bash
+    gdbserver localhost:5000 lsm9ds1_test
+    ```
 
 1. On the local machine start gdbgui.
 
-```bash
-gdbgui -r -g gdb-multiarch
-```
+    ```bash
+    gdbgui -r -g gdb-multiarch
+    ```
 
-# Device Pinout
+## Device Pinout
 
 | Pin Label | Pin Function                                            | Notes                                                                                                                                                                                                        |
 |-----------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
