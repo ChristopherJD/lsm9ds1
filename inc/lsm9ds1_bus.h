@@ -29,7 +29,12 @@
 #ifndef LSM9DS1_BUS_H_
 #define LSM9DS1_BUS_H_
 
+#include <stdint.h>
+#include <stdbool.h>
+#include "lsm9ds1_error.h"
+
 #define DEVICE "/dev/spidev0.0"
+#define MAG_CS 21	//Wiring Pi Pin number for the magnetometer CS.
 
 #define SPI_READ 0x80
 #define SPI_WRITE 0x0
@@ -93,5 +98,10 @@ typedef struct lsm9ds1_bus_t {
 	lsm9ds1_status_t (*transfer)(struct lsm9ds1_bus_t *self, lsm9ds1_xfer_t op, uint8_t address, uint8_t tx, uint8_t *rx);
 	lsm9ds1_status_t (*cs_arbiter)(struct lsm9ds1_bus_t *self);
 }lsm9ds1_bus_t;
+
+lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8_t tx);
+lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address);
+lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, uint8_t mask, uint8_t value);
+lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self);
 
 #endif

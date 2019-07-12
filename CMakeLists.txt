@@ -62,13 +62,18 @@ LINK_DIRECTORIES(
 FILE(GLOB PYTHON_EXTENSION_SOURCES
     "src/lsm9ds1_wrap.c"
     "src/lsm9ds1.c"
+    "src/lsm9ds1_common.c"
+    "src/lsm9ds1_bus.c"
 )
 ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
 
 ########################## C Library ##########################################
-FILE(GLOB SOURCES
-	"src/lsm9ds1.c"
+SET(SOURCES 
+    "src/lsm9ds1.c" 
+    "src/lsm9ds1_common.c"
+    "src/lsm9ds1_bus.c" 
 )
+
 ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES})
 TARGET_LINK_LIBRARIES(lsm9ds1 wiringPi)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
