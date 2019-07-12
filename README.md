@@ -1,5 +1,7 @@
 # LSM9DS1 C & Python Library
 
+[[docs/lsm9ds1_axes.png]]
+
 ## About
 
 C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
@@ -61,21 +63,28 @@ This library depends on the WiringPi library for Chip Select Arbitration. You ca
 
 ## Building
 
+There are 2 options when building the LSM9DS1 Library.
+
+* Build for release
+    When building for release you will build the source code, doxygen documentation, CUnit tests, and package for the RPM format.
+* Build for debug
+    When building for debug purposes you will build the source code with debugging symbols and additional print statements as well as the CUnit tests.
+
 1. You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)
 
     ```bash
     source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
     ```
 
-1. Use the build shell script. This will use cmake and make to build for your system.
+1. Use the build shell script. This will use cmake and make to build for your system. 
 
-If building for release.
+    If building for release.
 
     ```bash
     ./build.sh release
     ```
 
-If building for debugging.
+    If building for debugging purposes.
 
     ```bash
     ./build.sh debug
@@ -89,9 +98,9 @@ This project uses the the CUnit Testing Framwork. Tests can be run by running th
 
 You can remotely debug the application on the raspberry pi using gdbserver. A nice application to aid in debugging is gdbgui. You can install from the instructions foun [here](https://www.gdbgui.com/installation/). In ubuntu also make sure you install gdb-multiarch if using ubuntu.
 
-    ```bash
-    sudo apt install gdb-multiarch
-    ```
+```bash
+sudo apt install gdb-multiarch
+```
 
 1. On the remote system, start the server.
 
