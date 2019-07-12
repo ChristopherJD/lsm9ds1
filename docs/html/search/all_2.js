@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['lsm9ds1_20c_20_26_20python_20library',['LSM9DS1 C &amp; Python Library',['../index.html',1,'']]],
+  ['lsm9ds1_20c_20library',['LSM9DS1 C Library',['../index.html',1,'']]],
   ['lsm9ds1_2eh',['lsm9ds1.h',['../lsm9ds1_8h.html',1,'']]],
   ['lsm9ds1_5faccel_2eh',['lsm9ds1_accel.h',['../lsm9ds1__accel_8h.html',1,'']]],
   ['lsm9ds1_5faccel_5fsettings_5ft',['lsm9ds1_accel_settings_t',['../structlsm9ds1__accel__settings__t.html',1,'']]],

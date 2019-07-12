@@ -1,10 +1,33 @@
-# LSM9DS1 C & Python Library
+# LSM9DS1 C Library
 
 ![lsm9ds1_axes.png](https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/lsm9ds1_axes.png)
 
 ## About
 
 C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
+
+## Install
+
+Please see the [releases](https://github.com/ChristopherJD/lsm9ds1/releases) to obtain prebuilt versions for
+the raspberrypi 3B+. Always use the latest version as only alpha version are released.
+
+**Install using RPM**
+
+Remember to replace v0.4.0-alpha with the appropriate version.
+
+```sh
+rpm -ivh liblsm9ds1-v0.4.0-alpha-raspberrypi3.rpm
+```
+
+## Uninstall
+
+**Uninstall using RPM**
+
+Remember to replace v0.4.0-alpha-1 with the appropriate version.
+
+```sh
+rpm -e liblsm9ds1-v0.4.0_alpha-1
+```
 
 ## API Documentation
 
@@ -41,20 +64,6 @@ int main() {
     
     return EXIT_SUCCESS;
 }
-```
-
-### Python API
-
-```python
-import pylsm9ds1
-
-pylsm9ds1.init(pylsm9ds1.LSM9DS1_SPI_BUS, pylsm9ds1.LSM9DS1_ACCELRANGE_8G, pylsm9ds1.LSM9DS1_MAGGAIN_8GAUSS, pylsm9ds1.LSM9DS1_GYROSCALE_500DPS)
-
-x, y, z = pylsm9ds1.get_accel()
-
-print("Accelerometer x: {}".format(x))
-print("Accelerometer y: {}".format(y))
-print("Accelerometer z: {}".format(z))
 ```
 
 ## Dependencies

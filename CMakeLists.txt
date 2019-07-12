@@ -48,22 +48,13 @@ SET(LICENSE "GPLV3")
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
 STRING(CONCAT CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
 
-########################### Python Settings ###################################
-FIND_PACKAGE(PythonLibs REQUIRED)
-INCLUDE_DIRECTORIES(${PYTHON_INCLUDE_DIRS})
 INCLUDE_DIRECTORIES(
-	inc
+    inc
 )
 
 LINK_DIRECTORIES(
-	${LINK_DIRECTORIES}
+    ${LINK_DIRECTORIES}
 )
-
-FILE(GLOB PYTHON_EXTENSION_SOURCES
-    "src/*.c"
-)
-ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
-TARGET_LINK_LIBRARIES(pylsm9ds1 wiringPi)
 
 ########################## C Library ##########################################
 SET(SOURCES 
@@ -97,12 +88,6 @@ INSTALL(TARGETS lsm9ds1
 	DESTINATION usr/lib/
 )
 
-########################### Python Settings ###################################
-SET_TARGET_PROPERTIES(pylsm9ds1 PROPERTIES PREFIX "")
-INSTALL(TARGETS pylsm9ds1
-	DESTINATION usr/lib/python3.5/site-packages
-)
-
 ######################### Tests ###############################################
 INSTALL(TARGETS lsm9ds1_test
 	DESTINATION usr/bin
@@ -110,6 +95,12 @@ INSTALL(TARGETS lsm9ds1_test
 ###############################################################################
 
 ######################## RPM Package ##########################################
+# Unit test picks up lsm9ds1 lib so I need to manually do this
+SET(CPACK_RPM_PACKAGE_AUTOREQ no)
+SET(CPACK_RPM_PACKAGE_REQUIRES "wiringpi")
+SET(CPACK_RPM_PACKAGE_RELOCATABLE ON)
+SET(DESTDIR /)
+SET(CPACK_RPM_PACKAGE_ARCHITECTURE "raspberrypi3")
 SET(CPACK_PACKAGE_VERSION ${BUILD_VERSION})
 SET(CPACK_GENERATOR "RPM;TGZ")
 SET(CPACK_PACKAGE_NAME ${PROJECT})
@@ -119,6 +110,6 @@ SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
 SET(CPACK_PACKAGING_INSTALL_PREFIX ${DESTDIR})
 STRING(CONCAT CPACK_PACKAGE_FILE_NAME 
     "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
-    ".${CMAKE_SYSTEM_PROCESSOR}")
+    "-${CPACK_RPM_PACKAGE_ARCHITECTURE}")
 INCLUDE(CPack)
 ###############################################################################
