@@ -1,17 +1,17 @@
-/* 
+/*
  * This file is part of the lsm9ds1 library (https://github.com/ChristopherJD/lsm9ds1.git).
  * Copyright (c) 2019 Christopher Jordan-Denny.
- * 
- * This program is free software: you can redistribute it and/or modify  
- * it under the terms of the GNU General Public License as published by  
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, version 3.
  *
- * This program is distributed in the hope that it will be useful, but 
- * WITHOUT ANY WARRANTY; without even the implied warranty of 
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU 
+ * This program is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License 
+ * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
@@ -50,27 +50,27 @@ static PyObject* get_accel(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_accel(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.accelerometer.x, 
-		lsm9ds1->converted_data.accelerometer.y, 
-		lsm9ds1->converted_data.accelerometer.z);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.accelerometer.x,
+	                     lsm9ds1->converted_data.accelerometer.y,
+	                     lsm9ds1->converted_data.accelerometer.z);
 }
 
 static PyObject* get_mag(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_mag(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.magnetometer.x, 
-		lsm9ds1->converted_data.magnetometer.y, 
-		lsm9ds1->converted_data.magnetometer.z);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.magnetometer.x,
+	                     lsm9ds1->converted_data.magnetometer.y,
+	                     lsm9ds1->converted_data.magnetometer.z);
 }
 
 static PyObject* get_gyro(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_gyro(lsm9ds1);
 
-	return Py_BuildValue("fff", lsm9ds1->converted_data.gyroscope.x, 
-		lsm9ds1->converted_data.gyroscope.y, 
-		lsm9ds1->converted_data.gyroscope.z);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.gyroscope.x,
+	                     lsm9ds1->converted_data.gyroscope.y,
+	                     lsm9ds1->converted_data.gyroscope.z);
 }
 
 // Method definition object for this extension, these argumens mean:
