@@ -1,6 +1,6 @@
 # LSM9DS1 C & Python Library
 
-[[docs/lsm9ds1_axes.png]]
+![lsm9ds1_axes.png](https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/lsm9ds1_axes.png)
 
 ## About
 
