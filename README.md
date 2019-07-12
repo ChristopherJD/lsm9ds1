@@ -1,13 +1,22 @@
+# LSM9DS1 C & Python Library
+
+## About
+
 C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
 
-# API Documentation
+## API Documentation
 
 You can find the documentation [here](https://christopherjd.github.io/lsm9ds1/html/index.html).
 
 The API is simple to use. Here is a quick example of getting the reading from the accelerometer.
 
+### C API
+
 ```c
 #include <lsm9ds1.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 int main() {
 
     lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
@@ -16,19 +25,41 @@ int main() {
     status = lsm9ds1_init(&lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
+        exit(EXIT_FAILURE);
     }
     status = lsm9ds1.update_accel(lsm9ds1);
     if(status < 0) {
    		fprintf(stderr, "Error reading accelerometer!\n");
+        exit(EXIT_FAILURE);
     }
+    
+    printf("Accelerometer x: %f\n", lsm9ds1.converted_data.accelerometer.x);
+    printf("Accelerometer y: %f\n", lsm9ds1.converted_data.accelerometer.y);
+    printf("Accelerometer z: %f\n", lsm9ds1.converted_data.accelerometer.z);
+    
+    return EXIT_SUCCESS;
 }
 ```
 
-# Dependencies
+### Python API
 
-This library depends on the WiringPi library.
+```python
+import pylsm9ds1
 
-# Building
+pylsm9ds1.init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS)
+
+x, y, z = pylsm9ds1.get_accel()
+
+print("Accelerometer x: {}".format(x))
+print("Accelerometer y: {}".format(y))
+print("Accelerometer z: {}".format(z))
+```
+
+## Dependencies
+
+This library depends on the WiringPi library for Chip Select Arbitration. You can find out more information about the library at the [wiringpi](http://wiringpi.com/) website.
+
+## Building
 
 1. You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)
 
@@ -50,7 +81,7 @@ If building for debugging.
 ./build.sh debug
 ```
 
-# Debugging
+## Debugging
 
 You can remotely debug the application on the raspberry pi using gdbserver. A nice application to aid in debugging is gdbgui. You can install from the instructions foun [here](https://www.gdbgui.com/installation/). In ubuntu also make sure you install gdb-multiarch if using ubuntu.
 
@@ -70,7 +101,7 @@ gdbserver localhost:5000 lsm9ds1_test
 gdbgui -r -g gdb-multiarch
 ```
 
-# Device Pinout
+## Device Pinout
 
 | Pin Label | Pin Function                                            | Notes                                                                                                                                                                                                        |
 |-----------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
