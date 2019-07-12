@@ -15,18 +15,26 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LSM9DS1_PRIVATE_H_
-#define LSM9DS1_PRIVATE_H_
+/**
+ * @file
+ * @author Christopher Jordan-Denny
+ * @date
+ * @brief Temperature functions and data.
+ *
+ * Read function for the temperature.
+ */
 
-#ifdef __cplusplus
-extern "C"
-{
+#ifndef LSM9DS1_TEMP_H_
+#define LSM9DS1_TEMP_H_
+
+#include "lsm9ds1_common.h"
+#include "lsm9ds1_error.h"
+
+/**
+ * @brief Temperature returned from the LSM9DS1
+ */
+typedef int16_t lsm9ds1_temperature_t;
+
+lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_bus_t *bus, lsm9ds1_temperature_t *raw_data);
+
 #endif
-
-lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* LSM9DS1_PRIVATE_H_ */

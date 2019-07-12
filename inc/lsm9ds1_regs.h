@@ -19,7 +19,7 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Error codes returned by lsm9ds1 functions.
+ * @brief Register addresses for the lsm9ds1.
  */
 
 #ifndef LSM9DS1_REGS_H_

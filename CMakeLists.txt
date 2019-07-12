@@ -60,10 +60,7 @@ LINK_DIRECTORIES(
 )
 
 FILE(GLOB PYTHON_EXTENSION_SOURCES
-    "src/lsm9ds1_wrap.c"
-    "src/lsm9ds1.c"
-    "src/lsm9ds1_common.c"
-    "src/lsm9ds1_bus.c"
+    "src/*.c"
 )
 ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
 
@@ -71,7 +68,11 @@ ADD_LIBRARY(pylsm9ds1 SHARED ${PYTHON_EXTENSION_SOURCES})
 SET(SOURCES 
     "src/lsm9ds1.c" 
     "src/lsm9ds1_common.c"
-    "src/lsm9ds1_bus.c" 
+    "src/lsm9ds1_bus.c"
+    "src/lsm9ds1_accel.c"
+    "src/lsm9ds1_gyro.c"
+    "src/lsm9ds1_mag.c"
+    "src/lsm9ds1_temp.c" 
 )
 
 ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES})

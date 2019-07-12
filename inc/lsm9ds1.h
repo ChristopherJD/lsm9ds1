@@ -43,13 +43,10 @@ extern "C"
 #include "lsm9ds1_error.h"
 #include "lsm9ds1_regs.h"
 #include "lsm9ds1_bus.h"
+#include "lsm9ds1_temp.h"
+#include "lsm9ds1_debug.h"
 
 #define _BUILD_VERSION BUILD_VERSION
-
-/**
- * @brief Temperature returned from the LSM9DS1
- */
-typedef int16_t lsm9ds1_temperature_t;
 
 typedef struct lsm9ds1_settings {
 	lsm9ds1_accel_settings_t accelerometer;

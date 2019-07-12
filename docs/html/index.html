@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.13"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>LSM9DS1 Library: Main Page</title>
+<title>LSM9DS1 Library: LSM9DS1 C &amp; Python Library</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -61,33 +61,55 @@ $(function() {
 
 <div class="header">
   <div class="headertitle">
-<div class="title">LSM9DS1 Library Documentation</div>  </div>
+<div class="title">LSM9DS1 C &amp; Python Library </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p>C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.</p>
-<h1>API Documentation</h1>
+<div class="textblock"><div class="image">
+<img src="https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/lsm9ds1_axes.png" alt="lsm9ds1_axes.png"/>
+</div>
+<h2>About</h2>
+<p>C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.</p>
+<h2>API Documentation</h2>
 <p>You can find the documentation <a href="https://christopherjd.github.io/lsm9ds1/html/index.html">here</a>.</p>
-<p>The API is simple to use. Here is a quick example of getting the reading from the accelerometer.</p>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line"></div><div class="line">    lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line">    <a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> lsm9ds1 = {0};</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(&amp;lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line">    status = lsm9ds1.update_accel(lsm9ds1);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprintf(stderr, <span class="stringliteral">&quot;Error reading accelerometer!\n&quot;</span>);</div><div class="line">    }</div><div class="line">}</div></div><!-- fragment --><h1>Dependencies</h1>
-<p>This library depends on the WiringPi library.</p>
-<h1>Building</h1>
+<p>The API is simple to use. Here is a quick example of reading from the accelerometer.</p>
+<h3>C API</h3>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;stdio.h&gt;</span></div><div class="line"><span class="preprocessor">#include &lt;stdlib.h&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line"></div><div class="line">    lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line">    <a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> lsm9ds1 = {0};</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(&amp;lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">        exit(EXIT_FAILURE);</div><div class="line">    }</div><div class="line">    status = lsm9ds1.update_accel(lsm9ds1);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprintf(stderr, <span class="stringliteral">&quot;Error reading accelerometer!\n&quot;</span>);</div><div class="line">        exit(EXIT_FAILURE);</div><div class="line">    }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer x: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer y: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer z: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.z);</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> EXIT_SUCCESS;</div><div class="line">}</div></div><!-- fragment --><h3>Python API</h3>
+<div class="fragment"><div class="line">import pylsm9ds1</div><div class="line"></div><div class="line">pylsm9ds1.init(LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS)</div><div class="line"></div><div class="line">x, y, z = pylsm9ds1.get_accel()</div><div class="line"></div><div class="line">print(&quot;Accelerometer x: {}&quot;.format(x))</div><div class="line">print(&quot;Accelerometer y: {}&quot;.format(y))</div><div class="line">print(&quot;Accelerometer z: {}&quot;.format(z))</div></div><!-- fragment --><h2>Dependencies</h2>
+<p>This library depends on the WiringPi library for Chip Select Arbitration. You can find out more information about the library at the <a href="http://wiringpi.com/">wiringpi</a> website.</p>
+<h2>Building</h2>
+<p>There are 2 options when building the LSM9DS1 Library.</p>
+<ul>
+<li>Build for release When building for release you will build the source code, doxygen documentation, CUnit tests, and package for the RPM format.</li>
+<li>Build for debug When building for debug purposes you will build the source code with debugging symbols and additional print statements as well as the CUnit tests.</li>
+</ul>
 <ol type="1">
-<li>You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)</li>
+<li><p class="startli">You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)</p>
+<p class="startli">```bash source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi ```</p>
+</li>
 </ol>
-<div class="fragment"><div class="line">source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi</div></div><!-- fragment --><ol type="1">
-<li>Use the build shell script. This will use cmake and make to build for your system.</li>
+<ol type="1">
+<li><p class="startli">Use the build shell script. This will use cmake and make to build for your system.</p>
+<p class="startli">If building for release.</p>
+<p class="startli">```bash ./build.sh release ```</p>
+<p class="startli">If building for debugging purposes.</p>
+<p class="startli">```bash ./build.sh debug ```</p>
+</li>
 </ol>
-<p>If building for release.</p>
-<div class="fragment"><div class="line">./build.sh release</div></div><!-- fragment --><p>If building for debugging.</p>
-<div class="fragment"><div class="line">./build.sh debug</div></div><!-- fragment --><h1>Debugging</h1>
+<h2>Testing</h2>
+<p>This project uses the the CUnit Testing Framwork. Tests can be run by running the lms9ds1_test program installed in the <code>/usr/bin</code> directory.</p>
+<h2>Debugging</h2>
 <p>You can remotely debug the application on the raspberry pi using gdbserver. A nice application to aid in debugging is gdbgui. You can install from the instructions foun <a href="https://www.gdbgui.com/installation/">here</a>. In ubuntu also make sure you install gdb-multiarch if using ubuntu.</p>
 <div class="fragment"><div class="line">sudo apt install gdb-multiarch</div></div><!-- fragment --><ol type="1">
-<li>On the remote system, start the server.</li>
+<li><p class="startli">On the remote system, start the server.</p>
+<p class="startli">```bash gdbserver localhost:5000 lsm9ds1_test ```</p>
+</li>
 </ol>
-<div class="fragment"><div class="line">gdbserver localhost:5000 lsm9ds1_test</div></div><!-- fragment --><ol type="1">
-<li>On the local machine start gdbgui.</li>
+<ol type="1">
+<li><p class="startli">On the local machine start gdbgui.</p>
+<p class="startli">```bash gdbgui -r -g gdb-multiarch ```</p>
+</li>
 </ol>
-<div class="fragment"><div class="line">gdbgui -r -g gdb-multiarch</div></div><!-- fragment --><h1>Device Pinout</h1>
+<h2>Device Pinout</h2>
 <table class="doxtable">
 <tr>
 <th>Pin Label </th><th>Pin Function </th><th>Notes  </th></tr>

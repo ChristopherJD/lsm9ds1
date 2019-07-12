@@ -19,19 +19,18 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Common functions used by the lsm9ds1.
- *
- * Select sub device, reset the device and bit operations.
+ * @brief Provides debug print statements
  */
 
-#ifndef LSM9DS1_COMMON_H_
-#define LSM9DS1_COMMON_H_
+#ifndef LSM9DS1_DEBUG_H_
+#define LSM9DS1_DEBUG_H_
 
-#include <stdint.h>
-#include "lsm9ds1_bus.h"
-
-lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_bus_t *self, lsm9ds1_sub_device_t sub_device);
-lsm9ds1_status_t read_bit_value(uint8_t value, uint8_t mask, uint8_t offset, uint8_t *read_value);
-lsm9ds1_status_t lsm9ds1_soft_reset(lsm9ds1_bus_t *bus);
+#if DEBUG > 0
+#include <stdio.h>
+#define DEBUG_PRINT(fmt, ...) fprintf(stderr, "[%s:%d:%s()]: " fmt, \
+		__FILE__, __LINE__, __func__, ## __VA_ARGS__)
+#else
+#define DEBUG_PRINT(fmt, ...) /* Don't do anything in release builds */
+#endif
 
 #endif

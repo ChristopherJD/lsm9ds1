@@ -19,11 +19,16 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief lsm9ds1 magnetometer definitions and settings.
+ * @brief Magnetometer functions and data.
+ *
+ * Setup function, and read function for the magnetometer.
  */
 
 #ifndef LSM9DS1_MAG_H_
 #define LSM9DS1_MAG_H_
+
+#include "lsm9ds1_common.h"
+#include "lsm9ds1_error.h"
 
 #define LSM9DS1_MAG_TEMP_COMP_BIT_OFFSET 7
 #define LSM9DS1_MAG_TEMP_COMP_BIT_MASK __extension__ 0b10000000
@@ -176,5 +181,9 @@ typedef struct lsm9ds1_mag_settings_t {
 	uint8_t block_data_update_enable;
 
 }lsm9ds1_mag_settings_t;
+
+lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_bus_t *bus, mag_raw_data_t *raw_data);
+lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_bus_t *bus, 
+	lsm9ds1_mag_settings_t *settings, lsm9ds1_mag_gain_t gain);
 
 #endif

@@ -22,7 +22,7 @@
 #include <wiringPi.h>
 
 #include "lsm9ds1_bus.h"
-#include "lsm9ds1_common.h"
+#include "lsm9ds1_debug.h"
 
 static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
 	digitalWrite(MAG_CS, pin_state);

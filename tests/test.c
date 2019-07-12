@@ -15,39 +15,11 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-/*
- *  Simple example of a CUnit unit test.
- *
- *  This program (crudely) demonstrates a very simple "black box"
- *  test of the standard library functions fprintf() and fread().
- *  It uses suite initialization and cleanup functions to open
- *  and close a common temporary file used by the test functions.
- *  The test functions then write to and read from the temporary
- *  file in the course of testing the library functions.
- *
- *  The 2 test functions are added to a single CUnit suite, and
- *  then run using the CUnit Basic interface.  The output of the
- *  program (on CUnit version 2.0-2) is:
- *
- *           CUnit : A Unit testing framework for C.
- *           http://cunit.sourceforge.net/
- *
- *       Suite: Suite_1
- *         Test: test of fprintf() ... passed
- *         Test: test of fread() ... passed
- *
- *       --Run Summary: Type      Total     Ran  Passed  Failed
- *                      suites        1       1     n/a       0
- *                      tests         2       2       2       0
- *                      asserts       5       5       5       0
- */
-
 #include <stdio.h>
 #include <string.h>
 #include "CUnit/Basic.h"
 #include <stdlib.h>
 #include "lsm9ds1.h"
-#include "lsm9ds1_private.h"
 
 static lsm9ds1_device_t *lsm9ds1 = NULL;
 
@@ -70,22 +42,18 @@ int clean_lsm9ds1_suite(void) {
 	return 0;
 }
 
-/* Simple test of fprintf().
- * Writes test data to the temporary file and checks
- * whether the expected number of bytes were written.
- */
 void test_lsm9ds1_read_sub_device_accel_gryo(void) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(lsm9ds1, LSM9DS1_ACCEL_GYRO);
+	status = lsm9ds1_select_sub_device(&(lsm9ds1->bus), LSM9DS1_ACCEL_GYRO);
 	CU_ASSERT(0 == status);
 }
 
 void test_lsm9ds1_read_sub_device_mag(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(lsm9ds1, LSM9DS1_MAG);
+	status = lsm9ds1_select_sub_device(&(lsm9ds1->bus), LSM9DS1_MAG);
 	CU_ASSERT(0 == status);
 }
 
@@ -146,10 +114,6 @@ void test_lsm9ds1_read_mag(void) {
 	printf("Mag Z: %f\n", lsm9ds1->converted_data.magnetometer.z);
 }
 
-/* The main() function for setting up and running the tests.
- * Returns a CUE_SUCCESS on successful running, another
- * CUnit error code on failure.
- */
 int main() {
 	CU_pSuite pSuite = NULL;
 

@@ -19,15 +19,16 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Functions to access the lsm9ds1.
+ * @brief Gyroscope functions and data.
  *
- * Initializes the LSM9DS1 for the Raspberry Pi 3B+. Currently the device is wired
- * to the first spi device. Sets up the magnetometer, accelerometer and gyroscope.
- * Provides functions to read and write the data collected on the LSM9DS1.
+ * Setup function, and read function for the gyroscope.
  */
 
 #ifndef LSM9DS1_GYRO_H_
 #define LSM9DS1_GRYO_H_
+
+#include "lsm9ds1_common.h"
+#include "lsm9ds1_error.h"
 
 // Angular Rate: dps per LSB
 #define LSM9DS1_GYRO_DPS_DIGIT_245DPS      (0.00875F)
@@ -67,5 +68,9 @@ typedef struct lsm9ds1_gyro_settings_t {
 	float gyro_dps_digit;
 	lsm9ds1_gyro_odr_t odr;	//output data rate
 }lsm9ds1_gyro_settings_t;
+
+lsm9ds1_status_t lsm9ds1_read_gyro(lsm9ds1_bus_t *bus, gyro_raw_data_t *raw_data);
+lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_bus_t *bus, 
+	lsm9ds1_gyro_settings_t *settings, lsm9ds1_gyro_scale_t scale);
 
 #endif

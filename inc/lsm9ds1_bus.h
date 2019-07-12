@@ -19,11 +19,10 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Functions to access the lsm9ds1.
+ * @brief SPI and I2C Bus functions and data.
  *
- * Initializes the LSM9DS1 for the Raspberry Pi 3B+. Currently the device is wired
- * to the first spi device. Sets up the magnetometer, accelerometer and gyroscope.
- * Provides functions to read and write the data collected on the LSM9DS1.
+ * Initializes and sets up the bus to the lsm9ds1. Provides read and write
+ * functions to the bus.
  */
 
 #ifndef LSM9DS1_BUS_H_
