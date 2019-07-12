@@ -50,28 +50,27 @@ static PyObject* get_accel(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_accel(lsm9ds1);
 
-	return Py_BuildValue("f", lsm9ds1->converted_data.accelerometer);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.accelerometer.x, 
+		lsm9ds1->converted_data.accelerometer.y, 
+		lsm9ds1->converted_data.accelerometer.z);
 }
 
 static PyObject* get_mag(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_mag(lsm9ds1);
 
-	return Py_BuildValue("f", lsm9ds1->converted_data.magnetometer);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.magnetometer.x, 
+		lsm9ds1->converted_data.magnetometer.y, 
+		lsm9ds1->converted_data.magnetometer.z);
 }
 
 static PyObject* get_gyro(PyObject *self, PyObject *args) {
 
 	lsm9ds1->update_gyro(lsm9ds1);
 
-	return Py_BuildValue("f", lsm9ds1->converted_data.gyroscope);
-}
-
-static PyObject* get_all(PyObject *self, PyObject *args) {
-
-	lsm9ds1->update(lsm9ds1);
-
-	return Py_BuildValue("ffff", lsm9ds1->converted_data.temperature, lsm9ds1->converted_data.accelerometer, lsm9ds1->converted_data.magnetometer, lsm9ds1->converted_data.gyroscope);
+	return Py_BuildValue("fff", lsm9ds1->converted_data.gyroscope.x, 
+		lsm9ds1->converted_data.gyroscope.y, 
+		lsm9ds1->converted_data.gyroscope.z);
 }
 
 // Method definition object for this extension, these argumens mean:
@@ -105,12 +104,6 @@ static PyMethodDef pylsm9ds1_methods[] = {
 		get_gyro,
 		METH_NOARGS,
 		"Read the gyroscope from the lsm9ds1."
-	},
-	{
-		"get_all",
-		get_all,
-		METH_NOARGS,
-		"Read the temperature, accelerometer, magnetometer, and gyroscope from the lsm9ds1."
 	},
 	{
 		"init",
