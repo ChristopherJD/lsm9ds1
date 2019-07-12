@@ -48,12 +48,18 @@ extern "C"
 
 #define _BUILD_VERSION BUILD_VERSION
 
+/**
+ * @brief Stores the settings for each sub device.
+ */
 typedef struct lsm9ds1_settings {
 	lsm9ds1_accel_settings_t accelerometer;
 	lsm9ds1_mag_settings_t magnetometer;
 	lsm9ds1_gyro_settings_t gyroscope;
 } lsm9ds1_settings_t;
 
+/**
+ * @brief Stores the raw data for each sub device.
+ */
 typedef struct lsm9ds1_data_t
 {
 	lsm9ds1_temperature_t temperature;
@@ -62,6 +68,9 @@ typedef struct lsm9ds1_data_t
 	gyro_raw_data_t gyroscope;
 } lsm9ds1_data_t;
 
+/**
+ * @brief Stores the converted data for each sub device.
+ */
 typedef struct lsm9ds1_converted_data_t {
 	float temperature;
 	accelerometer_converted_data_t accelerometer;
@@ -70,30 +79,22 @@ typedef struct lsm9ds1_converted_data_t {
 } lsm9ds1_converted_data_t;
 
 /**
- * @brief Store data and configurations for the lsm9ds1 device.
- *
- * This structure stores all the information pertaining to the lsm9ds1.
- *	- Bus configuration (SPI/I2C) information
- *	- Gyroscope configuration information
- *	- Magnetometer configuration information
- *	- Accelerometer configuration information
+ * @brief Data and configurations for the lsm9ds1 device.
  */
 typedef struct lsm9ds1_device_t {
-	bool initialized;	/* Set to true if the lsm9ds1 was able to setup the Gyroscope, accelerometer, and magnetometer. False otherwise. */
-	lsm9ds1_settings_t settings;	/* Please see \ref lsm9ds1_settings_t for more information */
-	lsm9ds1_xfer_bus_t xfer_bus;	/* Please see \ref lsm9ds1_xfer_bus_t for more information */
-	lsm9ds1_data_t raw_data;	/* Please see \ref lsm9ds1_data_t for more information */
-	lsm9ds1_converted_data_t converted_data;	/* Please see \ref lsm9ds1_converted_data_t for more information */
-	lsm9ds1_bus_t bus;	/* Please see \ref lsm9ds1_bus_t for more information */
+	bool initialized;
+	lsm9ds1_settings_t settings;
+	lsm9ds1_xfer_bus_t xfer_bus;
+	lsm9ds1_data_t raw_data;
+	lsm9ds1_converted_data_t converted_data;
+	lsm9ds1_bus_t bus;
 
-	lsm9ds1_status_t (*update_temp)(struct lsm9ds1_device_t *self);	/* Please see \ref update_temp for more information */
-	lsm9ds1_status_t (*update_accel)(struct lsm9ds1_device_t *self);	/* Please see \ref update_accel for more information */
-	lsm9ds1_status_t (*update_mag)(struct lsm9ds1_device_t *self);	/* Please see \ref update_mag for more information */
-	lsm9ds1_status_t (*update_gyro)(struct lsm9ds1_device_t *self);	/* Please see \ref update_gyro for more information */
-	lsm9ds1_status_t (*update)(struct lsm9ds1_device_t *self);		/* Please see \ref update for more information */
+	lsm9ds1_status_t (*update_temp)(struct lsm9ds1_device_t *self);
+	lsm9ds1_status_t (*update_accel)(struct lsm9ds1_device_t *self);
+	lsm9ds1_status_t (*update_mag)(struct lsm9ds1_device_t *self);
+	lsm9ds1_status_t (*update_gyro)(struct lsm9ds1_device_t *self);
+	lsm9ds1_status_t (*update)(struct lsm9ds1_device_t *self);
 } lsm9ds1_device_t;
-
-//TODO Make better header comments.
 
 /**
  * @brief Read the temperature of the LSM9DS1.
@@ -119,11 +120,13 @@ typedef struct lsm9ds1_device_t {
  * 			fprintf(stderr, "Error reading temperature!\n");
  * 		}
  *
+ *		printf("Temperature: %f\n", lsm9ds1.converted_data.temperature);
+ *
  *		free(lsm9ds1);
  * }
  * @endcode
  * @param self The created instance of the lsm9ds1_device_t.
- * @return Returns the function status.
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
  * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
@@ -155,11 +158,15 @@ lsm9ds1_status_t update_temp(lsm9ds1_device_t *self);
  * 			fprintf(stderr, "Error reading accelerometer!\n");
  * 		}
  *
+ *		printf("Accelerometer x: %f\n", lsm9ds1.converted_data.accelerometer.x);
+ *		printf("Accelerometer y: %f\n", lsm9ds1.converted_data.accelerometer.y);
+ *		printf("Accelerometer z: %f\n", lsm9ds1.converted_data.accelerometer.z);
+ *
  *		free(lsm9ds1);
  * }
  * @endcode
  * @param self The created instance of the lsm9ds1_device_t.
- * @return Returns the function status.
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
  * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
@@ -191,11 +198,15 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self);
  * 			fprintf(stderr, "Error reading magnetometer!\n");
  * 		}
  *
+ *		printf("Magnetometer x: %f\n", lsm9ds1.converted_data.magnetometer.x);
+ *		printf("Magnetometer y: %f\n", lsm9ds1.converted_data.magnetometer.y);
+ *		printf("Magnetometer z: %f\n", lsm9ds1.converted_data.magnetometer.z);
+ *
  *		free(lsm9ds1);
  * }
  * @endcode
  * @param self The created instance of the lsm9ds1_device_t.
- * @return Returns the function status.
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
  * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
@@ -222,16 +233,20 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self);
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- * 		status = lsm9ds1.update_accel(lsm9ds1);
+ * 		status = lsm9ds1.update_gyro(lsm9ds1);
  * 		if(status < 0) {
  * 			fprintf(stderr, "Error reading gyroscope!\n");
  * 		}
+ *
+ *		printf("Gyroscope x: %f\n", lsm9ds1.converted_data.gyroscope.x);
+ *		printf("Gyroscope y: %f\n", lsm9ds1.converted_data.gyroscope.y);
+ *		printf("Gyroscope z: %f\n", lsm9ds1.converted_data.gyroscope.z);
  *
  *		free(lsm9ds1);
  * }
  * @endcode
  * @param self The created instance of the lsm9ds1_device_t.
- * @return Returns the function status.
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
  * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
@@ -261,12 +276,12 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
  * }
  * @endcode
  * @param self The created instance of the lsm9ds1_device_t.
- * @return Returns the function status.
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
  * @see \ref lsm9ds1_device_t
  * @see \ref lsm9ds1_xfer_bus_t
  * @see \ref lsm9ds1_accel_range_t
- # @see \ref lsm9ds1_mag_gain_t
+ * @see \ref lsm9ds1_mag_gain_t
  * @see \ref lsm9ds1_gyro_scale_t
  */
 lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,

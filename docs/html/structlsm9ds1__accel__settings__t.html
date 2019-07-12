@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LSM9DS1 Library
-   &#160;<span id="projectnumber">0.1.0-alpha</span>
+   &#160;<span id="projectnumber">0.4.0-alpha</span>
    </div>
    <div id="projectbrief">Library for C and Python for the LSM9DS1 device.</div>
   </td>
@@ -69,18 +69,45 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:adecba339b7ce2d4e5f7e2b2afd6e45d9"><td class="memItemLeft" align="right" valign="top"><a id="adecba339b7ce2d4e5f7e2b2afd6e45d9"></a>
-lsm9ds1_accel_range_t&#160;</td><td class="memItemRight" valign="bottom"><b>range</b></td></tr>
-<tr class="separator:adecba339b7ce2d4e5f7e2b2afd6e45d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56247c923e2e0e2441c2ac83a57f373a"><td class="memItemLeft" align="right" valign="top"><a id="a56247c923e2e0e2441c2ac83a57f373a"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>accel_mg_lsb</b></td></tr>
-<tr class="separator:a56247c923e2e0e2441c2ac83a57f373a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcdf648c9a037e657b69f7b1a650eadb"><td class="memItemLeft" align="right" valign="top"><a id="abcdf648c9a037e657b69f7b1a650eadb"></a>
+lsm9ds1_xl_decimation_t&#160;</td><td class="memItemRight" valign="bottom"><b>decimation</b></td></tr>
+<tr class="separator:abcdf648c9a037e657b69f7b1a650eadb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a76f3efb51ad9581c62a695b7ee102971"><td class="memItemLeft" align="right" valign="top"><a id="a76f3efb51ad9581c62a695b7ee102971"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>z_enable</b></td></tr>
+<tr class="separator:a76f3efb51ad9581c62a695b7ee102971"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bfafa761800f3f88317cd88a4d30d1a"><td class="memItemLeft" align="right" valign="top"><a id="a4bfafa761800f3f88317cd88a4d30d1a"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>y_enable</b></td></tr>
+<tr class="separator:a4bfafa761800f3f88317cd88a4d30d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c7a127ee1b477486e94b1fc26c3bd97"><td class="memItemLeft" align="right" valign="top"><a id="a6c7a127ee1b477486e94b1fc26c3bd97"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>x_enable</b></td></tr>
+<tr class="separator:a6c7a127ee1b477486e94b1fc26c3bd97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aecf250348193bc927156e66597d44a63"><td class="memItemLeft" align="right" valign="top"><a id="aecf250348193bc927156e66597d44a63"></a>
 lsm9ds1_xl_odr_t&#160;</td><td class="memItemRight" valign="bottom"><b>odr</b></td></tr>
 <tr class="separator:aecf250348193bc927156e66597d44a63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adecba339b7ce2d4e5f7e2b2afd6e45d9"><td class="memItemLeft" align="right" valign="top"><a id="adecba339b7ce2d4e5f7e2b2afd6e45d9"></a>
+lsm9ds1_accel_range_t&#160;</td><td class="memItemRight" valign="bottom"><b>range</b></td></tr>
+<tr class="separator:adecba339b7ce2d4e5f7e2b2afd6e45d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe270ca3a6621b535f31a28503b23df2"><td class="memItemLeft" align="right" valign="top"><a id="afe270ca3a6621b535f31a28503b23df2"></a>
+lsm9ds1_xl_bandwidth_select_t&#160;</td><td class="memItemRight" valign="bottom"><b>bw_select</b></td></tr>
+<tr class="separator:afe270ca3a6621b535f31a28503b23df2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34cd0799390ecf8abaf7f673b2726fb7"><td class="memItemLeft" align="right" valign="top"><a id="a34cd0799390ecf8abaf7f673b2726fb7"></a>
+lsm9ds1_xl_filter_t&#160;</td><td class="memItemRight" valign="bottom"><b>bw_filter</b></td></tr>
+<tr class="separator:a34cd0799390ecf8abaf7f673b2726fb7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade31e009aad7d306b0fc4a57c698a3a6"><td class="memItemLeft" align="right" valign="top"><a id="ade31e009aad7d306b0fc4a57c698a3a6"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>high_resolution_enable</b></td></tr>
+<tr class="separator:ade31e009aad7d306b0fc4a57c698a3a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c30cdd436ca7ca45be75da24fb29d1a"><td class="memItemLeft" align="right" valign="top"><a id="a9c30cdd436ca7ca45be75da24fb29d1a"></a>
+lsm9ds1_xl_fdl_t&#160;</td><td class="memItemRight" valign="bottom"><b>filtered_data_selection</b></td></tr>
+<tr class="separator:a9c30cdd436ca7ca45be75da24fb29d1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef564f8f598111fc50741602d94a07db"><td class="memItemLeft" align="right" valign="top"><a id="aef564f8f598111fc50741602d94a07db"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>high_pass_filter_enable</b></td></tr>
+<tr class="separator:aef564f8f598111fc50741602d94a07db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd0db268a2768fc5ec231cd85dfae74a"><td class="memItemLeft" align="right" valign="top"><a id="abd0db268a2768fc5ec231cd85dfae74a"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>accel_resolution</b></td></tr>
+<tr class="separator:abd0db268a2768fc5ec231cd85dfae74a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/christopher/Documents/lsm9ds1/inc/<a class="el" href="lsm9ds1_8h_source.html">lsm9ds1.h</a></li>
+<li>/home/christopher/Documents/lsm9ds1/inc/<a class="el" href="lsm9ds1__accel_8h_source.html">lsm9ds1_accel.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

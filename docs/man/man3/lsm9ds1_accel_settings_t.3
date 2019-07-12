@@ -1,4 +1,4 @@
-.TH "lsm9ds1_accel_settings_t" 3 "Wed Jun 26 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "lsm9ds1_accel_settings_t" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,13 +10,40 @@ lsm9ds1_accel_settings_t
 
 .in +1c
 .ti -1c
-.RI "lsm9ds1_accel_range_t \fBrange\fP"
+.RI "lsm9ds1_xl_decimation_t \fBdecimation\fP"
 .br
 .ti -1c
-.RI "float \fBaccel_mg_lsb\fP"
+.RI "uint8_t \fBz_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBy_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBx_enable\fP"
 .br
 .ti -1c
 .RI "lsm9ds1_xl_odr_t \fBodr\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_accel_range_t \fBrange\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_xl_bandwidth_select_t \fBbw_select\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_xl_filter_t \fBbw_filter\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBhigh_resolution_enable\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_xl_fdl_t \fBfiltered_data_selection\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBhigh_pass_filter_enable\fP"
+.br
+.ti -1c
+.RI "float \fBaccel_resolution\fP"
 .br
 .in -1c
 

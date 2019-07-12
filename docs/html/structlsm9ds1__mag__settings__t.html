@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LSM9DS1 Library
-   &#160;<span id="projectnumber">0.1.0-alpha</span>
+   &#160;<span id="projectnumber">0.4.0-alpha</span>
    </div>
    <div id="projectbrief">Library for C and Python for the LSM9DS1 device.</div>
   </td>
@@ -69,21 +69,60 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a0e1088878f08e1568d774840df840d93"><td class="memItemLeft" align="right" valign="top"><a id="a0e1088878f08e1568d774840df840d93"></a>
-lsm9ds1_mag_gain_t&#160;</td><td class="memItemRight" valign="bottom"><b>gain</b></td></tr>
-<tr class="separator:a0e1088878f08e1568d774840df840d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a246a2bd5b70bb59dd9a0d4e699b1cf2b"><td class="memItemLeft" align="right" valign="top"><a id="a246a2bd5b70bb59dd9a0d4e699b1cf2b"></a>
-float&#160;</td><td class="memItemRight" valign="bottom"><b>mag_mgauss</b></td></tr>
-<tr class="separator:a246a2bd5b70bb59dd9a0d4e699b1cf2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea628007cd6e295c76d70e7dc85d34e2"><td class="memItemLeft" align="right" valign="top"><a id="aea628007cd6e295c76d70e7dc85d34e2"></a>
+float&#160;</td><td class="memItemRight" valign="bottom"><b>mag_resolution</b></td></tr>
+<tr class="separator:aea628007cd6e295c76d70e7dc85d34e2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc83b4c0c7dda83b879c5e57a0389fa0"><td class="memItemLeft" align="right" valign="top"><a id="acc83b4c0c7dda83b879c5e57a0389fa0"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>temp_comp_enable</b></td></tr>
+<tr class="separator:acc83b4c0c7dda83b879c5e57a0389fa0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a736574848c15da9d3b763d4661838071"><td class="memItemLeft" align="right" valign="top"><a id="a736574848c15da9d3b763d4661838071"></a>
+lsm9ds1_mag_xy_op_mode_t&#160;</td><td class="memItemRight" valign="bottom"><b>xy_op_mode</b></td></tr>
+<tr class="separator:a736574848c15da9d3b763d4661838071"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a987206f2b11733c665b12a4a04c16197"><td class="memItemLeft" align="right" valign="top"><a id="a987206f2b11733c665b12a4a04c16197"></a>
 lsm9ds1_mag_odr_t&#160;</td><td class="memItemRight" valign="bottom"><b>odr</b></td></tr>
 <tr class="separator:a987206f2b11733c665b12a4a04c16197"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa74a74e875509bbe75af19693095ff5d"><td class="memItemLeft" align="right" valign="top"><a id="aa74a74e875509bbe75af19693095ff5d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>fast_odr_enable</b></td></tr>
+<tr class="separator:aa74a74e875509bbe75af19693095ff5d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1b40b95311ca959dc38a286d0afb19d"><td class="memItemLeft" align="right" valign="top"><a id="aa1b40b95311ca959dc38a286d0afb19d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>self_test_enable</b></td></tr>
+<tr class="separator:aa1b40b95311ca959dc38a286d0afb19d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e1088878f08e1568d774840df840d93"><td class="memItemLeft" align="right" valign="top"><a id="a0e1088878f08e1568d774840df840d93"></a>
+lsm9ds1_mag_gain_t&#160;</td><td class="memItemRight" valign="bottom"><b>gain</b></td></tr>
+<tr class="separator:a0e1088878f08e1568d774840df840d93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adab66205516cae0aa1bb7d52d1e7c0d1"><td class="memItemLeft" align="right" valign="top"><a id="adab66205516cae0aa1bb7d52d1e7c0d1"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>reboot</b></td></tr>
+<tr class="separator:adab66205516cae0aa1bb7d52d1e7c0d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66337ada9334e77246863cd71834f308"><td class="memItemLeft" align="right" valign="top"><a id="a66337ada9334e77246863cd71834f308"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>reset</b></td></tr>
+<tr class="separator:a66337ada9334e77246863cd71834f308"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab99822cb9925dc8e300526d0ba9d33a8"><td class="memItemLeft" align="right" valign="top"><a id="ab99822cb9925dc8e300526d0ba9d33a8"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>i2c_disable</b></td></tr>
+<tr class="separator:ab99822cb9925dc8e300526d0ba9d33a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6b0676cca51028458ec4257c8bfb1d3c"><td class="memItemLeft" align="right" valign="top"><a id="a6b0676cca51028458ec4257c8bfb1d3c"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>low_power_mode</b></td></tr>
+<tr class="separator:a6b0676cca51028458ec4257c8bfb1d3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad176438bbbc34190fcf771a2d787ef88"><td class="memItemLeft" align="right" valign="top"><a id="ad176438bbbc34190fcf771a2d787ef88"></a>
+lsm9ds1_mag_spi_mode_t&#160;</td><td class="memItemRight" valign="bottom"><b>spi_mode</b></td></tr>
+<tr class="separator:ad176438bbbc34190fcf771a2d787ef88"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a001c0d462ec15d94ca0652ac082441e6"><td class="memItemLeft" align="right" valign="top"><a id="a001c0d462ec15d94ca0652ac082441e6"></a>
 lsm9ds1_mag_op_mode_t&#160;</td><td class="memItemRight" valign="bottom"><b>op_mode</b></td></tr>
 <tr class="separator:a001c0d462ec15d94ca0652ac082441e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab387350fbd2cf6cc29b0d986b37aa88b"><td class="memItemLeft" align="right" valign="top"><a id="ab387350fbd2cf6cc29b0d986b37aa88b"></a>
+lsm9ds1_mag_z_op_mode_t&#160;</td><td class="memItemRight" valign="bottom"><b>z_op_mode</b></td></tr>
+<tr class="separator:ab387350fbd2cf6cc29b0d986b37aa88b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a45d9eb8aacd41d31ff3e8da85b49e9f3"><td class="memItemLeft" align="right" valign="top"><a id="a45d9eb8aacd41d31ff3e8da85b49e9f3"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>little_endian_enable</b></td></tr>
+<tr class="separator:a45d9eb8aacd41d31ff3e8da85b49e9f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e41d33c347e05c76cc44b34f1cfe70b"><td class="memItemLeft" align="right" valign="top"><a id="a1e41d33c347e05c76cc44b34f1cfe70b"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>fast_read_enable</b></td></tr>
+<tr class="separator:a1e41d33c347e05c76cc44b34f1cfe70b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa542d9b6fd40557a5d2563f017e15b8d"><td class="memItemLeft" align="right" valign="top"><a id="aa542d9b6fd40557a5d2563f017e15b8d"></a>
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>block_data_update_enable</b></td></tr>
+<tr class="separator:aa542d9b6fd40557a5d2563f017e15b8d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <hr/>The documentation for this struct was generated from the following file:<ul>
-<li>/home/christopher/Documents/lsm9ds1/inc/<a class="el" href="lsm9ds1_8h_source.html">lsm9ds1.h</a></li>
+<li>/home/christopher/Documents/lsm9ds1/inc/<a class="el" href="lsm9ds1__mag_8h_source.html">lsm9ds1_mag.h</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

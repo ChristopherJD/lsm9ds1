@@ -1,4 +1,4 @@
-.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Wed Jul 3 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -21,7 +21,9 @@
 .br
 \fC#include 'lsm9ds1_regs\&.h'\fP
 .br
-\fC#include 'lsm9ds1_bus\&.h'\fP
+\fC#include 'lsm9ds1_temp\&.h'\fP
+.br
+\fC#include 'lsm9ds1_debug\&.h'\fP
 .br
 
 .SS "Data Structures"
@@ -30,16 +32,19 @@
 .ti -1c
 .RI "struct \fBlsm9ds1_settings\fP"
 .br
+.RI "Stores the settings for each sub device\&. "
 .ti -1c
 .RI "struct \fBlsm9ds1_data_t\fP"
 .br
+.RI "Stores the raw data for each sub device\&. "
 .ti -1c
 .RI "struct \fBlsm9ds1_converted_data_t\fP"
 .br
+.RI "Stores the converted data for each sub device\&. "
 .ti -1c
 .RI "struct \fBlsm9ds1_device_t\fP"
 .br
-.RI "Store data and configurations for the lsm9ds1 device\&. "
+.RI "Data and configurations for the lsm9ds1 device\&. "
 .in -1c
 .SS "Macros"
 
@@ -52,44 +57,43 @@
 
 .in +1c
 .ti -1c
-.RI "typedef int16_t \fBlsm9ds1_temperature_t\fP"
-.br
-.RI "Temperature returned from the LSM9DS1\&. "
-.ti -1c
 .RI "typedef struct \fBlsm9ds1_settings\fP \fBlsm9ds1_settings_t\fP"
 .br
+.RI "Stores the settings for each sub device\&. "
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_data_t\fP \fBlsm9ds1_data_t\fP"
 .br
+.RI "Stores the raw data for each sub device\&. "
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_converted_data_t\fP \fBlsm9ds1_converted_data_t\fP"
 .br
+.RI "Stores the converted data for each sub device\&. "
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_device_t\fP \fBlsm9ds1_device_t\fP"
 .br
-.RI "Store data and configurations for the lsm9ds1 device\&. "
+.RI "Data and configurations for the lsm9ds1 device\&. "
 .in -1c
 .SS "Functions"
 
 .in +1c
 .ti -1c
-.RI "lsm9ds1_status_t \fBupdate_temp\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBupdate_temp\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the temperature of the LSM9DS1\&. "
 .ti -1c
-.RI "lsm9ds1_status_t \fBupdate_accel\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBupdate_accel\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the accelerometer of the LSM9DS1\&. "
 .ti -1c
-.RI "lsm9ds1_status_t \fBupdate_mag\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBupdate_mag\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the magnetometer of the LSM9DS1\&. "
 .ti -1c
-.RI "lsm9ds1_status_t \fBupdate_gyro\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBupdate_gyro\fP (\fBlsm9ds1_device_t\fP *self)"
 .br
 .RI "Read the gyroscope from the LSM9DS1\&. "
 .ti -1c
-.RI "lsm9ds1_status_t \fBlsm9ds1_init\fP (\fBlsm9ds1_device_t\fP *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.RI "\fBlsm9ds1_status_t\fP \fBlsm9ds1_init\fP (\fBlsm9ds1_device_t\fP *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
 .br
 .RI "Initialize the LSM9DS1\&. "
 .in -1c
@@ -110,25 +114,9 @@ Initializes the LSM9DS1 for the Raspberry Pi 3B+\&. Currently the device is wire
 .RE
 .PP
 
-.SH "Typedef Documentation"
-.PP 
-.SS "typedef struct \fBlsm9ds1_device_t\fP  \fBlsm9ds1_device_t\fP"
-
-.PP
-Store data and configurations for the lsm9ds1 device\&. This structure stores all the information pertaining to the lsm9ds1\&.
-.IP "\(bu" 2
-Bus configuration (SPI/I2C) information
-.IP "\(bu" 2
-Gyroscope configuration information
-.IP "\(bu" 2
-Magnetometer configuration information
-.IP "\(bu" 2
-Accelerometer configuration information 
-.PP
-
 .SH "Function Documentation"
 .PP 
-.SS "lsm9ds1_status_t lsm9ds1_init (\fBlsm9ds1_device_t\fP * self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.SS "\fBlsm9ds1_status_t\fP lsm9ds1_init (\fBlsm9ds1_device_t\fP * self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
 
 .PP
 Initialize the LSM9DS1\&. TODO Add description of initialization
@@ -139,15 +127,15 @@ Example Usage:
 #include <lsm9ds1\&.h>
 
 int main() {
-      lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+        lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-      lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-      status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
-      if(status < 0) {
-          fprinf(stderr, "Error initializing lsm9ds1!\n");
-      }
+    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
+    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    if(status < 0) {
+        fprinf(stderr, "Error initializing lsm9ds1!\n");
+    }
 
-      free(lsm9ds1);
+    free(lsm9ds1);
 }
 
 .fi
@@ -161,7 +149,7 @@ int main() {
 .PP
 \fBReturns:\fP
 .RS 4
-Returns the function status\&. 
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
 .RE
 .PP
 \fBSee also:\fP
@@ -173,14 +161,14 @@ Returns the function status\&.
 \fBlsm9ds1_xfer_bus_t\fP 
 .PP
 \fBlsm9ds1_accel_range_t\fP 
-.SH "lsm9ds1_mag_gain_t"
 .PP
+\fBlsm9ds1_mag_gain_t\fP 
 .PP
 \fBlsm9ds1_gyro_scale_t\fP 
 .RE
 .PP
 
-.SS "lsm9ds1_status_t update_accel (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP update_accel (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the accelerometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current accelerometer reading\&. You must first create this structure before reading\&.
@@ -204,6 +192,10 @@ int main() {
             fprintf(stderr, "Error reading accelerometer!\n");
         }
 
+    printf("Accelerometer x: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.x);
+    printf("Accelerometer y: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.y);
+    printf("Accelerometer z: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.z);
+
     free(lsm9ds1);
 }
 
@@ -218,7 +210,7 @@ int main() {
 .PP
 \fBReturns:\fP
 .RS 4
-Returns the function status\&. 
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
 .RE
 .PP
 \fBSee also:\fP
@@ -239,7 +231,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "lsm9ds1_status_t update_gyro (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP update_gyro (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the gyroscope from the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current gyroscope reading\&. You must first create this structure before reading\&.
@@ -258,10 +250,14 @@ int main() {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
     }
 
-        status = lsm9ds1\&.update_accel(lsm9ds1);
+        status = lsm9ds1\&.update_gyro(lsm9ds1);
         if(status < 0) {
             fprintf(stderr, "Error reading gyroscope!\n");
         }
+
+    printf("Gyroscope x: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.x);
+    printf("Gyroscope y: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.y);
+    printf("Gyroscope z: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.z);
 
     free(lsm9ds1);
 }
@@ -277,7 +273,7 @@ int main() {
 .PP
 \fBReturns:\fP
 .RS 4
-Returns the function status\&. 
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
 .RE
 .PP
 \fBSee also:\fP
@@ -298,7 +294,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "lsm9ds1_status_t update_mag (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP update_mag (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the magnetometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current magnetometer reading\&. You must first create this structure before reading\&.
@@ -322,6 +318,10 @@ int main() {
             fprintf(stderr, "Error reading magnetometer!\n");
         }
 
+    printf("Magnetometer x: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.x);
+    printf("Magnetometer y: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.y);
+    printf("Magnetometer z: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.z);
+
     free(lsm9ds1);
 }
 
@@ -336,7 +336,7 @@ int main() {
 .PP
 \fBReturns:\fP
 .RS 4
-Returns the function status\&. 
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
 .RE
 .PP
 \fBSee also:\fP
@@ -357,7 +357,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "lsm9ds1_status_t update_temp (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP update_temp (\fBlsm9ds1_device_t\fP * self)"
 
 .PP
 Read the temperature of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current temperature\&. You must first create this structure before reading\&.
@@ -381,6 +381,8 @@ int main() {
             fprintf(stderr, "Error reading temperature!\n");
         }
 
+    printf("Temperature: %f\n", lsm9ds1\&.converted_data\&.temperature);
+
     free(lsm9ds1);
 }
 
@@ -395,7 +397,7 @@ int main() {
 .PP
 \fBReturns:\fP
 .RS 4
-Returns the function status\&. 
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
 .RE
 .PP
 \fBSee also:\fP

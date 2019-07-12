@@ -1,11 +1,14 @@
-.TH "lsm9ds1_converted_data_t" 3 "Wed Jul 3 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "lsm9ds1_converted_data_t" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
-lsm9ds1_converted_data_t
+lsm9ds1_converted_data_t \- Stores the converted data for each sub device\&.  
+
 .SH SYNOPSIS
 .br
 .PP
+.PP
+\fC#include <lsm9ds1\&.h>\fP
 .SS "Data Fields"
 
 .in +1c
@@ -13,15 +16,18 @@ lsm9ds1_converted_data_t
 .RI "float \fBtemperature\fP"
 .br
 .ti -1c
-.RI "accelerometer_converted_data_t \fBaccelerometer\fP"
+.RI "\fBaccelerometer_converted_data_t\fP \fBaccelerometer\fP"
 .br
 .ti -1c
-.RI "mag_converted_data_t \fBmagnetometer\fP"
+.RI "\fBmag_converted_data_t\fP \fBmagnetometer\fP"
 .br
 .ti -1c
-.RI "gyro_converted_data_t \fBgyroscope\fP"
+.RI "\fBgyro_converted_data_t\fP \fBgyroscope\fP"
 .br
 .in -1c
+.SH "Detailed Description"
+.PP 
+Stores the converted data for each sub device\&. 
 
 .SH "Author"
 .PP 

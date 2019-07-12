@@ -1,4 +1,4 @@
-.TH "lsm9ds1_mag_settings_t" 3 "Wed Jun 26 2019" "Version 0.1.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "lsm9ds1_mag_settings_t" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,16 +10,55 @@ lsm9ds1_mag_settings_t
 
 .in +1c
 .ti -1c
-.RI "lsm9ds1_mag_gain_t \fBgain\fP"
+.RI "float \fBmag_resolution\fP"
 .br
 .ti -1c
-.RI "float \fBmag_mgauss\fP"
+.RI "uint8_t \fBtemp_comp_enable\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_mag_xy_op_mode_t \fBxy_op_mode\fP"
 .br
 .ti -1c
 .RI "lsm9ds1_mag_odr_t \fBodr\fP"
 .br
 .ti -1c
+.RI "uint8_t \fBfast_odr_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBself_test_enable\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_mag_gain_t \fBgain\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBreboot\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBreset\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBi2c_disable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBlow_power_mode\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_mag_spi_mode_t \fBspi_mode\fP"
+.br
+.ti -1c
 .RI "lsm9ds1_mag_op_mode_t \fBop_mode\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_mag_z_op_mode_t \fBz_op_mode\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBlittle_endian_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBfast_read_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBblock_data_update_enable\fP"
 .br
 .in -1c
 
