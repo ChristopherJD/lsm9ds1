@@ -54,6 +54,7 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_MAG_ALREADY_RESET = -21,
 	LSM9DS1_ACCEL_GYRO_ALREADY_RESET = -22,
 	LSM9DS1_BUS_ALREADY_OPEN = -23,
+	LSM9DS1_CONFIG_FILE_NOT_FOUND = -24,
 } lsm9ds1_status_t;
 
 #endif

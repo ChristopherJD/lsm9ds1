@@ -45,6 +45,7 @@ extern "C"
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_temp.h"
 #include "lsm9ds1_debug.h"
+#include "lsm9ds1_config.h"
 
 #define _BUILD_VERSION BUILD_VERSION
 

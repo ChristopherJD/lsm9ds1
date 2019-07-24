@@ -86,7 +86,7 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
 	// Get the raw data
 	status = lsm9ds1_read_accel(&(self->bus), &(self->raw_data.accelerometer));
 
-	DEBUG_PRINT("accel_mg_lsb: %f\n", self->settings.accelerometer.accel_mg_lsb);
+	DEBUG_PRINT("accel_mg_lsb: %f\n", self->settings.accelerometer.accel_resolution);
 	DEBUG_PRINT("Accel Raw (x): 0x%X\n", self->raw_data.accelerometer.x);
 	DEBUG_PRINT("Accel Raw (y): 0x%X\n", self->raw_data.accelerometer.y);
 	DEBUG_PRINT("Accel Raw (z): 0x%X\n", self->raw_data.accelerometer.z);
@@ -111,7 +111,7 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
 	// Get the raw data
 	status = lsm9ds1_read_mag(&(self->bus), &(self->raw_data.magnetometer));
 
-	DEBUG_PRINT("mag_mgauss: %f\n", self->settings.magnetometer.mag_mgauss);
+	DEBUG_PRINT("mag_mgauss: %f\n", self->settings.magnetometer.mag_resolution);
 	DEBUG_PRINT("Mag Raw (x): 0x%X\n", self->raw_data.magnetometer.x);
 	DEBUG_PRINT("Mag Raw (y): 0x%X\n", self->raw_data.magnetometer.y);
 	DEBUG_PRINT("Mag Raw (z): 0x%X\n", self->raw_data.magnetometer.z);
@@ -136,7 +136,7 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 	// Get the raw data
 	status = lsm9ds1_read_gyro(&(self->bus), &(self->raw_data.gyroscope));
 
-	DEBUG_PRINT("gyro_dps_digit: %f\n", self->settings.gyroscope.gyro_dps_digit);
+	DEBUG_PRINT("gyro_dps_digit: %f\n", self->settings.gyroscope.gyro_resolution);
 	DEBUG_PRINT("Gyro Raw (x): 0x%X\n", self->raw_data.gyroscope.x);
 	DEBUG_PRINT("Gyro Raw (y): 0x%X\n", self->raw_data.gyroscope.y);
 	DEBUG_PRINT("Gyro Raw (z): 0x%X\n", self->raw_data.gyroscope.z);

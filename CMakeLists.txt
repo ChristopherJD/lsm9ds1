@@ -65,6 +65,7 @@ SET(SOURCES
     "src/lsm9ds1_gyro.c"
     "src/lsm9ds1_mag.c"
     "src/lsm9ds1_temp.c" 
+    "src/lsm9ds1_config.c" 
 )
 
 ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES})
@@ -79,6 +80,7 @@ FILE(GLOB TEST_SOURCES
 ADD_EXECUTABLE(lsm9ds1_test ${TEST_SOURCES})
 TARGET_LINK_LIBRARIES(lsm9ds1_test cunit)
 TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
+TARGET_LINK_LIBRARIES(lsm9ds1_test cjson)
 ###############################################################################
 
 ######################## Install targets ######################################
