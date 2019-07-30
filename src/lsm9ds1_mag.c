@@ -143,7 +143,7 @@ lsm9ds1_status_t lsm9ds1_setup_mag(lsm9ds1_bus_t *bus,
 
 	// Ensure we have the correct device
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-	status = lsm9ds1_select_sub_device(bus, LSM9DS1_MAG);
+	status = is_correct_sub_device(bus, LSM9DS1_MAG);
 	if (status < 0) {
 		return status;
 	}
@@ -213,7 +213,7 @@ lsm9ds1_status_t lsm9ds1_read_mag(lsm9ds1_bus_t *bus, mag_raw_data_t *raw_data) 
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	read_status = lsm9ds1_select_sub_device(bus, LSM9DS1_MAG);
+	read_status = is_correct_sub_device(bus, LSM9DS1_MAG);
 	if (read_status < 0) {
 		return read_status;
 	}

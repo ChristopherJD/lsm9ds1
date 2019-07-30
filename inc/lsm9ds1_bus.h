@@ -32,7 +32,8 @@
 #include <stdbool.h>
 #include "lsm9ds1_error.h"
 
-#define DEVICE "/dev/spidev0.0"
+#define ACCEL "/dev/spidev0.0"
+#define MAG "/dev/spidev0.1"
 #define MAG_CS 21	//Wiring Pi Pin number for the magnetometer CS.
 
 #define SPI_READ 0x80
@@ -49,7 +50,7 @@ typedef enum {
 	LSM9DS1_UNKNOWN_DEVICE = 0,
 	LSM9DS1_ACCEL_GYRO = 0x68,
 	LSM9DS1_MAG = 0x3D,
-} lsm9ds1_sub_device_t;
+} lsm9ds1_sub_device_id_t;
 
 typedef enum {
 	LSM9DS1_READ, LSM9DS1_WRITE,
@@ -70,32 +71,27 @@ typedef struct lsm9ds1_i2c_settings_t {
 	uint8_t bits;
 }lsm9ds1_i2c_settings_t;
 
-typedef struct lsm9ds1_spi_t {
-	lsm9ds1_spi_settings_t settings;
-	lsm9ds1_xfer_t op;
-	uint8_t address;
-	uint8_t tx;
-	uint8_t rx[1];
-}lsm9ds1_spi_t;
-
 typedef struct lsm9ds1_i2c_t {
-	lsm9ds1_i2c_settings_t settings;
-	lsm9ds1_xfer_t op;
+	bool initialized;
+	//Future use
+}lsm9ds1_i2c_t;
+
+typedef struct lsm9ds1_spi_t {
+	bool initialized;
+	char name[256];
+	int32_t fd;
 	uint8_t address;
 	uint8_t tx;
 	uint8_t rx[1];
-}lsm9ds1_i2c_t;
+	lsm9ds1_xfer_t op;
+	lsm9ds1_spi_settings_t settings;
+}lsm9ds1_spi_t;
 
 typedef struct lsm9ds1_bus_t {
 	bool initialized;
-	int32_t fd;
-	char device[256];
+	lsm9ds1_sub_device_id_t id;
 	lsm9ds1_spi_t spi;
 	lsm9ds1_i2c_t i2c;
-	lsm9ds1_sub_device_t current_sub_device;
-
-	lsm9ds1_status_t (*transfer)(struct lsm9ds1_bus_t *self, lsm9ds1_xfer_t op, uint8_t address, uint8_t tx, uint8_t *rx);
-	lsm9ds1_status_t (*cs_arbiter)(struct lsm9ds1_bus_t *self);
 }lsm9ds1_bus_t;
 
 lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8_t tx);

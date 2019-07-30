@@ -24,114 +24,56 @@
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
 
-static lsm9ds1_status_t lsm9ds1_mag_cs(int pin_state) {
-	digitalWrite(MAG_CS, pin_state);
-	return LSM9DS1_SUCCESS;
-}
-
-static lsm9ds1_status_t lsm9ds1_setup_mag_cs() {
-
-	//Setup for Mag CS
-	(void)wiringPiSetup();
-
-	(void)pinMode(MAG_CS, OUTPUT);
-
-	// CS is logic low, so set value HIGH to have this device ignored until
-	// otherwise decided.
-	(void) lsm9ds1_mag_cs(HIGH);
-
-	return LSM9DS1_SUCCESS;
-}
-
-static lsm9ds1_status_t cs_arbiter(lsm9ds1_bus_t *self) {
+static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
+                                 uint8_t address, uint8_t tx) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
-
-	switch (self->current_sub_device) {
-	case LSM9DS1_MAG:
-
-		self->spi.settings.mode |= SPI_NO_CS;
-		ret = ioctl(self->fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
-		if (ret == -1) {
-			return LSM9DS1_UNABLE_TO_SET_CS;
-		}
-
-		DEBUG_PRINT("Selecting LSM9DS1_MAG (0x%X)\n", self->current_sub_device);
-
-		(void) lsm9ds1_mag_cs(LOW);
-
-		break;
-	case LSM9DS1_ACCEL_GYRO:
-		//Make sure CS is selected.
-		self->spi.settings.mode &= ~(SPI_NO_CS);
-		ret = ioctl(self->fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
-		if (ret == -1) {
-			return LSM9DS1_UNABLE_TO_SET_CS;
-		}
-
-		DEBUG_PRINT("Selecting LSM9DS1_ACCEL_GYRO (0x%X)\n", self->current_sub_device);
-
-		break;
-	default:
-		return LSM9DS1_UNKNOWN_SUB_DEVICE;
-	}
-
-	return LSM9DS1_SUCCESS;
-}
-
-static lsm9ds1_status_t transfer(lsm9ds1_bus_t *self, lsm9ds1_xfer_t op,
-                                 uint8_t address, uint8_t tx, uint8_t *rx) {
-
-	int8_t ret = LSM9DS1_UNKNOWN_ERROR;
-
-	// Select the chip select based on the current_sub_device.
-	self->cs_arbiter(self);
-
 	uint8_t addr_xfer = 0;
+
+	//Update bus info
+	if(!self->initialized) {
+		return LSM9DS1_BUS_NOT_INTIALIZED;
+	}
 
 	struct spi_ioc_transfer tr[2] = { 0 };
 
+	self->op = op;
+	self->tx = tx;
+
 	switch (op) {
-	case LSM9DS1_READ:
-		tr[1].rx_buf = (unsigned long) rx;
-		tr[1].len = sizeof(*rx);
-		tr[1].speed_hz = self->spi.settings.speed;
-		tr[1].delay_usecs = self->spi.settings.spi_delay;
-		tr[1].bits_per_word = self->spi.settings.bits;
+		case LSM9DS1_READ:
+			tr[1].rx_buf = (unsigned long)self->rx;
+			tr[1].len = sizeof(self->rx);
+			tr[1].speed_hz = self->settings.speed;
+			tr[1].delay_usecs = self->settings.spi_delay;
+			tr[1].bits_per_word = self->settings.bits;
 
-		addr_xfer = (SPI_READ | address);
-		break;
-	case LSM9DS1_WRITE:
-		tr[1].tx_buf = (unsigned long) &tx;
-		tr[1].len = sizeof(tx);
-		tr[1].speed_hz = self->spi.settings.speed;
-		tr[1].delay_usecs = self->spi.settings.spi_delay;
-		tr[1].bits_per_word = self->spi.settings.bits;
+			addr_xfer = (SPI_READ | address);
+			break;
+		case LSM9DS1_WRITE:
+			tr[1].tx_buf = (unsigned long) &tx;
+			tr[1].len = sizeof(tx);
+			tr[1].speed_hz = self->settings.speed;
+			tr[1].delay_usecs = self->settings.spi_delay;
+			tr[1].bits_per_word = self->settings.bits;
 
-		if (NULL != rx) {
-			rx = NULL;
-		}
-
-		addr_xfer = (SPI_WRITE | address);
-		break;
-	default:
-		return LSM9DS1_UNSUPPORTED_OP;
+			addr_xfer = (SPI_WRITE | address);
+			break;
+		default:
+			return LSM9DS1_UNSUPPORTED_OP;
 	}
 
-	// Setup the address to w/r
+	// Setup the address to r/w
+	self->address = addr_xfer;
 	tr[0].tx_buf = (unsigned long) &addr_xfer;
 	tr[0].len = sizeof(tx);
-	tr[0].speed_hz = self->spi.settings.speed;
-	tr[0].delay_usecs = self->spi.settings.spi_delay;
-	tr[0].bits_per_word = self->spi.settings.bits;
+	tr[0].speed_hz = self->settings.speed;
+	tr[0].delay_usecs = self->settings.spi_delay;
+	tr[0].bits_per_word = self->settings.bits;
 
 	ret = ioctl(self->fd, SPI_IOC_MESSAGE(2), tr);
-	if (LSM9DS1_MAG == self->current_sub_device) {
-		// Set back to high after the message was sent.
-		(void) lsm9ds1_mag_cs(HIGH);
-	}
-	DEBUG_PRINT("TX: 0x%X\n", self->spi.tx);
-	DEBUG_PRINT("RX: 0x%X\n", self->spi.rx[0]);
+	DEBUG_PRINT("TX: 0x%X\n", self->tx);
+	DEBUG_PRINT("RX: 0x%X\n", self->rx[0]);
 	if (ret < 1) {
 		return LSM9DS1_SPI_BUS_XFER_ERROR;
 	}
@@ -142,11 +84,21 @@ static lsm9ds1_status_t transfer(lsm9ds1_bus_t *self, lsm9ds1_xfer_t op,
 lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8_t tx) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
+	lsm9ds1_xfer_t operation = LSM9DS1_WRITE;
 
-	//RX doesn't matter so give it NULL
-	self->spi.op = LSM9DS1_WRITE;
-	self->spi.tx = tx;
-	ret = self->transfer(self, self->spi.op, self->spi.address, self->spi.tx, NULL);
+	if(!self->initialized) {
+		return LSM9DS1_BUS_NOT_INTIALIZED;
+	}
+
+	if(self->spi.initialized) {
+		ret = spi_transfer(&(self->spi), operation, register_addr, tx);
+	}
+	else if(self->i2c.initialized) {
+		// Not implemented
+	}
+	else {
+		return LSM9DS1_BUS_NOT_INTIALIZED;
+	}
 
 	return ret;
 }
@@ -154,11 +106,21 @@ lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8
 lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
+	lsm9ds1_xfer_t operation = LSM9DS1_READ;
 
-	// tx doesn't matter, so just use 0.
-	self->spi.op = LSM9DS1_READ;
-	self->spi.address = address;
-	ret = self->transfer(self, self->spi.op, self->spi.address, 0, self->spi.rx);
+	if(!self->initialized) {
+		return LSM9DS1_BUS_NOT_INTIALIZED;
+	}
+
+	if(self->spi.initialized) {
+		ret = spi_transfer(&(self->spi), operation, address, 0);
+	}
+	else if(self->i2c.initialized) {
+		// Not implemented 
+	}
+	else {
+		return LSM9DS1_BUS_NOT_INTIALIZED;
+	}
 
 	return ret;
 }
@@ -187,41 +149,33 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 
 	int8_t ret = -1;	// Function return codes.
 
-	// Setup the magnetometer, this only needs to be done once.
-	DEBUG_PRINT("Setting up mag cs...\n");
-	ret = lsm9ds1_setup_mag_cs();
-	if (ret < 0) {
-		DEBUG_PRINT("Error setting up mag cs!\n");
-		return ret;
-	}
-
 	self->spi.settings.mode 		= 0;
 	self->spi.settings.bits 		= 8;
 	self->spi.settings.speed 		= 15000000;
 	self->spi.settings.spi_delay 	= 0;
-	self->transfer = transfer;
-	self->cs_arbiter = cs_arbiter;
 
-	strncpy(self->device, DEVICE, sizeof(self->device));
+	strncpy(self->spi.name, ACCEL, sizeof(self->spi.name));
+	strncpy(self->spi.name, MAG, sizeof(self->spi.name));
 
-	DEBUG_PRINT("Device fd: %s\n", self->device);
+	DEBUG_PRINT("Device fd: %s\n", self->spi.name);
+	DEBUG_PRINT("Device fd: %s\n", self->spi.name);
 
-	self->fd = open(self->device, O_RDWR);
-	if (self->fd <= 0) {
+	self->spi.fd = open(self->spi.name, O_RDWR);
+	if (self->spi.fd <= 0) {
 		return LSM9DS1_NOT_FOUND;
 	}
 
-	DEBUG_PRINT("Device fd: %d\n", self->fd);
+	DEBUG_PRINT("Device fd: %d\n", self->spi.fd);
 
 	// Set to mode 3
-	self->spi.settings.mode |= SPI_CPOL | SPI_CPHA | SPI_NO_CS;
-	ret = ioctl(self->fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
+	self->spi.settings.mode |= SPI_CPOL | SPI_CPHA;
+	ret = ioctl(self->spi.fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
 
 #if DEBUG > 0
-	ret = ioctl(self->fd, SPI_IOC_RD_MODE, &(self->spi.settings.mode));
+	ret = ioctl(self->spi.fd, SPI_IOC_RD_MODE, &(self->spi.settings.mode));
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
 	}
@@ -229,16 +183,18 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 #endif
 
 	// Set the number of bits per word.
-	ret = ioctl(self->fd, SPI_IOC_WR_BITS_PER_WORD, &(self->spi.settings.bits));
+	ret = ioctl(self->spi.fd, SPI_IOC_WR_BITS_PER_WORD, &(self->spi.settings.bits));
 	if (ret == -1) {
 		return LSM9DS1_NUM_BITS_NOT_SET;
 	}
 
 	// Set the max clock speed in hz
-	ret = ioctl(self->fd, SPI_IOC_WR_MAX_SPEED_HZ, &(self->spi.settings.speed));
+	ret = ioctl(self->spi.fd, SPI_IOC_WR_MAX_SPEED_HZ, &(self->spi.settings.speed));
 	if (ret == -1) {
 		return LSM9DS1_CLOCK_NOT_SET;
 	}
+
+	self->spi.initialized = true;
 
 	return LSM9DS1_SUCCESS;
 }

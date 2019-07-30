@@ -19,16 +19,36 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Functions to access the lsm9ds1.
- *
- * Initializes the LSM9DS1 for the Raspberry Pi 3B+. Currently the device is wired
- * to the first spi device. Sets up the magnetometer, accelerometer and gyroscope.
- * Provides functions to read and write the data collected on the LSM9DS1.
+ * @brief 
  */
 
-#ifndef LSM9DS1_H_
-#define LSM9DS1_H_
+#ifndef LSM9DS1_CONFIG_H_
+#define LSM9DS1_CONFIG_H_
 
+#include <stdint.h>
+#include "lsm9ds1_error.h"
+
+#define LSM9DS1_MAX_STR_SIZE 256
 #define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
+
+struct lsm9ds1_spi_settings {
+	uint32_t speed;
+};
+
+struct lsm9ds1_spi {
+	struct lsm9ds1_spi_settings settings;
+};
+
+struct lsm9ds1_bus {
+	uint8_t device[LSM9DS1_MAX_STR_SIZE];
+	struct lsm9ds1_spi spi;
+};
+
+typedef struct lsm9ds1_config_t {
+	uint8_t name[LSM9DS1_MAX_STR_SIZE];
+	struct lsm9ds1_bus bus;
+}lsm9ds1_config_t;
+
+lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config);
 
 #endif

@@ -46,14 +46,14 @@ void test_lsm9ds1_read_sub_device_accel_gryo(void) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(&(lsm9ds1->bus), LSM9DS1_ACCEL_GYRO);
+	status = is_correct_sub_device(&(lsm9ds1->sub_device.accelerometer.bus), LSM9DS1_ACCEL_GYRO);
 	CU_ASSERT(0 == status);
 }
 
 void test_lsm9ds1_read_sub_device_mag(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1_select_sub_device(&(lsm9ds1->bus), LSM9DS1_MAG);
+	status = is_correct_sub_device(&(lsm9ds1->sub_device.magnetometer.bus), LSM9DS1_MAG);
 	CU_ASSERT(0 == status);
 }
 

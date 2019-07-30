@@ -79,6 +79,18 @@ typedef struct lsm9ds1_converted_data_t {
 	gyro_converted_data_t gyroscope;
 } lsm9ds1_converted_data_t;
 
+typedef struct lsm9ds1_sub_device_t {
+	lsm9ds1_bus_t bus;
+}lsm9ds1_sub_device_t;
+
+/**
+ * @brief LSM9DS1 sub device.
+ */
+typedef struct lsm9ds1_sub_devices_t {
+	lsm9ds1_sub_device_t accelerometer;
+	lsm9ds1_sub_device_t magnetometer;
+}lsm9ds1_sub_devices_t;
+
 /**
  * @brief Data and configurations for the lsm9ds1 device.
  */
@@ -88,7 +100,7 @@ typedef struct lsm9ds1_device_t {
 	lsm9ds1_xfer_bus_t xfer_bus;
 	lsm9ds1_data_t raw_data;
 	lsm9ds1_converted_data_t converted_data;
-	lsm9ds1_bus_t bus;
+	lsm9ds1_sub_devices_t sub_device;
 
 	lsm9ds1_status_t (*update_temp)(struct lsm9ds1_device_t *self);
 	lsm9ds1_status_t (*update_accel)(struct lsm9ds1_device_t *self);

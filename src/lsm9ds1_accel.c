@@ -107,7 +107,7 @@ lsm9ds1_status_t lsm9ds1_setup_accel(lsm9ds1_bus_t *bus,
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	status = lsm9ds1_select_sub_device(bus, LSM9DS1_ACCEL_GYRO);
+	status = is_correct_sub_device(bus, LSM9DS1_ACCEL_GYRO);
 	if (status < 0) {
 		return status;
 	}
@@ -166,7 +166,7 @@ lsm9ds1_status_t lsm9ds1_read_accel(lsm9ds1_bus_t *bus, accelerometer_raw_data_t
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	read_status = lsm9ds1_select_sub_device(bus, LSM9DS1_ACCEL_GYRO);
+	read_status = is_correct_sub_device(bus, LSM9DS1_ACCEL_GYRO);
 	if (read_status < 0) {
 		return read_status;
 	}

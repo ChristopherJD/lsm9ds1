@@ -1,0 +1,11 @@
+{
+	"name": "lsm9ds1",
+	"bus": {
+		"device": "/dev/spidev0.0",
+		"spi": {
+			"settings": {
+				"speed": 15000000
+			}
+		}
+	}
+}

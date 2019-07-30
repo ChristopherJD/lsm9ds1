@@ -5,7 +5,19 @@
 		[
 			[
 				"mag",
-				"magnetometer"
+				"mag_reset"
+			],
+			[
+				"accel",
+				"accelerometer"
+			],
+			[
+				"accel_reso",
+				"accel_resolution"
+			],
+			[
+				"LSM9DS1_BUS",
+				"LSM9DS1_BUS_ALREADY_OPEN"
 			],
 			[
 				"REL",
@@ -176,29 +188,130 @@
 	"buffers":
 	[
 		{
-			"contents": "",
+			"contents": "—Ⓕ– transfer ( ) { … } — function\n—Ⓕ– lsm9ds1_write ( ) { … } — function\n—Ⓕ– lsm9ds1_read ( ) { … } — function\n—Ⓕ– lsm9ds1_register_write ( ) { … } — function\n—Ⓕ– init_spi ( ) { … } — function",
 			"settings":
 			{
-				"buffer_size": 0,
+				"buffer_size": 192,
 				"line_ending": "Unix",
 				"name": "𝌆 Outline",
 				"scratch": true
 			}
 		},
 		{
-			"file": "build.sh",
+			"file": "src/lsm9ds1.c",
 			"settings":
 			{
-				"buffer_size": 1698,
+				"buffer_size": 7572,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "CMakeLists.txt",
+			"file": "src/lsm9ds1_config.c",
 			"settings":
 			{
-				"buffer_size": 4266,
+				"buffer_size": 3001,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_temp.c",
+			"settings":
+			{
+				"buffer_size": 1784,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_mag.c",
+			"settings":
+			{
+				"buffer_size": 8390,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_gyro.c",
+			"settings":
+			{
+				"buffer_size": 4403,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_common.c",
+			"settings":
+			{
+				"buffer_size": 2907,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "inc/lsm9ds1_common.h",
+			"settings":
+			{
+				"buffer_size": 1272,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "inc/lsm9ds1.h",
+			"settings":
+			{
+				"buffer_size": 9249,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_bus.c",
+			"settings":
+			{
+				"buffer_size": 5027,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "src/lsm9ds1_accel.c",
+			"settings":
+			{
+				"buffer_size": 6822,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"contents": "/* \n * This file is part of the lsm9ds1 library (https://github.com/ChristopherJD/lsm9ds1.git).\n * Copyright (c) 2019 Christopher Jordan-Denny.\n * \n * This program is free software: you can redistribute it and/or modify  \n * it under the terms of the GNU General Public License as published by  \n * the Free Software Foundation, version 3.\n *\n * This program is distributed in the hope that it will be useful, but \n * WITHOUT ANY WARRANTY; without even the implied warranty of \n * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU \n * General Public License for more details.\n *\n * You should have received a copy of the GNU General Public License \n * along with this program. If not, see <http://www.gnu.org/licenses/>.\n*/\n\n/**\n * @file\n * @author Christopher Jordan-Denny\n * @date\n * @brief SPI and I2C Bus functions and data.\n *\n * Initializes and sets up the bus to the lsm9ds1. Provides read and write\n * functions to the bus.\n */\n\n#ifndef LSM9DS1_BUS_H_\n#define LSM9DS1_BUS_H_\n\n#include <stdint.h>\n#include <stdbool.h>\n#include \"lsm9ds1_error.h\"\n\n#define ACCEL \"/dev/spidev0.0\"\n#define MAG \"/dev/spidev0.1\"\n#define MAG_CS 21\t//Wiring Pi Pin number for the magnetometer CS.\n\n#define SPI_READ 0x80\n#define SPI_WRITE 0x0\n\n/**\n * @brief Sub device of the LSM9DS1\n *\n * The LSM9DS1 contains two sub-devices. The accelerometer gyroscope combo and\n * the magnetometer. The value 0 is used as an uknown device.\n *\n */\ntypedef enum {\n\tLSM9DS1_UNKNOWN_DEVICE = 0,\n\tLSM9DS1_ACCEL_GYRO = 0x68,\n\tLSM9DS1_MAG = 0x3D,\n} lsm9ds1_sub_device_id_t;\n\ntypedef enum {\n\tLSM9DS1_READ, LSM9DS1_WRITE,\n} lsm9ds1_xfer_t;\n\ntypedef enum lsm9ds1_xfer_bus_t {\n\tLSM9DS1_SPI_BUS, LSM9DS1_I2C_BUS, NUM_BUS_TYPES,\n} lsm9ds1_xfer_bus_t;\n\ntypedef struct lsm9ds1_spi_settings_t {\n\tuint8_t mode;\n\tuint8_t bits;\n\tuint32_t speed;\n\tuint16_t spi_delay;\n}lsm9ds1_spi_settings_t;\n\ntypedef struct lsm9ds1_i2c_settings_t {\n\tuint8_t bits;\n}lsm9ds1_i2c_settings_t;\n\ntypedef struct lsm9ds1_i2c_t {\n\t//Future use\n}lsm9ds1_i2c_t;\n\ntypedef struct lsm9ds1_spi_t {\n\tbool initialized;\n\tchar name[256];\n\tint32_t fd;\n\tuint8_t address;\n\tuint8_t tx;\n\tuint8_t rx[1];\n\tlsm9ds1_xfer_t op;\n\tlsm9ds1_spi_settings_t settings;\n\tlsm9ds1_status_t (*transfer)();\n}lsm9ds1_spi_t;\n\ntypedef struct lsm9ds1_bus_t {\n\tbool initialized;\n\tlsm9ds1_sub_device_id_t id;\n\tlsm9ds1_spi_t spi;\n\tlsm9ds1_i2c_t i2c;\n\tlsm9ds1_status_t \n}lsm9ds1_bus_t;\n\nlsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8_t tx);\nlsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address);\nlsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, uint8_t mask, uint8_t value);\nlsm9ds1_status_t init_spi(lsm9ds1_spi_t *self);\n\n#endif\n",
+			"file": "inc/lsm9ds1_bus.h",
+			"file_size": 2688,
+			"file_write_time": 132087194518678742,
+			"settings":
+			{
+				"buffer_size": 2707,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "README.md",
+			"settings":
+			{
+				"buffer_size": 8080,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "inc/lsm9ds1_error.h",
+			"settings":
+			{
+				"buffer_size": 1989,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -289,30 +402,43 @@
 	"expanded_folders":
 	[
 		"/home/christopher/Documents/lsm9ds1",
-		"/home/christopher/Documents/lsm9ds1/Debug",
+		"/home/christopher/Documents/lsm9ds1/conf",
 		"/home/christopher/Documents/lsm9ds1/inc",
 		"/home/christopher/Documents/lsm9ds1/src",
 		"/home/christopher/Documents/lsm9ds1/tests"
 	],
 	"file_history":
 	[
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h",
-		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_wrap.c",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_bus.h",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_accel.h",
-		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1.c",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_mag.h",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_regs.h",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_error.h",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_gyro.h",
-		"/home/christopher/Documents/lsm9ds1/lsm9ds1.sublime-project",
-		"/home/christopher/Documents/lsm9ds1/build.sh",
 		"/home/christopher/Documents/lsm9ds1/CMakeLists.txt",
-		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_private.h",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_config.h",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_config.c",
+		"/home/christopher/Documents/lsm9ds1/conf/lsm9ds1.json",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1.c",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_accel.h",
+		"/home/christopher/Documents/lsm9ds1/Doxyfile.in",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9d1_config.c",
+		"/home/christopher/Documents/lsm9ds1/README.md",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_wrap.c",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_mag.c",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_gyro.c",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_gyro.h",
 		"/home/christopher/Documents/lsm9ds1/tests/test.c",
 		"/home/christopher/Documents/lsm9ds1/tests/test.py",
-		"/home/christopher/Documents/lsm9ds1/README.md",
-		"/home/christopher/Documents/lsm9ds1/Doxyfile.in",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_mag.h",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_accel.c",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_temp.c",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_common.c",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_bus.h",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_common.h",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_debug.h",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_temp.h",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_regs.h",
+		"/home/christopher/Documents/lsm9ds1/src/lsm9ds1_bus.c",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_error.h",
+		"/home/christopher/Documents/lsm9ds1/build.sh",
+		"/home/christopher/Documents/lsm9ds1/lsm9ds1.sublime-project",
+		"/home/christopher/Documents/lsm9ds1/inc/lsm9ds1_private.h",
 		"/home/christopher/.config/sublime-text-3/Packages/PlainTasks/messages/Tutorial.todo",
 		"/home/christopher/.config/sublime-text-3/Packages/SublimeAStyleFormatter/Default (Linux).sublime-keymap",
 		"/home/christopher/Documents/lsm9ds1/lsm9ds1.sublime-build",
@@ -336,6 +462,90 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"self->spi",
+			"self",
+			"self->spi",
+			"bus",
+			"lsm9ds1_select_sub_device",
+			"select_sub_device",
+			"self->device.accelerometer.",
+			"dei",
+			"self.deiv",
+			"self.device",
+			"self->fd",
+			"config_sting_size",
+			"name",
+			"speed",
+			"spi.settings.speed",
+			"pi.settings.speed",
+			"SPEED_HZ",
+			"speed_hz",
+			"speed",
+			"source",
+			"input",
+			"Accelerometer",
+			"magnetometer",
+			"Accelerometer",
+			"accelerometer",
+			"Accelerometer",
+			"accelerometer",
+			"Accelerometer",
+			"accelerometer",
+			"GYRO_DPS_DIGIT",
+			"gyro_dps_digit",
+			"GYRO_DPS_DIGIT",
+			"gyro_dps_digit",
+			"mag_mgauss",
+			"&(self->bus)",
+			"self->bus.",
+			"self",
+			"self->settings.gyroscope.",
+			"self->bus.",
+			"&(self->bus)",
+			"elf->bus.",
+			"&(self->bus)",
+			"self->settings.magnetometer.",
+			"self->settings.accelerometer.",
+			"&(self->bus)",
+			"self->bus.",
+			"elf->settings.accelerometer.",
+			"self->bus.",
+			"&(self->bus)",
+			".magnetometer.",
+			"self->settings.",
+			"self->bus.",
+			"&(self->bus)",
+			"), ",
+			"(&(self->bus),",
+			"&(self->bus)",
+			"), ",
+			"(&(self->bus),",
+			"&(self->bus)",
+			"read_accel",
+			"&(self->bus)",
+			"lsm9ds1_mag_cs",
+			"bus.",
+			"FILTER",
+			"BANDWIDTH_SELECT",
+			"RANGE",
+			"ODR",
+			"X_ENABLE",
+			"Z",
+			"LSM9DS1_XL_Z_ENABLE_BIT_MASK",
+			"DECIMATION",
+			"LSM9DS1_XL_BANDWIDTH_SELECT_BIT_OFFSET",
+			"BANDWIDTH_SELECT",
+			"LSM9DS1_XL_ODR_BIT_OFFSET",
+			"ODR",
+			"LSM9DS1_XL_ODR_BIT_OFFSET",
+			"RESOLUTION",
+			"FDL",
+			"2",
+			"BANDWIDTH_SELECT",
+			"ODR",
+			"3",
+			"5",
+			"6",
 			"DESTDIR",
 			"6",
 			"FAST_READ",
@@ -379,91 +589,7 @@
 			"BUILD_VERSION",
 			"BUILD_RELEASE",
 			"CMAKE_C_FLAGS_RELEASE",
-			"BUILD_VERSION",
-			"Version",
-			"BUILD_VERSION",
-			"n",
-			"DEBUG_DIR",
-			"DOCUMENTS_DIR",
-			"CMAKE_INSTALL_PREFIX",
-			"lsm9ds1_mag_spi_mode_t",
-			"lsm9ds1_mag_gain_t",
-			"add_custom_target",
-			"configure_file",
-			"message",
-			"set",
-			"option",
-			"add_definitions",
-			"cmake_minimum_required",
-			"include",
-			"set",
-			"target_link_libraries",
-			"add_executable",
-			"target_link_libraries",
-			"add_library",
-			"file",
-			"LINK_DIRECTORIES",
-			"link_directories",
-			"include_directories",
-			"find_package",
-			"############################",
-			"read_status",
-			"LSM9DS1_REGISTER_CTRL_REG2_M",
-			"MAG",
-			"MAGDATARATE",
-			"lsm9ds1_gyro_osr_t",
-			"ACCELDATARATE",
-			"self->bus.spi.rx",
-			"rx",
-			"lsm9ds1_setup_mag",
-			"self->bus.spi.rx",
-			"self->bus.",
-			"spi",
-			"self->bus.",
-			"spi",
-			"lsm9ds1_write(self",
-			"lsm9ds1_read(self",
-			"lsm9ds1_read",
-			"current_sub_device",
-			"transfer",
-			"LICENSE",
-			"lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_device_t *self, lsm9ds1_sub_device_t sub_device);\n",
-			"fd",
-			"num_calls",
-			"lsm9ds1_is_init",
-			"num_calls",
-			"self->bus.initialized",
-			"bus_initialized",
-			"0x05",
-			"settings",
-			"magnetometer",
-			"read_buffer",
-			"lsm9ds1_select_sub_device",
-			"LSM9DS1_MAG",
-			"sub_devi",
-			"sub_device",
-			"lsm9ds1_select_sub_device",
-			"settings",
-			"lsm9ds1_write",
-			"lsm9ds1_read",
-			"lsm9ds1_select_sub_device",
-			"x",
-			" %",
-			"gryoscope",
-			"magnetometer",
-			"Mag",
-			"Gyro",
-			"gyroscope",
-			"x",
-			"transfer",
-			"mode",
-			"device_settings",
-			"range",
-			"device_settings",
-			"d",
-			"Raw",
-			"raw_data",
-			"Raw"
+			"BUILD_VERSION"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -471,6 +597,7 @@
 		"regex": false,
 		"replace_history":
 		[
+			"is_correct_sub_device",
 			"lsm9ds1_write(&(self->bus)",
 			"lsm9ds1_read(&(self->bus)",
 			"self->bus.initialized",
@@ -500,7 +627,7 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 0,
+						"buffer_size": 192,
 						"regions":
 						{
 						},
@@ -510,13 +637,38 @@
 						"settings":
 						{
 							"color_scheme": "Packages/Outline/outline.hidden-tmTheme",
-							"current_file": "/home/christopher/Documents/lsm9ds1/CMakeLists.txt",
+							"current_file": "/home/christopher/Documents/lsm9ds1/src/lsm9ds1_bus.c",
 							"outline_rename_mode": false,
 							"symkeys":
 							[
+								[
+									932,
+									940
+								],
+								[
+									2274,
+									2287
+								],
+								[
+									2725,
+									2737
+								],
+								[
+									3038,
+									3060
+								],
+								[
+									3531,
+									3539
+								]
 							],
 							"symlist":
 							[
+								"—Ⓕ– transfer ( ) { … } — function",
+								"—Ⓕ– lsm9ds1_write ( ) { … } — function",
+								"—Ⓕ– lsm9ds1_read ( ) { … } — function",
+								"—Ⓕ– lsm9ds1_register_write ( ) { … } — function",
+								"—Ⓕ– init_spi ( ) { … } — function"
 							],
 							"syntax": "Packages/Outline/outline.hidden-tmLanguage"
 						},
@@ -524,72 +676,389 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 13,
 					"type": "text"
 				}
 			]
 		},
 		{
-			"selected": 1,
+			"selected": 8,
 			"sheets":
 			[
 				{
 					"buffer": 1,
-					"file": "build.sh",
+					"file": "src/lsm9ds1.c",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 1698,
+						"buffer_size": 7572,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								1455,
-								1455
+								1351,
+								1351
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/ShellScript/Bash.sublime-syntax",
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 268.0,
+						"translation.y": 132.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "src/lsm9ds1_config.c",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 3001,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "src/lsm9ds1_temp.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1784,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1175,
+								1175
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 199.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "src/lsm9ds1_mag.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8390,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5487,
+								5487
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2281.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "src/lsm9ds1_gyro.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4403,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2814,
+								2814
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1293.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "src/lsm9ds1_common.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2907,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1878,
+								1878
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 636.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "inc/lsm9ds1_common.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1272,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								984,
+								984
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "inc/lsm9ds1.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9249,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2749,
+								2749
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 895.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "src/lsm9ds1_bus.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 5027,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2394,
+								2394
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1087.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "src/lsm9ds1_accel.c",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6822,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								5597,
+								5597
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C Improved/C Improved.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2136.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "inc/lsm9ds1_bus.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2707,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2142,
+								2142
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1125.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 1,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
-					"file": "CMakeLists.txt",
+					"buffer": 12,
+					"file": "README.md",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 4266,
+						"buffer_size": 8080,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								3937,
-								3937
+								0,
+								0
 							]
 						],
 						"settings":
 						{
-							"syntax": "Packages/CMakeEditor/CMakeEditor.tmLanguage",
+							"syntax": "Packages/Markdown/Markdown.sublime-syntax",
 							"tab_size": 4,
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 1362.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "inc/lsm9ds1_error.h",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1989,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1953,
+								1953
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/C++/C++.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 386.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
 					"type": "text"
 				}
 			]
@@ -601,7 +1070,7 @@
 	},
 	"input":
 	{
-		"height": 38.0
+		"height": 39.0
 	},
 	"layout":
 	{
@@ -624,7 +1093,7 @@
 		[
 			0.0,
 			0.2,
-			0.735975674151,
+			0.867462039972,
 			1.0
 		],
 		"rows":
@@ -647,11 +1116,11 @@
 	{
 		"height": 0.0
 	},
-	"pinned_build_system": "lsm9ds1-release",
+	"pinned_build_system": "lsm9ds1-debug",
 	"project": "lsm9ds1.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 71.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -689,7 +1158,7 @@
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 278.0,
+	"side_bar_width": 248.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

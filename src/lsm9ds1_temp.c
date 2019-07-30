@@ -31,7 +31,7 @@ lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_bus_t *bus, lsm9ds1_temperature_t *te
 	lsm9ds1_status_t read_status = LSM9DS1_UNKNOWN_ERROR;
 
 	// Ensure we have the correct device
-	read_status = lsm9ds1_select_sub_device(bus, LSM9DS1_ACCEL_GYRO);
+	read_status = is_correct_sub_device(bus, LSM9DS1_ACCEL_GYRO);
 	if (read_status < 0) {
 		return read_status;
 	}

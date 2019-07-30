@@ -30,7 +30,7 @@
 #include <stdint.h>
 #include "lsm9ds1_bus.h"
 
-lsm9ds1_status_t lsm9ds1_select_sub_device(lsm9ds1_bus_t *self, lsm9ds1_sub_device_t sub_device);
+lsm9ds1_status_t is_correct_sub_device(lsm9ds1_bus_t *self, lsm9ds1_sub_device_id_t sub_device);
 lsm9ds1_status_t read_bit_value(uint8_t value, uint8_t mask, uint8_t offset, uint8_t *read_value);
 lsm9ds1_status_t lsm9ds1_soft_reset(lsm9ds1_bus_t *bus);
 
