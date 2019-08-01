@@ -185,6 +185,8 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 	ret = parse_json(&lsm9ds1_config);
 	if(ret < 0) {return ret;}
 
+	DEBUG_PRINT("SPI Dev = %s\n", lsm9ds1_config.sub_device.accelerometer.spi.device);
+
 #if DEBUG > 0
 	const char *bus_names[NUM_BUS_TYPES] = {"SPI", "I2C"};
 	DEBUG_PRINT("Initializing the lsm9ds1 %s bus...\n", bus_names[bus_type]);

@@ -56,14 +56,41 @@ static lsm9ds1_status_t read_config(char *file_buffer) {
 	return LSM9DS1_SUCCESS;
 }
 
+static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_device_name, struct lsm9ds1_sub_device *bus) {
+	const cJSON *sub_device = NULL;	
+	const cJSON *spi = NULL;
+	const cJSON *device_name = NULL;
+	const cJSON *speed = NULL;
+	size_t config_string_size = 0;
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	sub_device = cJSON_GetObjectItemCaseSensitive(sub_device, sub_device_name);
+	spi = cJSON_GetObjectItemCaseSensitive(sub_device, "spi");
+	device_name = cJSON_GetObjectItemCaseSensitive(spi, "device");
+
+	if(cJSON_IsString(device_name) && (device_name->valuestring != NULL))
+    {
+    	config_string_size = 0;
+    	config_string_size = sizeof(device_name->valuestring);
+    	if(config_string_size > LSM9DS1_MAX_STR_SIZE) {
+    		return LSM9DS1_UNABLE_TO_PARSE_JSON;
+    	}
+
+	    strncpy(bus->spi.device, device_name->valuestring, config_string_size);
+    }
+
+	speed = cJSON_GetObjectItemCaseSensitive(spi, "speed");
+	if(cJSON_IsNumber(speed))
+    {
+    	bus->spi.speed = speed->valueint;
+    }
+}
+
 lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config) {
 
 	const cJSON *name = NULL;
-	const cJSON *bus = NULL;
-	const cJSON *device = NULL;
-	const cJSON *spi = NULL;
-	const cJSON *spi_settings = NULL;
-	const cJSON *spi_speed = NULL;
+	const cJSON *sub_device = NULL;
 	size_t config_string_size = 0;
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
@@ -89,25 +116,9 @@ lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config) {
     	strncpy(lsm9ds1_config->name, name->valuestring, config_string_size);
     }
 
-	bus = cJSON_GetObjectItemCaseSensitive(config_json, "bus");
-	device = cJSON_GetObjectItemCaseSensitive(bus, "device");
-	if(cJSON_IsString(device) && (device->valuestring != NULL))
-    {
-    	config_string_size = 0;
-    	config_string_size = sizeof(device->valuestring);
-    	if(config_string_size > LSM9DS1_MAX_STR_SIZE) {
-    		return LSM9DS1_UNABLE_TO_PARSE_JSON;
-    	}
-    	strncpy(lsm9ds1_config->bus.device, device->valuestring, config_string_size);
-    }
-
-	spi = cJSON_GetObjectItemCaseSensitive(bus, "spi");
-	spi_settings = cJSON_GetObjectItemCaseSensitive(spi, "settings");
-	spi_speed = cJSON_GetObjectItemCaseSensitive(spi_settings, "speed");
-	if(cJSON_IsNumber(spi_speed))
-    {
-    	lsm9ds1_config->bus.spi.settings.speed = spi_speed->valueint;
-    }
+	sub_device = cJSON_GetObjectItemCaseSensitive(config_json, "sub_device");
+	parse_sub_device_spi(sub_device, "accelerometer", &(lsm9ds1_config->sub_device.accelerometer));
+	parse_sub_device_spi(sub_device, "magnetometer", &(lsm9ds1_config->sub_device.magnetometer));
 
     cJSON_Delete(config_json);
 

@@ -68,8 +68,12 @@ SET(SOURCES
     "src/lsm9ds1_config.c" 
 )
 
-ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES})
-TARGET_LINK_LIBRARIES(lsm9ds1 wiringPi)
+FILE(GLOB CONFIGS
+    "conf/lsm9ds1.json"
+)
+
+ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES} ${CONFIGS})
+TARGET_LINK_LIBRARIES(lsm9ds1 cjson)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 
@@ -80,14 +84,18 @@ FILE(GLOB TEST_SOURCES
 ADD_EXECUTABLE(lsm9ds1_test ${TEST_SOURCES})
 TARGET_LINK_LIBRARIES(lsm9ds1_test cunit)
 TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
-TARGET_LINK_LIBRARIES(lsm9ds1_test cjson)
-###############################################################################
 
 ######################## Install targets ######################################
 
 ########################## C Library ##########################################
 INSTALL(TARGETS lsm9ds1
 	DESTINATION usr/lib/
+    COMPONENT binaries
+)
+
+INSTALL(FILES ${CONFIGS}
+    DESTINATION etc/
+    COMPONENT config
 )
 
 ######################### Tests ###############################################

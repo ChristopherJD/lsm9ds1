@@ -31,22 +31,23 @@
 #define LSM9DS1_MAX_STR_SIZE 256
 #define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
 
-struct lsm9ds1_spi_settings {
-	uint32_t speed;
-};
-
 struct lsm9ds1_spi {
-	struct lsm9ds1_spi_settings settings;
+	uint8_t device[LSM9DS1_MAX_STR_SIZE];
+	uint32_t speed;	
 };
 
-struct lsm9ds1_bus {
-	uint8_t device[LSM9DS1_MAX_STR_SIZE];
+struct lsm9ds1_sub_device {
 	struct lsm9ds1_spi spi;
+};
+
+struct lsm9ds1_sub_devices {
+	struct lsm9ds1_sub_device accelerometer;
+	struct lsm9ds1_sub_device magnetometer;
 };
 
 typedef struct lsm9ds1_config_t {
 	uint8_t name[LSM9DS1_MAX_STR_SIZE];
-	struct lsm9ds1_bus bus;
+	struct lsm9ds1_sub_devices sub_device;
 }lsm9ds1_config_t;
 
 lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config);

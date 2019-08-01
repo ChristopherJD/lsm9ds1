@@ -40,9 +40,11 @@ static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
 	self->op = op;
 	self->tx = tx;
 
+	DEBUG_PRINT("Rx Size: 0x%X\n", sizeof(self->rx));
+
 	switch (op) {
 		case LSM9DS1_READ:
-			tr[1].rx_buf = (unsigned long)self->rx;
+			tr[1].rx_buf = (unsigned long)&(self->rx);
 			tr[1].len = sizeof(self->rx);
 			tr[1].speed_hz = self->settings.speed;
 			tr[1].delay_usecs = self->settings.spi_delay;
@@ -51,8 +53,8 @@ static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
 			addr_xfer = (SPI_READ | address);
 			break;
 		case LSM9DS1_WRITE:
-			tr[1].tx_buf = (unsigned long) &tx;
-			tr[1].len = sizeof(tx);
+			tr[1].tx_buf = (unsigned long) &(self->tx);
+			tr[1].len = sizeof(self->tx);
 			tr[1].speed_hz = self->settings.speed;
 			tr[1].delay_usecs = self->settings.spi_delay;
 			tr[1].bits_per_word = self->settings.bits;
@@ -65,12 +67,15 @@ static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
 
 	// Setup the address to r/w
 	self->address = addr_xfer;
-	tr[0].tx_buf = (unsigned long) &addr_xfer;
-	tr[0].len = sizeof(tx);
+	DEBUG_PRINT("Address: 0x%X\n", self->address);
+
+	tr[0].tx_buf = (unsigned long) &(self->address);
+	tr[0].len = sizeof(self->address);
 	tr[0].speed_hz = self->settings.speed;
 	tr[0].delay_usecs = self->settings.spi_delay;
 	tr[0].bits_per_word = self->settings.bits;
 
+	DEBUG_PRINT("fd: 0x%X\n", self->fd);
 	ret = ioctl(self->fd, SPI_IOC_MESSAGE(2), tr);
 	DEBUG_PRINT("TX: 0x%X\n", self->tx);
 	DEBUG_PRINT("RX: 0x%X\n", self->rx[0]);
@@ -154,11 +159,18 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 	self->spi.settings.speed 		= 15000000;
 	self->spi.settings.spi_delay 	= 0;
 
-	strncpy(self->spi.name, ACCEL, sizeof(self->spi.name));
-	strncpy(self->spi.name, MAG, sizeof(self->spi.name));
+	switch(self->id) {
+		case LSM9DS1_ACCEL_GYRO:
+			strncpy(self->spi.name, ACCEL, sizeof(self->spi.name));
+			break;
+		case LSM9DS1_MAG:
+			strncpy(self->spi.name, MAG, sizeof(self->spi.name));
+			break;
+		default:
+			return LSM9DS1_UNKNOWN_SUB_DEVICE;
+	}
 
-	DEBUG_PRINT("Device fd: %s\n", self->spi.name);
-	DEBUG_PRINT("Device fd: %s\n", self->spi.name);
+	DEBUG_PRINT("Device: %s\n", self->spi.name);
 
 	self->spi.fd = open(self->spi.name, O_RDWR);
 	if (self->spi.fd <= 0) {
@@ -168,7 +180,7 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 	DEBUG_PRINT("Device fd: %d\n", self->spi.fd);
 
 	// Set to mode 3
-	self->spi.settings.mode |= SPI_CPOL | SPI_CPHA;
+	self->spi.settings.mode |= SPI_MODE_3;
 	ret = ioctl(self->spi.fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
 	if (ret == -1) {
 		return LSM9DS1_MODE_3_NOT_SET;
