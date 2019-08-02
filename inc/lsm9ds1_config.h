@@ -32,7 +32,7 @@
 #define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
 
 struct lsm9ds1_spi {
-	uint8_t device[LSM9DS1_MAX_STR_SIZE];
+	char device[LSM9DS1_MAX_STR_SIZE];
 	uint32_t speed;	
 };
 
@@ -46,7 +46,7 @@ struct lsm9ds1_sub_devices {
 };
 
 typedef struct lsm9ds1_config_t {
-	uint8_t name[LSM9DS1_MAX_STR_SIZE];
+	char name[LSM9DS1_MAX_STR_SIZE];
 	struct lsm9ds1_sub_devices sub_device;
 }lsm9ds1_config_t;
 

@@ -5,10 +5,11 @@
 #include <string.h>
 
 #include "lsm9ds1_config.h"
+#include "lsm9ds1_debug.h"
 
-static lsm9ds1_status_t file_to_buf(const char *config_file, char *config_buffer) {
+char *file_to_buf(const char *config_file) {
 
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+	char *config_buffer = NULL;
 
     FILE *fp = fopen(LSM9DS1_CONFIG, "r");
 
@@ -16,18 +17,18 @@ static lsm9ds1_status_t file_to_buf(const char *config_file, char *config_buffer
 		if(fseek(fp, 0L, SEEK_END) == 0) {
 			long bufsize = ftell(fp);
 			if(bufsize == -1) {
-				return LSM9DS1_CONFIG_FILE_SIZE_UKNOWN;
+				return NULL;
 			}
 
 			config_buffer = malloc(sizeof(char) * (bufsize +1));
 
 			if(fseek(fp, 0L, SEEK_SET) != 0) {
-				return LSM9DS1_CONFIG_FILE_SIZE_UKNOWN;
+				return NULL;
 			}
 
 			size_t new_len = fread(config_buffer, sizeof(char), bufsize, fp);
 			if(ferror(fp) != 0) {
-				return LSM9DS1_UNABLE_TO_READ_CONFIG;
+				return NULL;
 			}
 			else {
 				config_buffer[new_len++] = '\0';
@@ -36,24 +37,27 @@ static lsm9ds1_status_t file_to_buf(const char *config_file, char *config_buffer
 
 		fclose(fp);
 	}
+
+	return config_buffer;
 }
 
-static lsm9ds1_status_t read_config(char *file_buffer) {
+static char *read_config() {
 
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+	char *file_buffer = NULL;
 
 	// Check that the file is there
 	if(access(LSM9DS1_CONFIG, F_OK) != -1) {
 	    // file exists
-	    status = file_to_buf(LSM9DS1_CONFIG, file_buffer);
-	    if(status < 0) {return status;}
+	    file_buffer = file_to_buf(LSM9DS1_CONFIG);
+	    if(NULL == file_buffer) {return NULL;}
 	}
 	else {
 	    // file doesn't exist
-	    return LSM9DS1_CONFIG_FILE_NOT_FOUND;
+	    DEBUG_PRINT("File %s not found!\n");
+	    return NULL;
 	}
 
-	return LSM9DS1_SUCCESS;
+	return file_buffer;
 }
 
 static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_device_name, struct lsm9ds1_sub_device *bus) {
@@ -63,21 +67,19 @@ static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_
 	const cJSON *speed = NULL;
 	size_t config_string_size = 0;
 
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-
 	sub_device = cJSON_GetObjectItemCaseSensitive(sub_device, sub_device_name);
 	spi = cJSON_GetObjectItemCaseSensitive(sub_device, "spi");
 	device_name = cJSON_GetObjectItemCaseSensitive(spi, "device");
 
 	if(cJSON_IsString(device_name) && (device_name->valuestring != NULL))
     {
+
     	config_string_size = 0;
-    	config_string_size = sizeof(device_name->valuestring);
+    	config_string_size = strlen(device_name->valuestring) + 1;
     	if(config_string_size > LSM9DS1_MAX_STR_SIZE) {
     		return LSM9DS1_UNABLE_TO_PARSE_JSON;
     	}
-
-	    strncpy(bus->spi.device, device_name->valuestring, config_string_size);
+	    strcpy(bus->spi.device, device_name->valuestring);
     }
 
 	speed = cJSON_GetObjectItemCaseSensitive(spi, "speed");
@@ -85,6 +87,8 @@ static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_
     {
     	bus->spi.speed = speed->valueint;
     }
+
+    return LSM9DS1_SUCCESS;
 }
 
 lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config) {
@@ -96,24 +100,27 @@ lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 	char *config = NULL;
 
-	status = read_config(config);
-	if(status < 0) {return status;}
-	free(config);
+	config = read_config();
+	if(NULL == config) {return status;}
 
 	cJSON *config_json = cJSON_Parse(config);
 	if (config_json == NULL) {
 		return LSM9DS1_UNABLE_TO_PARSE_JSON;
 	}
 
+	free(config);
+
+	DEBUG_PRINT("Parsed configuration...\n");
+
 	name = cJSON_GetObjectItemCaseSensitive(config_json, "name");
 	if(cJSON_IsString(name) && (name->valuestring != NULL))
     {
     	config_string_size = 0;
-    	config_string_size = sizeof(name->valuestring);
+    	config_string_size = strlen(name->valuestring) + 1;
     	if(config_string_size > LSM9DS1_MAX_STR_SIZE) {
     		return LSM9DS1_UNABLE_TO_PARSE_JSON;
     	}
-    	strncpy(lsm9ds1_config->name, name->valuestring, config_string_size);
+    	strcpy(lsm9ds1_config->name, name->valuestring);
     }
 
 	sub_device = cJSON_GetObjectItemCaseSensitive(config_json, "sub_device");
