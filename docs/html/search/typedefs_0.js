@@ -5,5 +5,6 @@ var searchData=
   ['lsm9ds1_5fdevice_5ft',['lsm9ds1_device_t',['../lsm9ds1_8h.html#a6a9027697ce51d0cb314259ab7d40a50',1,'lsm9ds1.h']]],
   ['lsm9ds1_5fsettings_5ft',['lsm9ds1_settings_t',['../lsm9ds1_8h.html#a50b5715bd1593d61e2158ff7f98de918',1,'lsm9ds1.h']]],
   ['lsm9ds1_5fstatus_5ft',['lsm9ds1_status_t',['../lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d',1,'lsm9ds1_error.h']]],
+  ['lsm9ds1_5fsub_5fdevices_5ft',['lsm9ds1_sub_devices_t',['../lsm9ds1_8h.html#a3f357b060de3363816186073bc00397e',1,'lsm9ds1.h']]],
   ['lsm9ds1_5ftemperature_5ft',['lsm9ds1_temperature_t',['../lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc',1,'lsm9ds1_temp.h']]]
 ];

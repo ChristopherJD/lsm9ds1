@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['lsm9ds1_20c_20library',['LSM9DS1 C Library',['../index.html',1,'']]],
+  ['lsm9ds1_20c_2fc_2b_2b_20library',['LSM9DS1 C/C++ Library',['../index.html',1,'']]],
   ['lsm9ds1_2eh',['lsm9ds1.h',['../lsm9ds1_8h.html',1,'']]],
   ['lsm9ds1_5faccel_2eh',['lsm9ds1_accel.h',['../lsm9ds1__accel_8h.html',1,'']]],
   ['lsm9ds1_5faccel_5fsettings_5ft',['lsm9ds1_accel_settings_t',['../structlsm9ds1__accel__settings__t.html',1,'']]],
@@ -23,7 +23,9 @@ var searchData=
   ['lsm9ds1_5fspi_5ft',['lsm9ds1_spi_t',['../structlsm9ds1__spi__t.html',1,'']]],
   ['lsm9ds1_5fstatus',['lsm9ds1_status',['../lsm9ds1__error_8h.html#ac7ae251968b523b7013eb31078998b37',1,'lsm9ds1_error.h']]],
   ['lsm9ds1_5fstatus_5ft',['lsm9ds1_status_t',['../lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d',1,'lsm9ds1_error.h']]],
-  ['lsm9ds1_5fsub_5fdevice_5ft',['lsm9ds1_sub_device_t',['../lsm9ds1__bus_8h.html#a6320fab37882022fe0bdbb8712997aa5',1,'lsm9ds1_bus.h']]],
+  ['lsm9ds1_5fsub_5fdevice_5fid_5ft',['lsm9ds1_sub_device_id_t',['../lsm9ds1__bus_8h.html#a063d2d44292e88b18c1ade6a1148a287',1,'lsm9ds1_bus.h']]],
+  ['lsm9ds1_5fsub_5fdevice_5ft',['lsm9ds1_sub_device_t',['../structlsm9ds1__sub__device__t.html',1,'']]],
+  ['lsm9ds1_5fsub_5fdevices_5ft',['lsm9ds1_sub_devices_t',['../structlsm9ds1__sub__devices__t.html',1,'lsm9ds1_sub_devices_t'],['../lsm9ds1_8h.html#a3f357b060de3363816186073bc00397e',1,'lsm9ds1_sub_devices_t():&#160;lsm9ds1.h']]],
   ['lsm9ds1_5ftemp_2eh',['lsm9ds1_temp.h',['../lsm9ds1__temp_8h.html',1,'']]],
   ['lsm9ds1_5ftemperature_5ft',['lsm9ds1_temperature_t',['../lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc',1,'lsm9ds1_temp.h']]]
 ];

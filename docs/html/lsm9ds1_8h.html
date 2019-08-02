@@ -85,16 +85,17 @@ $(function() {
 <code>#include &quot;lsm9ds1_regs.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="lsm9ds1__temp_8h_source.html">lsm9ds1_temp.h</a>&quot;</code><br />
 <code>#include &quot;lsm9ds1_debug.h&quot;</code><br />
+<code>#include &quot;lsm9ds1_config.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for lsm9ds1.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="lsm9ds1_8h__incl.png" border="0" usemap="#_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h" alt=""/></div>
 <map name="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h" id="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h">
-<area shape="rect" id="node4" href="lsm9ds1__mag_8h.html" title="Magnetometer functions and data. " alt="" coords="195,102,309,129"/>
-<area shape="rect" id="node6" href="lsm9ds1__error_8h.html" title="Error codes returned by lsm9ds1 functions. " alt="" coords="484,184,599,211"/>
-<area shape="rect" id="node8" href="lsm9ds1__gyro_8h.html" title="Gyroscope functions and data. " alt="" coords="333,102,448,129"/>
-<area shape="rect" id="node9" href="lsm9ds1__accel_8h.html" title="Accelerometer functions and data. " alt="" coords="472,102,592,129"/>
-<area shape="rect" id="node11" href="lsm9ds1__temp_8h.html" title="Temperature functions and data. " alt="" coords="617,102,735,129"/>
+<area shape="rect" id="node4" href="lsm9ds1__mag_8h.html" title="Magnetometer functions and data. " alt="" coords="337,102,452,129"/>
+<area shape="rect" id="node6" href="lsm9ds1__error_8h.html" title="Error codes returned by lsm9ds1 functions. " alt="" coords="488,184,603,211"/>
+<area shape="rect" id="node8" href="lsm9ds1__gyro_8h.html" title="Gyroscope functions and data. " alt="" coords="476,102,591,129"/>
+<area shape="rect" id="node9" href="lsm9ds1__accel_8h.html" title="Accelerometer functions and data. " alt="" coords="615,102,735,129"/>
+<area shape="rect" id="node11" href="lsm9ds1__temp_8h.html" title="Temperature functions and data. " alt="" coords="194,102,313,129"/>
 </map>
 </div>
 </div>
@@ -110,6 +111,11 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__converted__data__t.html">lsm9ds1_converted_data_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the converted data for each sub device.  <a href="structlsm9ds1__converted__data__t.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__sub__device__t.html">lsm9ds1_sub_device_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__sub__devices__t.html">lsm9ds1_sub_devices_t</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">LSM9DS1 sub device.  <a href="structlsm9ds1__sub__devices__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data and configurations for the lsm9ds1 device.  <a href="structlsm9ds1__device__t.html#details">More...</a><br /></td></tr>
@@ -135,6 +141,13 @@ typedef struct <a class="el" href="structlsm9ds1__data__t.html">lsm9ds1_data_t</
 typedef struct <a class="el" href="structlsm9ds1__converted__data__t.html">lsm9ds1_converted_data_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a5ad19964f4455d181bf431eb3fa98dc2">lsm9ds1_converted_data_t</a></td></tr>
 <tr class="memdesc:a5ad19964f4455d181bf431eb3fa98dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the converted data for each sub device. <br /></td></tr>
 <tr class="separator:a5ad19964f4455d181bf431eb3fa98dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4e754bd6a8837d9435b776ad10d5b4f"><td class="memItemLeft" align="right" valign="top"><a id="af4e754bd6a8837d9435b776ad10d5b4f"></a>
+typedef struct <a class="el" href="structlsm9ds1__sub__device__t.html">lsm9ds1_sub_device_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_sub_device_t</b></td></tr>
+<tr class="separator:af4e754bd6a8837d9435b776ad10d5b4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3f357b060de3363816186073bc00397e"><td class="memItemLeft" align="right" valign="top"><a id="a3f357b060de3363816186073bc00397e"></a>
+typedef struct <a class="el" href="structlsm9ds1__sub__devices__t.html">lsm9ds1_sub_devices_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a3f357b060de3363816186073bc00397e">lsm9ds1_sub_devices_t</a></td></tr>
+<tr class="memdesc:a3f357b060de3363816186073bc00397e"><td class="mdescLeft">&#160;</td><td class="mdescRight">LSM9DS1 sub device. <br /></td></tr>
+<tr class="separator:a3f357b060de3363816186073bc00397e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a9027697ce51d0cb314259ab7d40a50"><td class="memItemLeft" align="right" valign="top"><a id="a6a9027697ce51d0cb314259ab7d40a50"></a>
 typedef struct <a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a6a9027697ce51d0cb314259ab7d40a50">lsm9ds1_device_t</a></td></tr>
 <tr class="memdesc:a6a9027697ce51d0cb314259ab7d40a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data and configurations for the lsm9ds1 device. <br /></td></tr>

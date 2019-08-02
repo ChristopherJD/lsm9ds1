@@ -1,4 +1,4 @@
-.TH "lsm9ds1_bus_t" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "lsm9ds1_bus_t" 3 "Thu Aug 1 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -13,25 +13,13 @@ lsm9ds1_bus_t
 .RI "bool \fBinitialized\fP"
 .br
 .ti -1c
-.RI "int32_t \fBfd\fP"
-.br
-.ti -1c
-.RI "char \fBdevice\fP [256]"
+.RI "\fBlsm9ds1_sub_device_id_t\fP \fBid\fP"
 .br
 .ti -1c
 .RI "\fBlsm9ds1_spi_t\fP \fBspi\fP"
 .br
 .ti -1c
 .RI "\fBlsm9ds1_i2c_t\fP \fBi2c\fP"
-.br
-.ti -1c
-.RI "\fBlsm9ds1_sub_device_t\fP \fBcurrent_sub_device\fP"
-.br
-.ti -1c
-.RI "\fBlsm9ds1_status_t\fP(* \fBtransfer\fP )(struct \fBlsm9ds1_bus_t\fP *self, lsm9ds1_xfer_t op, uint8_t address, uint8_t tx, uint8_t *rx)"
-.br
-.ti -1c
-.RI "\fBlsm9ds1_status_t\fP(* \fBcs_arbiter\fP )(struct \fBlsm9ds1_bus_t\fP *self)"
 .br
 .in -1c
 

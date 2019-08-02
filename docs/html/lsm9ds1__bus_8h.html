@@ -105,18 +105,21 @@ Data Structures</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__i2c__settings__t.html">lsm9ds1_i2c_settings_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__spi__t.html">lsm9ds1_spi_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__i2c__t.html">lsm9ds1_i2c_t</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__spi__t.html">lsm9ds1_spi_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__bus__t.html">lsm9ds1_bus_t</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a775d096fbc3988fb7ed858b79ef44e22"><td class="memItemLeft" align="right" valign="top"><a id="a775d096fbc3988fb7ed858b79ef44e22"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEVICE</b>&#160;&#160;&#160;&quot;/dev/spidev0.0&quot;</td></tr>
-<tr class="separator:a775d096fbc3988fb7ed858b79ef44e22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2d7243c099b33b2343976dd3ee8b36b"><td class="memItemLeft" align="right" valign="top"><a id="ad2d7243c099b33b2343976dd3ee8b36b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ACCEL</b>&#160;&#160;&#160;&quot;/dev/spidev0.0&quot;</td></tr>
+<tr class="separator:ad2d7243c099b33b2343976dd3ee8b36b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af54a5a977c0c499323d656315f008ee0"><td class="memItemLeft" align="right" valign="top"><a id="af54a5a977c0c499323d656315f008ee0"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>MAG</b>&#160;&#160;&#160;&quot;/dev/spidev0.1&quot;</td></tr>
+<tr class="separator:af54a5a977c0c499323d656315f008ee0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac102dfe6f4bf4af8f472f78075916fd1"><td class="memItemLeft" align="right" valign="top"><a id="ac102dfe6f4bf4af8f472f78075916fd1"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>MAG_CS</b>&#160;&#160;&#160;21</td></tr>
 <tr class="separator:ac102dfe6f4bf4af8f472f78075916fd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -138,24 +141,24 @@ typedef struct <a class="el" href="structlsm9ds1__spi__settings__t.html">lsm9ds1
 <tr class="memitem:a33ce6e3ffb6cf6eb7a9baf685f22a0b0"><td class="memItemLeft" align="right" valign="top"><a id="a33ce6e3ffb6cf6eb7a9baf685f22a0b0"></a>
 typedef struct <a class="el" href="structlsm9ds1__i2c__settings__t.html">lsm9ds1_i2c_settings_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_i2c_settings_t</b></td></tr>
 <tr class="separator:a33ce6e3ffb6cf6eb7a9baf685f22a0b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9beac4ffb05c68199c519472847f8951"><td class="memItemLeft" align="right" valign="top"><a id="a9beac4ffb05c68199c519472847f8951"></a>
-typedef struct <a class="el" href="structlsm9ds1__spi__t.html">lsm9ds1_spi_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_spi_t</b></td></tr>
-<tr class="separator:a9beac4ffb05c68199c519472847f8951"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52dfb6c387190019218148251af7267c"><td class="memItemLeft" align="right" valign="top"><a id="a52dfb6c387190019218148251af7267c"></a>
 typedef struct <a class="el" href="structlsm9ds1__i2c__t.html">lsm9ds1_i2c_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_i2c_t</b></td></tr>
 <tr class="separator:a52dfb6c387190019218148251af7267c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9beac4ffb05c68199c519472847f8951"><td class="memItemLeft" align="right" valign="top"><a id="a9beac4ffb05c68199c519472847f8951"></a>
+typedef struct <a class="el" href="structlsm9ds1__spi__t.html">lsm9ds1_spi_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_spi_t</b></td></tr>
+<tr class="separator:a9beac4ffb05c68199c519472847f8951"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1afc1a694fd17d7507e1c8fae04ad29f"><td class="memItemLeft" align="right" valign="top"><a id="a1afc1a694fd17d7507e1c8fae04ad29f"></a>
 typedef struct <a class="el" href="structlsm9ds1__bus__t.html">lsm9ds1_bus_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_bus_t</b></td></tr>
 <tr class="separator:a1afc1a694fd17d7507e1c8fae04ad29f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a6320fab37882022fe0bdbb8712997aa5"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1__bus_8h.html#a6320fab37882022fe0bdbb8712997aa5">lsm9ds1_sub_device_t</a> { <b>LSM9DS1_UNKNOWN_DEVICE</b> = 0, 
+<tr class="memitem:a063d2d44292e88b18c1ade6a1148a287"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1__bus_8h.html#a063d2d44292e88b18c1ade6a1148a287">lsm9ds1_sub_device_id_t</a> { <b>LSM9DS1_UNKNOWN_DEVICE</b> = 0, 
 <b>LSM9DS1_ACCEL_GYRO</b> = 0x68, 
 <b>LSM9DS1_MAG</b> = 0x3D
- }<tr class="memdesc:a6320fab37882022fe0bdbb8712997aa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sub device of the LSM9DS1.  <a href="lsm9ds1__bus_8h.html#a6320fab37882022fe0bdbb8712997aa5">More...</a><br /></td></tr>
+ }<tr class="memdesc:a063d2d44292e88b18c1ade6a1148a287"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sub device of the LSM9DS1.  <a href="lsm9ds1__bus_8h.html#a063d2d44292e88b18c1ade6a1148a287">More...</a><br /></td></tr>
 </td></tr>
-<tr class="separator:a6320fab37882022fe0bdbb8712997aa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a063d2d44292e88b18c1ade6a1148a287"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac0319dff536e4b63ae1f44edf5d362e0"><td class="memItemLeft" align="right" valign="top"><a id="ac0319dff536e4b63ae1f44edf5d362e0"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_xfer_t</b> { <b>LSM9DS1_READ</b>, 
 <b>LSM9DS1_WRITE</b>
  }</td></tr>
@@ -186,14 +189,14 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd>Christopher Jordan-Denny </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Initializes and sets up the bus to the lsm9ds1. Provides read and write functions to the bus. </dd></dl>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a6320fab37882022fe0bdbb8712997aa5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6320fab37882022fe0bdbb8712997aa5">&#9670;&nbsp;</a></span>lsm9ds1_sub_device_t</h2>
+<a id="a063d2d44292e88b18c1ade6a1148a287"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a063d2d44292e88b18c1ade6a1148a287">&#9670;&nbsp;</a></span>lsm9ds1_sub_device_id_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="lsm9ds1__bus_8h.html#a6320fab37882022fe0bdbb8712997aa5">lsm9ds1_sub_device_t</a></td>
+          <td class="memname">enum <a class="el" href="lsm9ds1__bus_8h.html#a063d2d44292e88b18c1ade6a1148a287">lsm9ds1_sub_device_id_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">

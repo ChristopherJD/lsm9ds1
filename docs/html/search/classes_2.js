@@ -11,5 +11,7 @@ var searchData=
   ['lsm9ds1_5fmag_5fsettings_5ft',['lsm9ds1_mag_settings_t',['../structlsm9ds1__mag__settings__t.html',1,'']]],
   ['lsm9ds1_5fsettings',['lsm9ds1_settings',['../structlsm9ds1__settings.html',1,'']]],
   ['lsm9ds1_5fspi_5fsettings_5ft',['lsm9ds1_spi_settings_t',['../structlsm9ds1__spi__settings__t.html',1,'']]],
-  ['lsm9ds1_5fspi_5ft',['lsm9ds1_spi_t',['../structlsm9ds1__spi__t.html',1,'']]]
+  ['lsm9ds1_5fspi_5ft',['lsm9ds1_spi_t',['../structlsm9ds1__spi__t.html',1,'']]],
+  ['lsm9ds1_5fsub_5fdevice_5ft',['lsm9ds1_sub_device_t',['../structlsm9ds1__sub__device__t.html',1,'']]],
+  ['lsm9ds1_5fsub_5fdevices_5ft',['lsm9ds1_sub_devices_t',['../structlsm9ds1__sub__devices__t.html',1,'']]]
 ];

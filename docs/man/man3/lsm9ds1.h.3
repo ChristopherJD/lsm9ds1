@@ -1,4 +1,4 @@
-.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Fri Jul 12 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Thu Aug 1 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -25,6 +25,8 @@
 .br
 \fC#include 'lsm9ds1_debug\&.h'\fP
 .br
+\fC#include 'lsm9ds1_config\&.h'\fP
+.br
 
 .SS "Data Structures"
 
@@ -41,6 +43,13 @@
 .RI "struct \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
+.ti -1c
+.RI "struct \fBlsm9ds1_sub_device_t\fP"
+.br
+.ti -1c
+.RI "struct \fBlsm9ds1_sub_devices_t\fP"
+.br
+.RI "LSM9DS1 sub device\&. "
 .ti -1c
 .RI "struct \fBlsm9ds1_device_t\fP"
 .br
@@ -68,6 +77,13 @@
 .RI "typedef struct \fBlsm9ds1_converted_data_t\fP \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
+.ti -1c
+.RI "typedef struct \fBlsm9ds1_sub_device_t\fP \fBlsm9ds1_sub_device_t\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBlsm9ds1_sub_devices_t\fP \fBlsm9ds1_sub_devices_t\fP"
+.br
+.RI "LSM9DS1 sub device\&. "
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_device_t\fP \fBlsm9ds1_device_t\fP"
 .br
