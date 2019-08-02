@@ -1,10 +1,12 @@
-# LSM9DS1 C Library
+# LSM9DS1 C/C++ Library
 
 ![lsm9ds1_axes.png](https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/lsm9ds1_axes.png)
 
 ## About
 
-C and Python Extension library for the LSM9DS1. The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
+Library for the LSM9DS1 from ST Microelectronics. Library makes use of the Linux platform device driver "spidev". The library was originally written for the RaspberryPi B+.
+
+The LSM9DS1 provides 9 degrees of freedom (9-DOF), a 3 axis accelerometer, gyroscope and magnetometer. The accelerometer supports ± 2, 4, 8, or 16 g, the gyroscope supports ± 245, 500, and 2000 °/s, and the magnetometer has full-scale ranges of ± 2, 4, 12, or 16 gauss. It is equipped with a digital interface supporting both I2C and SPI.
 
 ## Install
 
@@ -68,7 +70,7 @@ int main() {
 
 ## Dependencies
 
-This library depends on the WiringPi library for Chip Select Arbitration. You can find out more information about the library at the [wiringpi](http://wiringpi.com/) website.
+This library depends on the [cjson](https://github.com/DaveGamble/cJSON) library by Dave Gamble. Please follow the installation steps to build for your system.
 
 ## Building
 
@@ -123,7 +125,11 @@ sudo apt install gdb-multiarch
     gdbgui -r -g gdb-multiarch
     ```
 
-## Device Pinout
+## RaspBerryPi 3 B + Schematic
+
+![rpi_wiring_schematic.png](https://github.com/ChristopherJD/lsm9ds1/blob/master/docs/rpi_wiring_schematic.png)
+
+### LSM9DS1 Pinout
 
 | Pin Label | Pin Function                                            | Notes                                                                                                                                                                                                        |
 |-----------|---------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
