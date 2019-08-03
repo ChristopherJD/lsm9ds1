@@ -34,7 +34,6 @@
 
 #define ACCEL "/dev/spidev0.0"
 #define MAG "/dev/spidev0.1"
-#define MAG_CS 21	//Wiring Pi Pin number for the magnetometer CS.
 
 #define SPI_READ 0x80
 #define SPI_WRITE 0x0

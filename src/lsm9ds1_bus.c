@@ -19,7 +19,6 @@
 #include <linux/spi/spidev.h>
 #include <string.h>
 #include <fcntl.h>
-#include <wiringPi.h>
 
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
