@@ -29,6 +29,7 @@
 #include "lsm9ds1_error.h"
 
 #define LSM9DS1_MAX_STR_SIZE 256
+#define MAX_SPI_SPEED 15000000
 #define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
 
 struct lsm9ds1_spi {
@@ -47,9 +48,12 @@ struct lsm9ds1_sub_devices {
 
 typedef struct lsm9ds1_config_t {
 	char name[LSM9DS1_MAX_STR_SIZE];
+	unsigned int xfer_bus;
 	struct lsm9ds1_sub_devices sub_device;
 }lsm9ds1_config_t;
 
-lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config);
+extern lsm9ds1_config_t glsm9ds1_config;
+
+lsm9ds1_status_t init_config();
 
 #endif

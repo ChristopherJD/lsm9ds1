@@ -1,5 +1,6 @@
 {
 	"name": "lsm9ds1",
+	"xfer_bus": 0,
 	"sub_device": {
 		"accelerometer": {
 			"spi": {
@@ -9,7 +10,7 @@
 		},
 		"magnetometer": {
 			"spi": {
-				"device": "/dev/spidev0.0",
+				"device": "/dev/spidev0.1",
 				"speed": 15000000
 			}
 		}

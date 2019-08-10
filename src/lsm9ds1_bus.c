@@ -22,6 +22,7 @@
 
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
+#include "lsm9ds1_config.h"
 
 static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
                                  uint8_t address, uint8_t tx) {
@@ -151,19 +152,22 @@ lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, ui
 
 lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 
-	int8_t ret = -1;	// Function return codes.
+	int8_t ret = LSM9DS1_UNKNOWN_ERROR;	// Function return codes.
 
+	lsm9ds1_config_t *lsm9ds1_config = NULL;
+	
 	self->spi.settings.mode 		= 0;
 	self->spi.settings.bits 		= 8;
-	self->spi.settings.speed 		= 15000000;
 	self->spi.settings.spi_delay 	= 0;
 
 	switch(self->id) {
 		case LSM9DS1_ACCEL_GYRO:
-			strncpy(self->spi.name, ACCEL, sizeof(self->spi.name));
+			self->spi.settings.speed = glsm9ds1_config.sub_device.accelerometer.spi.speed;
+			strncpy(self->spi.name, glsm9ds1_config.sub_device.accelerometer.spi.device, sizeof(self->spi.name));
 			break;
 		case LSM9DS1_MAG:
-			strncpy(self->spi.name, MAG, sizeof(self->spi.name));
+			self->spi.settings.speed = glsm9ds1_config.sub_device.magnetometer.spi.speed;
+			strncpy(self->spi.name, glsm9ds1_config.sub_device.magnetometer.spi.device, sizeof(self->spi.name));
 			break;
 		default:
 			return LSM9DS1_UNKNOWN_SUB_DEVICE;
