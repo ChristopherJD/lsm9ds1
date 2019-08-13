@@ -78,12 +78,20 @@ SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 
 ######################### Tests ###############################################
-FILE(GLOB TEST_SOURCES
-	"tests/test.c"
-)
-ADD_EXECUTABLE(lsm9ds1_test ${TEST_SOURCES})
-TARGET_LINK_LIBRARIES(lsm9ds1_test cunit)
-TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
+OPTION(BUILD_TESTS "Build lsm9ds1 tests" OFF)
+if(BUILD_TESTS)
+    FILE(GLOB TEST_SOURCES
+    	"tests/test.c"
+    )
+    ADD_EXECUTABLE(lsm9ds1_test ${TEST_SOURCES})
+    TARGET_LINK_LIBRARIES(lsm9ds1_test cunit)
+    TARGET_LINK_LIBRARIES(lsm9ds1_test lsm9ds1)
+
+    ######################### Tests ###########################################
+    INSTALL(TARGETS lsm9ds1_test
+        DESTINATION usr/bin
+    )
+endif(BUILD_TESTS)
 
 ######################## Install targets ######################################
 
@@ -97,17 +105,10 @@ INSTALL(FILES ${CONFIGS}
     DESTINATION etc/
     COMPONENT config
 )
-
-######################### Tests ###############################################
-INSTALL(TARGETS lsm9ds1_test
-	DESTINATION usr/bin
-)
 ###############################################################################
 
 ######################## RPM Package ##########################################
-# Unit test picks up lsm9ds1 lib so I need to manually do this
-SET(CPACK_RPM_PACKAGE_AUTOREQ no)
-SET(CPACK_RPM_PACKAGE_REQUIRES "wiringpi")
+SET(CPACK_RPM_PACKAGE_AUTOREQ yes)
 SET(CPACK_RPM_PACKAGE_RELOCATABLE ON)
 SET(DESTDIR /)
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE "raspberrypi3")
@@ -118,6 +119,9 @@ SET(CPACK_PACKAGE_RELEASE 1)
 SET(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
 SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
 SET(CPACK_PACKAGING_INSTALL_PREFIX ${DESTDIR})
+SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for the LSM9DS1.")
+SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
+SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 STRING(CONCAT CPACK_PACKAGE_FILE_NAME 
     "${CPACK_PACKAGE_NAME}-${CPACK_PACKAGE_VERSION}"
     "-${CPACK_RPM_PACKAGE_ARCHITECTURE}")

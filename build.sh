@@ -42,7 +42,7 @@ if ${DEBUG}; then
 	VERSION=$(git describe --tags)
 	mkdir ${DEBUG_DIR}
 	pushd ${DEBUG_DIR}
-	cmake -DBUILD_VERSION=${VERSION} -DCMAKE_BUILD_TYPE=Debug ..
+	cmake -DBUILD_VERSION=${VERSION} -DCMAKE_BUILD_TYPE=Debug -DBUILD_TESTS=ON ..
 	make package
 	make
 	popd

@@ -153,8 +153,6 @@ lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, ui
 lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;	// Function return codes.
-
-	lsm9ds1_config_t *lsm9ds1_config = NULL;
 	
 	self->spi.settings.mode 		= 0;
 	self->spi.settings.bits 		= 8;
