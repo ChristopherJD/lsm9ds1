@@ -39,8 +39,15 @@ endif(BUILD_DOCUMENTATION)
 ###############################################################################
 
 ############################ Project Settings #################################
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    message("debug mode")
+    SET(PROJECT liblsm9ds1-dbg)
+ELSE()
+    message("release mode")
+    SET(PROJECT liblsm9ds1)
+ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
+
 PROJECT(liblsm9ds1)
-SET(PROJECT liblsm9ds1)
 SET(LICENSE "GPLV3")
 ###############################################################################
 
@@ -101,6 +108,8 @@ INSTALL(TARGETS lsm9ds1
     COMPONENT binaries
 )
 
+INSTALL(FILES "inc/lsm9ds1.h" DESTINATION usr/include/)
+
 INSTALL(FILES ${CONFIGS}
     DESTINATION etc/
     COMPONENT config
@@ -108,7 +117,13 @@ INSTALL(FILES ${CONFIGS}
 ###############################################################################
 
 ######################## RPM Package ##########################################
-SET(CPACK_RPM_PACKAGE_AUTOREQ yes)
+SET(DEPENDENCIES "libcjson1 >= 1.0-r0")
+SET(CPACK_RPM_PACKAGE_AUTOREQ OFF)
+IF(CMAKE_BUILD_TYPE MATCHES Debug)
+    SET(DEPENDENCIES "${DEPENDENCIES}, libcunit1 >= 2.1+3-r0")
+ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
+
+SET(CPACK_RPM_PACKAGE_REQUIRES ${DEPENDENCIES})
 SET(CPACK_RPM_PACKAGE_RELOCATABLE ON)
 SET(DESTDIR /)
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE "raspberrypi3")
@@ -120,6 +135,7 @@ SET(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
 SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
 SET(CPACK_PACKAGING_INSTALL_PREFIX ${DESTDIR})
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for the LSM9DS1.")
+SET(CPACK_RPM_PACKAGE_LICENSE ${LICENSE})
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")
 SET(CPACK_PACKAGE_DESCRIPTION_FILE "${CMAKE_CURRENT_SOURCE_DIR}/README.md")
 STRING(CONCAT CPACK_PACKAGE_FILE_NAME 
