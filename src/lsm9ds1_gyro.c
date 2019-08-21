@@ -177,7 +177,7 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_bus_t *bus,
 	uint8_t reg = (settings->odr |
 	               settings->scale);
 	status = lsm9ds1_register_write(bus, LSM9DS1_REGISTER_CTRL_REG1_G,
-	                                __extension__ 0b11111000, reg);
+		(LSM9DS1_GYRO_ODR_BIT_MASK | LSM9DS1_GYRO_SCALE_BIT_MASK), reg);
 	if (status < 0) return status;
 
 #if DEBUG > 0
