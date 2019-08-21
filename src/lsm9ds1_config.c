@@ -11,19 +11,27 @@
 // Default Sensor Settings if not otherwise set.
 static const lsm9ds1_config_t gdefault_config = {
 	.name = "lsm9ds1",
-	.xfer_bus = 0,
+	.xfer_bus = LSM9DS1_SPI_BUS,
 	.sub_device = {
 		.accelerometer = {
-			.spi = {
-				.device = "/dev/spidev0.0",
-				.speed = 15000000,
-			},
+			.bus = {
+				.spi = {
+					.name = "/dev/spidev0.0",
+					.settings = {
+						.speed = 15000000,
+					}
+				},
+			}
 		},
 		.magnetometer = {
-			.spi = {
-				.device = "/dev/spidev0.1",
-				.speed = 15000000,
-			},
+			.bus = {
+				.spi = {
+					.name = "/dev/spidev0.1",
+					.settings = {
+						.speed = 15000000,
+					}
+				},
+			}
 		}
 	}
 };
@@ -83,7 +91,7 @@ static char *read_config() {
 	return file_buffer;
 }
 
-static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_device_name, struct lsm9ds1_sub_device *bus) {
+static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_device_name, lsm9ds1_bus_t *bus) {
 	const cJSON *sub_device = NULL;	
 	const cJSON *spi = NULL;
 	const cJSON *device_name = NULL;
@@ -108,8 +116,8 @@ static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_
     	if(config_string_size > LSM9DS1_MAX_STR_SIZE) {
 			return LSM9DS1_UNABLE_TO_PARSE_JSON;
     	}
-	    strcpy(bus->spi.device, device_name->valuestring);
-	    DEBUG_PRINT("%s configured for %s.\n", sub_device_name, bus->spi.device);
+	    strcpy(bus->spi.name, device_name->valuestring);
+	    DEBUG_PRINT("%s configured for %s.\n", sub_device_name, bus->spi.name);
     }
 
 	speed = cJSON_GetObjectItemCaseSensitive(spi, "speed");
@@ -119,8 +127,8 @@ static lsm9ds1_status_t parse_sub_device_spi(const cJSON *json, const char *sub_
     		//Keep the default value. Return early.
     		return LSM9DS1_INVALID_SETTING;
     	}
-    	bus->spi.speed = speed->valueint;
-	    DEBUG_PRINT("%s configured spi speed at %d.\n", sub_device_name, bus->spi.speed);
+    	bus->spi.settings.speed = speed->valueint;
+	    DEBUG_PRINT("%s configured spi speed at %d.\n", sub_device_name, bus->spi.settings.speed);
     }
 
     return LSM9DS1_SUCCESS;
@@ -167,10 +175,10 @@ static lsm9ds1_status_t parse_json(lsm9ds1_config_t *lsm9ds1_config) {
     }
 
 	sub_device = cJSON_GetObjectItemCaseSensitive(config_json, "sub_device");
-	status = parse_sub_device_spi(sub_device, "accelerometer", &(lsm9ds1_config->sub_device.accelerometer));
+	status = parse_sub_device_spi(sub_device, "accelerometer", &(lsm9ds1_config->sub_device.accelerometer.bus));
 	if(status < 0) { return status;}
 
-	status = parse_sub_device_spi(sub_device, "magnetometer", &(lsm9ds1_config->sub_device.magnetometer));
+	status = parse_sub_device_spi(sub_device, "magnetometer", &(lsm9ds1_config->sub_device.magnetometer.bus));
 	if(status < 0) { return status;}
 
     cJSON_Delete(config_json);

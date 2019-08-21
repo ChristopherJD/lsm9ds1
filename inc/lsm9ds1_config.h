@@ -26,30 +26,17 @@
 #define LSM9DS1_CONFIG_H_
 
 #include <stdint.h>
-#include "lsm9ds1_error.h"
+#include "lsm9ds1_settings.h"
 
 #define LSM9DS1_MAX_STR_SIZE 256
 #define MAX_SPI_SPEED 15000000
 #define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
 
-struct lsm9ds1_spi {
-	char device[LSM9DS1_MAX_STR_SIZE];
-	uint32_t speed;	
-};
-
-struct lsm9ds1_sub_device {
-	struct lsm9ds1_spi spi;
-};
-
-struct lsm9ds1_sub_devices {
-	struct lsm9ds1_sub_device accelerometer;
-	struct lsm9ds1_sub_device magnetometer;
-};
-
 typedef struct lsm9ds1_config_t {
 	char name[LSM9DS1_MAX_STR_SIZE];
-	unsigned int xfer_bus;
-	struct lsm9ds1_sub_devices sub_device;
+	lsm9ds1_settings_t settings;
+	lsm9ds1_xfer_bus_t xfer_bus;
+	lsm9ds1_sub_devices_t sub_device;
 }lsm9ds1_config_t;
 
 extern lsm9ds1_config_t glsm9ds1_config;

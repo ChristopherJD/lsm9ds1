@@ -36,27 +36,10 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-
-#include "lsm9ds1_mag.h"
-#include "lsm9ds1_gyro.h"
-#include "lsm9ds1_accel.h"
-#include "lsm9ds1_error.h"
-#include "lsm9ds1_regs.h"
-#include "lsm9ds1_bus.h"
-#include "lsm9ds1_temp.h"
 #include "lsm9ds1_debug.h"
 #include "lsm9ds1_config.h"
 
 #define _BUILD_VERSION BUILD_VERSION
-
-/**
- * @brief Stores the settings for each sub device.
- */
-typedef struct lsm9ds1_settings {
-	lsm9ds1_accel_settings_t accelerometer;
-	lsm9ds1_mag_settings_t magnetometer;
-	lsm9ds1_gyro_settings_t gyroscope;
-} lsm9ds1_settings_t;
 
 /**
  * @brief Stores the raw data for each sub device.
@@ -78,18 +61,6 @@ typedef struct lsm9ds1_converted_data_t {
 	mag_converted_data_t magnetometer;
 	gyro_converted_data_t gyroscope;
 } lsm9ds1_converted_data_t;
-
-typedef struct lsm9ds1_sub_device_t {
-	lsm9ds1_bus_t bus;
-}lsm9ds1_sub_device_t;
-
-/**
- * @brief LSM9DS1 sub device.
- */
-typedef struct lsm9ds1_sub_devices_t {
-	lsm9ds1_sub_device_t accelerometer;
-	lsm9ds1_sub_device_t magnetometer;
-}lsm9ds1_sub_devices_t;
 
 /**
  * @brief Data and configurations for the lsm9ds1 device.

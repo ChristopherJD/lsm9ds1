@@ -28,7 +28,6 @@
 #define LSM9DS1_ACCEL_H_
 
 #include "lsm9ds1_common.h"
-#include "lsm9ds1_error.h"
 
 #define LSM9DS1_XL_DECIMATION_BIT_OFFSET 6
 #define LSM9DS1_XL_DECIMATION_BIT_MASK __extension__ 0b11000000

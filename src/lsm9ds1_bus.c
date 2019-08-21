@@ -160,12 +160,12 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 
 	switch(self->id) {
 		case LSM9DS1_ACCEL_GYRO:
-			self->spi.settings.speed = glsm9ds1_config.sub_device.accelerometer.spi.speed;
-			strncpy(self->spi.name, glsm9ds1_config.sub_device.accelerometer.spi.device, sizeof(self->spi.name));
+			self->spi.settings.speed = glsm9ds1_config.sub_device.accelerometer.bus.spi.settings.speed;
+			strncpy(self->spi.name, glsm9ds1_config.sub_device.accelerometer.bus.spi.name, sizeof(self->spi.name));
 			break;
 		case LSM9DS1_MAG:
-			self->spi.settings.speed = glsm9ds1_config.sub_device.magnetometer.spi.speed;
-			strncpy(self->spi.name, glsm9ds1_config.sub_device.magnetometer.spi.device, sizeof(self->spi.name));
+			self->spi.settings.speed = glsm9ds1_config.sub_device.magnetometer.bus.spi.settings.speed;
+			strncpy(self->spi.name, glsm9ds1_config.sub_device.magnetometer.bus.spi.name, sizeof(self->spi.name));
 			break;
 		default:
 			return LSM9DS1_UNKNOWN_SUB_DEVICE;

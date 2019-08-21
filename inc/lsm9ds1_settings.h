@@ -19,21 +19,38 @@
  * @file
  * @author Christopher Jordan-Denny
  * @date
- * @brief Temperature functions and data.
+ * @brief Accelerometer functions and data.
  *
- * Read function for the temperature.
+ * Setup function, and read function for the accelerometer.
  */
 
-#ifndef LSM9DS1_TEMP_H_
-#define LSM9DS1_TEMP_H_
+#ifndef LSM9DS1_SETTINGS_H_
+#define LSM9DS1_SETTINGS_H_
 
-#include "lsm9ds1_common.h"
+#include "lsm9ds1_accel.h"
+#include "lsm9ds1_mag.h"
+#include "lsm9ds1_gyro.h"
+#include "lsm9ds1_temp.h"
 
 /**
- * @brief Temperature returned from the LSM9DS1
+ * @brief Stores the settings for each sub device.
  */
-typedef int16_t lsm9ds1_temperature_t;
+typedef struct lsm9ds1_settings {
+	lsm9ds1_accel_settings_t accelerometer;
+	lsm9ds1_mag_settings_t magnetometer;
+	lsm9ds1_gyro_settings_t gyroscope;
+} lsm9ds1_settings_t;
 
-lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_bus_t *bus, lsm9ds1_temperature_t *raw_data);
+typedef struct lsm9ds1_sub_device_t {
+	lsm9ds1_bus_t bus;
+}lsm9ds1_sub_device_t;
+
+/**
+ * @brief LSM9DS1 sub device.
+ */
+typedef struct lsm9ds1_sub_devices_t {
+	lsm9ds1_sub_device_t accelerometer;
+	lsm9ds1_sub_device_t magnetometer;
+}lsm9ds1_sub_devices_t;
 
 #endif
