@@ -19,6 +19,60 @@
 #include "lsm9ds1_regs.h"
 #include "lsm9ds1_debug.h"
 
+static lsm9ds1_status_t lsm9ds1_read_gyro_settings(lsm9ds1_bus_t *bus, lsm9ds1_gyro_settings_t *settings) {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG1_G);
+	if (status < 0) {
+		return status;
+	}
+
+	uint8_t bit_value = 0;
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GYRO_ODR_BIT_MASK, 
+		LSM9DS1_GYRO_ODR_BIT_OFFSET, &bit_value);
+	settings->odr = bit_value;
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GYRO_SCALE_BIT_MASK, 
+		LSM9DS1_GYRO_SCALE_BIT_OFFSET, &bit_value);
+	settings->scale = bit_value;
+
+	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG3_G);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GYRO_LOW_POWER_MODE_BIT_MASK, 
+		LSM9DS1_GYRO_LOW_POWER_MODE_BIT_OFFSET, &bit_value);
+	settings->low_power_mode_enable = bit_value;
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GYRO_HIGH_PASS_FILTER_BIT_MASK, 
+		LSM9DS1_GYRO_HIGH_PASS_FILTER_BIT_OFFSET, &bit_value);
+	settings->high_pass_filter_enable = bit_value;
+
+	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG3_G);
+	if (status < 0) {
+		return status;
+	}
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GRYO_X_ENABLE_BIT_MASK, 
+		LSM9DS1_GRYO_X_ENABLE_BIT_OFFSET, &bit_value);
+	settings->x_enable = bit_value;
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GRYO_Y_ENABLE_BIT_MASK, 
+		LSM9DS1_GRYO_Y_ENABLE_BIT_OFFSET, &bit_value);
+	settings->y_enable = bit_value;
+
+	(void)read_bit_value(bus->spi.rx[0], LSM9DS1_GRYO_Z_ENABLE_BIT_MASK, 
+		LSM9DS1_GRYO_Z_ENABLE_BIT_OFFSET, &bit_value);
+	settings->z_enable = bit_value;
+
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG5_XL: 0x%X\n",
+	            bus->spi.rx[0]);
+
+	return LSM9DS1_SUCCESS;
+}
+
 lsm9ds1_status_t lsm9ds1_read_gyro(lsm9ds1_bus_t *bus, gyro_raw_data_t *raw_data) {
 
 	// Check that the lsm9ds1 has been initialized.
@@ -109,11 +163,10 @@ lsm9ds1_status_t lsm9ds1_setup_gyro(lsm9ds1_bus_t *bus,
 		return status;
 	}
 
-#if DEBUG > 0
-	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG4);
-	DEBUG_PRINT("Reading LSM9DS1_REGISTER_CTRL_REG4: 0x%X\n",
-	            bus->spi.rx[0]);
-#endif
+	status = lsm9ds1_read_gyro_settings(bus, settings);
+	if (status < 0) {
+		return status;
+	}
 
 	/**************************************************************************
 	 * Setup output data rate to 952 HZ (maximum), and the provided scale.
