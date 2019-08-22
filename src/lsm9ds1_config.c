@@ -33,6 +33,17 @@ static const lsm9ds1_config_t gdefault_config = {
 				},
 			}
 		}
+	},
+	.settings = {
+		.accelerometer = {
+			.range = LSM9DS1_ACCELRANGE_8G,
+		},
+		.gyroscope = {
+			.scale = LSM9DS1_GYROSCALE_500DPS,
+		},
+		.magnetometer = {
+			.gain = LSM9DS1_MAGGAIN_8GAUSS,
+		}
 	}
 };
 

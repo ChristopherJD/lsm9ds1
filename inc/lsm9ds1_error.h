@@ -60,6 +60,7 @@ typedef enum lsm9ds1_status {
 	LSM9DS1_UNABLE_TO_PARSE_JSON = -27,
 	LSM9DS1_NO_SETTINGS = -28,
 	LSM9DS1_INVALID_SETTING = -29,
+	LSM9DS1_NULL_PARAMETER = -30,
 } lsm9ds1_status_t;
 
 #endif

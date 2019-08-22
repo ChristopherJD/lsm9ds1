@@ -23,6 +23,8 @@
 #error "__GNUC__ not defined"
 #else
 
+static lsm9ds1_device_t glsm9ds1 = {0};
+
 static lsm9ds1_status_t init_i2c(lsm9ds1_sub_device_t *self) {
 	// Probably won't implement for raspberrypi
 	return LSM9DS1_BUS_NOT_SUPPORTED;
@@ -54,7 +56,7 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_sub_device_t *self, lsm9ds1_xfe
 	return LSM9DS1_SUCCESS;
 }
 
-lsm9ds1_status_t update_temp(lsm9ds1_device_t *self) {
+static lsm9ds1_status_t update_temp(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -65,7 +67,7 @@ lsm9ds1_status_t update_temp(lsm9ds1_device_t *self) {
 	return status;
 }
 
-lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
+static lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -90,7 +92,7 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self) {
 	return status;
 }
 
-lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
+static lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -115,7 +117,7 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self) {
 	return status;
 }
 
-lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
+static lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -140,7 +142,7 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 	return status;
 }
 
-lsm9ds1_status_t update(lsm9ds1_device_t *self) {
+static lsm9ds1_status_t update(lsm9ds1_device_t *self) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -159,14 +161,59 @@ lsm9ds1_status_t update(lsm9ds1_device_t *self) {
 	return LSM9DS1_SUCCESS;
 }
 
-lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,
-                              lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
-                              lsm9ds1_gyro_scale_t scale) {
-	if (NULL == self) {
-		return LSM9DS1_MALLOC_DEVICE_ERROR;
-	}
+lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature) {
 
-	self->initialized = false;
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	if(NULL == temperature) return LSM9DS1_NULL_PARAMETER;
+
+	status = update_temp(&glsm9ds1);
+	if(status < 0) return status;
+
+	*temperature = glsm9ds1.converted_data.temperature;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data) {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = update_accel(&glsm9ds1);
+	if(status < 0) return status;
+
+	*data = glsm9ds1.converted_data.accelerometer;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t get_mag(mag_converted_data_t *data) {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = update_mag(&glsm9ds1);
+	if(status < 0) return status;
+
+	*data = glsm9ds1.converted_data.magnetometer;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t get_gyro(gyro_converted_data_t *data) {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = update_gyro(&glsm9ds1);
+	if(status < 0) return status;
+
+	*data = glsm9ds1.converted_data.gyroscope;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t lsm9ds1_init() {
+
+	glsm9ds1.initialized = false;
 
 	DEBUG_PRINT("Build Version: %s\n", _BUILD_VERSION);
 	DEBUG_PRINT("Build Date/Time: %s %s\n", __DATE__, __TIME__);
@@ -174,60 +221,70 @@ lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_typ
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 
 	// link functions
-	self->update_temp = update_temp;
-	self->update_accel = update_accel;
-	self->update_mag = update_mag;
-	self->update_gyro = update_gyro;
-	self->update = update;	
+	glsm9ds1.update_temp = update_temp;
+	glsm9ds1.update_accel = update_accel;
+	glsm9ds1.update_mag = update_mag;
+	glsm9ds1.update_gyro = update_gyro;
+	glsm9ds1.update = update;	
 
 	ret = init_config();
 	if(ret < 0) {
 		return ret;
 	}
 
-	self->xfer_bus = glsm9ds1_config.xfer_bus;
+	glsm9ds1.xfer_bus = glsm9ds1_config.xfer_bus;
 
 #if DEBUG > 0
 	const char *bus_names[NUM_BUS_TYPES] = {"SPI", "I2C"};
-	DEBUG_PRINT("Initializing the lsm9ds1 %s bus...\n", bus_names[bus_type]);
+	DEBUG_PRINT("Initializing the lsm9ds1 %s bus...\n", bus_names[glsm9ds1.xfer_bus]);
 #endif
 
-	self->sub_device.accelerometer.bus.initialized = false;
-	self->sub_device.magnetometer.bus.initialized = false;
-	self->sub_device.accelerometer.bus.id = LSM9DS1_ACCEL_GYRO;
-	self->sub_device.magnetometer.bus.id = LSM9DS1_MAG;
-	self->xfer_bus = bus_type;
+	glsm9ds1.sub_device.accelerometer.bus.initialized = false;
+	glsm9ds1.sub_device.magnetometer.bus.initialized = false;
+	glsm9ds1.sub_device.accelerometer.bus.id = LSM9DS1_ACCEL_GYRO;
+	glsm9ds1.sub_device.magnetometer.bus.id = LSM9DS1_MAG;
 
-	ret = lsm9ds1_init_bus(&(self->sub_device.accelerometer), self->xfer_bus);
+	ret = lsm9ds1_init_bus(&(glsm9ds1.sub_device.accelerometer), glsm9ds1.xfer_bus);
 	if ((ret < 0) && (ret != LSM9DS1_BUS_ALREADY_OPEN)) {
 		return ret;
 	};
-	ret = lsm9ds1_init_bus(&(self->sub_device.magnetometer), self->xfer_bus);
+	ret = lsm9ds1_init_bus(&(glsm9ds1.sub_device.magnetometer), glsm9ds1.xfer_bus);
 	if ((ret < 0) && (ret != LSM9DS1_BUS_ALREADY_OPEN)) {
 		return ret;
 	};
 
-	DEBUG_PRINT("Setting up accelerometer... range(%d)\n", range);
-	ret = lsm9ds1_setup_accel(&(self->sub_device.accelerometer.bus), &(self->settings.accelerometer), range);
+	DEBUG_PRINT("Setting up accelerometer... range(%d)\n", glsm9ds1_config.settings.accelerometer.range);
+	ret = lsm9ds1_setup_accel(
+		&(glsm9ds1.sub_device.accelerometer.bus), 
+		&(glsm9ds1.settings.accelerometer), 
+		glsm9ds1_config.settings.accelerometer.range
+	);
 	if (ret < 0) {
 		DEBUG_PRINT("Error setting up accelerometer (%d)!\n", ret);
 		return ret;
 	};
 
-	DEBUG_PRINT("Setting up gyroscope... scale(%d)\n", scale);
-	lsm9ds1_setup_gyro(&(self->sub_device.accelerometer.bus), &(self->settings.gyroscope), scale);
+	DEBUG_PRINT("Setting up gyroscope... scale(%d)\n", glsm9ds1_config.settings.gyroscope.scale);
+	lsm9ds1_setup_gyro(&(glsm9ds1.sub_device.accelerometer.bus), 
+		&(glsm9ds1.settings.gyroscope), 
+		glsm9ds1_config.settings.gyroscope.scale
+	);
 	if (ret < 0) {
 		DEBUG_PRINT("Error setting up gyroscope (%d)!\n", ret);
 		return ret;
 	};
 
-ret = lsm9ds1_setup_mag(&(self->sub_device.magnetometer.bus), &(self->settings.magnetometer), gain);
+	DEBUG_PRINT("Setting up Magnetometer... gain(%d)\n", glsm9ds1_config.settings.magnetometer.gain);
+	ret = lsm9ds1_setup_mag(&(glsm9ds1.sub_device.magnetometer.bus), 
+		&(glsm9ds1.settings.magnetometer), 
+		glsm9ds1_config.settings.magnetometer.gain
+	);
 	if (ret < 0) {
 		DEBUG_PRINT("Error setting up mag! (%d)\n", ret);
 		return ret;
 	};
 
-	self->initialized = true;
+	glsm9ds1.initialized = true;
 
 	return LSM9DS1_SUCCESS;
 }

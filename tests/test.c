@@ -28,8 +28,7 @@ static lsm9ds1_device_t *lsm9ds1 = NULL;
  */
 int init_lsm9ds1_suite(void) {
 
-	lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-	(void)lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+	(void)lsm9ds1_init();
 
 	return 0;
 }
@@ -60,58 +59,52 @@ void test_lsm9ds1_read_sub_device_mag(void) {
 void test_lsm9ds1_read_temp(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1->update_temp(lsm9ds1);
+	lsm9ds1_temperature_t temperature = 0;
+	status = get_temp(&temperature);
 
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
-	printf("Raw Temp: %d\n", lsm9ds1->raw_data.temperature);
-	printf("Temp: %f\n", lsm9ds1->converted_data.temperature);
+	printf("Temp: %f\n", temperature);
 }
 
 void test_lsm9ds1_read_accel(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1->update_accel(lsm9ds1);
+	accelerometer_converted_data_t data = {0};
+	status = get_accel(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
-	printf("Raw Accel X: %d\n", lsm9ds1->raw_data.accelerometer.x);
-	printf("Raw Accel Y: %d\n", lsm9ds1->raw_data.accelerometer.y);
-	printf("Raw Accel Z: %d\n", lsm9ds1->raw_data.accelerometer.z);
-	printf("Accel X: %f\n", lsm9ds1->converted_data.accelerometer.x);
-	printf("Accel Y: %f\n", lsm9ds1->converted_data.accelerometer.y);
-	printf("Accel Z: %f\n", lsm9ds1->converted_data.accelerometer.z);
+	printf("Accel X: %f\n", data.x);
+	printf("Accel Y: %f\n", data.y);
+	printf("Accel Z: %f\n", data.z);
 }
 
 void test_lsm9ds1_read_gyro(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1->update_gyro(lsm9ds1);
+	gyro_converted_data_t data = {0};
+	status = get_gyro(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
-	printf("Raw Gyro X: %d\n", lsm9ds1->raw_data.gyroscope.x);
-	printf("Raw Gyro Y: %d\n", lsm9ds1->raw_data.gyroscope.y);
-	printf("Raw Gyro Z: %d\n", lsm9ds1->raw_data.gyroscope.z);
-	printf("Gyro X: %f\n", lsm9ds1->converted_data.gyroscope.x);
-	printf("Gyro Y: %f\n", lsm9ds1->converted_data.gyroscope.y);
-	printf("Gyro Z: %f\n", lsm9ds1->converted_data.gyroscope.z);
+	printf("Gyro X: %f\n", data.x);
+	printf("Gyro Y: %f\n", data.y);
+	printf("Gyro Z: %f\n", data.z);
 }
 
 void test_lsm9ds1_read_mag(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-	status = lsm9ds1->update_mag(lsm9ds1);
+	mag_converted_data_t data = {0};
+	status = get_mag(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
-	printf("Raw Mag X: %d\n", lsm9ds1->raw_data.magnetometer.x);
-	printf("Raw Mag Y: %d\n", lsm9ds1->raw_data.magnetometer.y);
-	printf("Raw Mag Z: %d\n", lsm9ds1->raw_data.magnetometer.z);
-	printf("Mag X: %f\n", lsm9ds1->converted_data.magnetometer.x);
-	printf("Mag Y: %f\n", lsm9ds1->converted_data.magnetometer.y);
-	printf("Mag Z: %f\n", lsm9ds1->converted_data.magnetometer.z);
+	printf("Mag X: %f\n", data.x);
+	printf("Mag Y: %f\n", data.y);
+	printf("Mag Z: %f\n", data.z);
 }
 
 int main() {

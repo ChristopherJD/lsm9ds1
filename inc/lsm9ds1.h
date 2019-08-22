@@ -83,8 +83,7 @@ typedef struct lsm9ds1_device_t {
 /**
  * @brief Read the temperature of the LSM9DS1.
  *
- * Updates the lsm9ds1_device_t structure with the current temperature. You
- * must first create this structure before reading.
+ * Get the current converted temperature reading
  *
  * Example Usage:
  * @code
@@ -93,36 +92,36 @@ typedef struct lsm9ds1_device_t {
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
  *
- *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
- *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		status = lsm9ds1_init();
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- * 		status = lsm9ds1.update_temp(lsm9ds1);
+ *		lsm9ds1_temperature_t data = 0;
+ * 		status = get_temp(&data);
  * 		if(status < 0) {
  * 			fprintf(stderr, "Error reading temperature!\n");
  * 		}
  *
- *		printf("Temperature: %f\n", lsm9ds1.converted_data.temperature);
+ *		printf("Temperature: %f\n", data);
  *
- *		free(lsm9ds1);
+ *		return status;
  * }
  * @endcode
- * @param self The created instance of the lsm9ds1_device_t.
+ * @param data the converted data read from the temperature monitor
+ * @see \ref lsm9ds1_temperature_t
  * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t update_temp(lsm9ds1_device_t *self);
+lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature);
 
 /**
  * @brief Read the accelerometer of the LSM9DS1.
  *
- * Updates the lsm9ds1_device_t structure with the current accelerometer reading. You
- * must first create this structure before reading.
+ * Get the current converted accelerometer reading. The X, Y and Z coordinates are
+ * returned by this function.
  *
  * Example Usage:
  * @code
@@ -131,38 +130,38 @@ lsm9ds1_status_t update_temp(lsm9ds1_device_t *self);
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
  *
- *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
- *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		status = lsm9ds1_init();
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- * 		status = lsm9ds1.update_accel(lsm9ds1);
+ *		accelerometer_converted_data_t data = {0};
+ * 		status = get_accel(&data);
  * 		if(status < 0) {
  * 			fprintf(stderr, "Error reading accelerometer!\n");
  * 		}
  *
- *		printf("Accelerometer x: %f\n", lsm9ds1.converted_data.accelerometer.x);
- *		printf("Accelerometer y: %f\n", lsm9ds1.converted_data.accelerometer.y);
- *		printf("Accelerometer z: %f\n", lsm9ds1.converted_data.accelerometer.z);
+ *		printf("Accelerometer x: %f\n", data.x);
+ *		printf("Accelerometer y: %f\n", data.y);
+ *		printf("Accelerometer z: %f\n", data.z);
  *
- *		free(lsm9ds1);
+ *		return status;
  * }
  * @endcode
- * @param self The created instance of the lsm9ds1_device_t.
+ * @param data the converted data read from the accelerometer.
+ * @see \ref accelerometer_converted_data_t
  * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t update_accel(lsm9ds1_device_t *self);
+lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data);
 
 /**
  * @brief Read the magnetometer of the LSM9DS1.
  *
- * Updates the lsm9ds1_device_t structure with the current magnetometer reading. You
- * must first create this structure before reading.
+ * Get the current converted magnetometer reading. The X, Y and Z coordinates are
+ * returned by this function.
  *
  * Example Usage:
  * @code
@@ -171,38 +170,37 @@ lsm9ds1_status_t update_accel(lsm9ds1_device_t *self);
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
  *
- *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
- *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		status = lsm9ds1_init();
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
- *
- * 		status = lsm9ds1.update_mag(lsm9ds1);
+ *		mag_converted_data_t data = {0};
+ * 		status = get_mag(&data);
  * 		if(status < 0) {
  * 			fprintf(stderr, "Error reading magnetometer!\n");
  * 		}
  *
- *		printf("Magnetometer x: %f\n", lsm9ds1.converted_data.magnetometer.x);
- *		printf("Magnetometer y: %f\n", lsm9ds1.converted_data.magnetometer.y);
- *		printf("Magnetometer z: %f\n", lsm9ds1.converted_data.magnetometer.z);
- *
- *		free(lsm9ds1);
+ *		printf("Magnetometer x: %f\n", data.x);
+ *		printf("Magnetometer y: %f\n", data.y);
+ *		printf("Magnetometer z: %f\n", data.z);
+ *		
+ *		return status;
  * }
  * @endcode
- * @param self The created instance of the lsm9ds1_device_t.
+ * @param data the converted data read from the magnetometer.
+ * @see \ref mag_converted_data_t
  * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t update_mag(lsm9ds1_device_t *self);
+lsm9ds1_status_t get_mag(mag_converted_data_t *data);
 
 /**
  * @brief Read the gyroscope from the LSM9DS1.
  *
- * Updates the lsm9ds1_device_t structure with the current gyroscope reading. You
- * must first create this structure before reading.
+ * Get the current converted gyroscope reading. The X, Y and Z coordinates are
+ * returned by this function.
  *
  * Example Usage:
  * @code
@@ -211,37 +209,38 @@ lsm9ds1_status_t update_mag(lsm9ds1_device_t *self);
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
  *
- *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
- *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		status = lsm9ds1_init();
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- * 		status = lsm9ds1.update_gyro(lsm9ds1);
+ *		gyro_converted_data_t data = {0};
+ * 		status = get_gyro(&data);
  * 		if(status < 0) {
  * 			fprintf(stderr, "Error reading gyroscope!\n");
  * 		}
  *
- *		printf("Gyroscope x: %f\n", lsm9ds1.converted_data.gyroscope.x);
- *		printf("Gyroscope y: %f\n", lsm9ds1.converted_data.gyroscope.y);
- *		printf("Gyroscope z: %f\n", lsm9ds1.converted_data.gyroscope.z);
+ *		printf("Gyroscope x: %f\n", data.x);
+ *		printf("Gyroscope y: %f\n", data.y);
+ *		printf("Gyroscope z: %f\n", data.z);
  *
- *		free(lsm9ds1);
+ *		return status;
  * }
  * @endcode
- * @param self The created instance of the lsm9ds1_device_t.
+ * @param data the converted data read from the gyroscope.
+ * @see \ref gyro_converted_data_t
  * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_device_t
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
+lsm9ds1_status_t get_gyro(gyro_converted_data_t *data);
 
 /**
  * @brief Initialize the LSM9DS1.
  *
- * TODO Add description of initialization
+ * Initialize the lsm9ds1 according to the configuration file found in
+ * /etc/lsm9ds1.json. This function only has to be called once.
  *
  * Example Usage:
  * @code
@@ -250,27 +249,18 @@ lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self);
  * int main() {
  * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
  *
- *		lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
- *		status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+ *		status = lsm9ds1_init();
  *		if(status < 0) {
  *			fprinf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
- *		free(lsm9ds1);
+ *		return status;
  * }
  * @endcode
- * @param self The created instance of the lsm9ds1_device_t.
  * @return Returns the function status as defined in \ref lsm9ds1_status_t.
  * @see \ref lsm9ds1_status_t
- * @see \ref lsm9ds1_device_t
- * @see \ref lsm9ds1_xfer_bus_t
- * @see \ref lsm9ds1_accel_range_t
- * @see \ref lsm9ds1_mag_gain_t
- * @see \ref lsm9ds1_gyro_scale_t
  */
-lsm9ds1_status_t lsm9ds1_init(lsm9ds1_device_t *self, lsm9ds1_xfer_bus_t bus_type,
-                              lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain,
-                              lsm9ds1_gyro_scale_t scale);
+lsm9ds1_status_t lsm9ds1_init();
 
 #ifdef __cplusplus
 }
