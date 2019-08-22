@@ -1,4 +1,4 @@
-.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Fri Aug 9 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Wed Aug 21 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -11,18 +11,6 @@
 .br
 \fC#include <stdint\&.h>\fP
 .br
-\fC#include 'lsm9ds1_mag\&.h'\fP
-.br
-\fC#include 'lsm9ds1_gyro\&.h'\fP
-.br
-\fC#include 'lsm9ds1_accel\&.h'\fP
-.br
-\fC#include 'lsm9ds1_error\&.h'\fP
-.br
-\fC#include 'lsm9ds1_regs\&.h'\fP
-.br
-\fC#include 'lsm9ds1_temp\&.h'\fP
-.br
 \fC#include 'lsm9ds1_debug\&.h'\fP
 .br
 \fC#include 'lsm9ds1_config\&.h'\fP
@@ -32,10 +20,6 @@
 
 .in +1c
 .ti -1c
-.RI "struct \fBlsm9ds1_settings\fP"
-.br
-.RI "Stores the settings for each sub device\&. "
-.ti -1c
 .RI "struct \fBlsm9ds1_data_t\fP"
 .br
 .RI "Stores the raw data for each sub device\&. "
@@ -43,13 +27,6 @@
 .RI "struct \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
-.ti -1c
-.RI "struct \fBlsm9ds1_sub_device_t\fP"
-.br
-.ti -1c
-.RI "struct \fBlsm9ds1_sub_devices_t\fP"
-.br
-.RI "LSM9DS1 sub device\&. "
 .ti -1c
 .RI "struct \fBlsm9ds1_device_t\fP"
 .br
@@ -66,10 +43,6 @@
 
 .in +1c
 .ti -1c
-.RI "typedef struct \fBlsm9ds1_settings\fP \fBlsm9ds1_settings_t\fP"
-.br
-.RI "Stores the settings for each sub device\&. "
-.ti -1c
 .RI "typedef struct \fBlsm9ds1_data_t\fP \fBlsm9ds1_data_t\fP"
 .br
 .RI "Stores the raw data for each sub device\&. "
@@ -77,13 +50,6 @@
 .RI "typedef struct \fBlsm9ds1_converted_data_t\fP \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_sub_device_t\fP \fBlsm9ds1_sub_device_t\fP"
-.br
-.ti -1c
-.RI "typedef struct \fBlsm9ds1_sub_devices_t\fP \fBlsm9ds1_sub_devices_t\fP"
-.br
-.RI "LSM9DS1 sub device\&. "
 .ti -1c
 .RI "typedef struct \fBlsm9ds1_device_t\fP \fBlsm9ds1_device_t\fP"
 .br
@@ -93,25 +59,29 @@
 
 .in +1c
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_temp\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBget_temp\fP (\fBlsm9ds1_temperature_t\fP *temperature)"
 .br
 .RI "Read the temperature of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_accel\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBget_accel\fP (\fBaccelerometer_converted_data_t\fP *data)"
 .br
 .RI "Read the accelerometer of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_mag\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBget_mag\fP (\fBmag_converted_data_t\fP *data)"
 .br
 .RI "Read the magnetometer of the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBupdate_gyro\fP (\fBlsm9ds1_device_t\fP *self)"
+.RI "\fBlsm9ds1_status_t\fP \fBget_gyro\fP (\fBgyro_converted_data_t\fP *data)"
 .br
 .RI "Read the gyroscope from the LSM9DS1\&. "
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBlsm9ds1_init\fP (\fBlsm9ds1_device_t\fP *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.RI "\fBlsm9ds1_status_t\fP \fBlsm9ds1_init\fP ()"
 .br
 .RI "Initialize the LSM9DS1\&. "
+.ti -1c
+.RI "\fBlsm9ds1_status_t\fP \fBlsm9ds1_close\fP ()"
+.br
+.RI "Close the LSM9DS1\&. "
 .in -1c
 .SH "Detailed Description"
 .PP 
@@ -132,10 +102,10 @@ Initializes the LSM9DS1 for the Raspberry Pi 3B+\&. Currently the device is wire
 
 .SH "Function Documentation"
 .PP 
-.SS "\fBlsm9ds1_status_t\fP lsm9ds1_init (\fBlsm9ds1_device_t\fP * self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)"
+.SS "\fBlsm9ds1_status_t\fP get_accel (\fBaccelerometer_converted_data_t\fP * data)"
 
 .PP
-Initialize the LSM9DS1\&. TODO Add description of initialization
+Read the accelerometer of the LSM9DS1\&. Get the current converted accelerometer reading\&. The X, Y and Z coordinates are returned by this function\&.
 .PP
 Example Usage: 
 .PP
@@ -145,74 +115,22 @@ Example Usage:
 int main() {
         lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    status = lsm9ds1_init();
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
     }
 
-    free(lsm9ds1);
-}
-
-.fi
-.PP
- 
-.PP
-\fBParameters:\fP
-.RS 4
-\fIself\fP The created instance of the \fBlsm9ds1_device_t\fP\&. 
-.RE
-.PP
-\fBReturns:\fP
-.RS 4
-Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
-.RE
-.PP
-\fBSee also:\fP
-.RS 4
-\fBlsm9ds1_status_t\fP 
-.PP
-\fBlsm9ds1_device_t\fP 
-.PP
-\fBlsm9ds1_xfer_bus_t\fP 
-.PP
-\fBlsm9ds1_accel_range_t\fP 
-.PP
-\fBlsm9ds1_mag_gain_t\fP 
-.PP
-\fBlsm9ds1_gyro_scale_t\fP 
-.RE
-.PP
-
-.SS "\fBlsm9ds1_status_t\fP update_accel (\fBlsm9ds1_device_t\fP * self)"
-
-.PP
-Read the accelerometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current accelerometer reading\&. You must first create this structure before reading\&.
-.PP
-Example Usage: 
-.PP
-.nf
-#include <lsm9ds1\&.h>
-
-int main() {
-        lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-
-    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
-    if(status < 0) {
-        fprinf(stderr, "Error initializing lsm9ds1!\n");
-    }
-
-        status = lsm9ds1\&.update_accel(lsm9ds1);
+    accelerometer_converted_data_t data = {0};
+        status = get_accel(&data);
         if(status < 0) {
             fprintf(stderr, "Error reading accelerometer!\n");
         }
 
-    printf("Accelerometer x: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.x);
-    printf("Accelerometer y: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.y);
-    printf("Accelerometer z: %f\n", lsm9ds1\&.converted_data\&.accelerometer\&.z);
+    printf("Accelerometer x: %f\n", data\&.x);
+    printf("Accelerometer y: %f\n", data\&.y);
+    printf("Accelerometer z: %f\n", data\&.z);
 
-    free(lsm9ds1);
+    return status;
 }
 
 .fi
@@ -221,7 +139,12 @@ int main() {
 .PP
 \fBParameters:\fP
 .RS 4
-\fIself\fP The created instance of the \fBlsm9ds1_device_t\fP\&. 
+\fIdata\fP the converted data read from the accelerometer\&. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBaccelerometer_converted_data_t\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -232,8 +155,6 @@ Returns the function status as defined in \fBlsm9ds1_status_t\fP\&.
 \fBSee also:\fP
 .RS 4
 \fBlsm9ds1_status_t\fP 
-.PP
-\fBlsm9ds1_device_t\fP 
 .RE
 .PP
 \fBNote:\fP
@@ -247,10 +168,10 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_gyro (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP get_gyro (\fBgyro_converted_data_t\fP * data)"
 
 .PP
-Read the gyroscope from the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current gyroscope reading\&. You must first create this structure before reading\&.
+Read the gyroscope from the LSM9DS1\&. Get the current converted gyroscope reading\&. The X, Y and Z coordinates are returned by this function\&.
 .PP
 Example Usage: 
 .PP
@@ -260,22 +181,22 @@ Example Usage:
 int main() {
         lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    status = lsm9ds1_init();
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
     }
 
-        status = lsm9ds1\&.update_gyro(lsm9ds1);
+    gyro_converted_data_t data = {0};
+        status = get_gyro(&data);
         if(status < 0) {
             fprintf(stderr, "Error reading gyroscope!\n");
         }
 
-    printf("Gyroscope x: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.x);
-    printf("Gyroscope y: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.y);
-    printf("Gyroscope z: %f\n", lsm9ds1\&.converted_data\&.gyroscope\&.z);
+    printf("Gyroscope x: %f\n", data\&.x);
+    printf("Gyroscope y: %f\n", data\&.y);
+    printf("Gyroscope z: %f\n", data\&.z);
 
-    free(lsm9ds1);
+    return status;
 }
 
 .fi
@@ -284,7 +205,12 @@ int main() {
 .PP
 \fBParameters:\fP
 .RS 4
-\fIself\fP The created instance of the \fBlsm9ds1_device_t\fP\&. 
+\fIdata\fP the converted data read from the gyroscope\&. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBgyro_converted_data_t\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -295,8 +221,6 @@ Returns the function status as defined in \fBlsm9ds1_status_t\fP\&.
 \fBSee also:\fP
 .RS 4
 \fBlsm9ds1_status_t\fP 
-.PP
-\fBlsm9ds1_device_t\fP 
 .RE
 .PP
 \fBNote:\fP
@@ -310,10 +234,10 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_mag (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP get_mag (\fBmag_converted_data_t\fP * data)"
 
 .PP
-Read the magnetometer of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current magnetometer reading\&. You must first create this structure before reading\&.
+Read the magnetometer of the LSM9DS1\&. Get the current converted magnetometer reading\&. The X, Y and Z coordinates are returned by this function\&.
 .PP
 Example Usage: 
 .PP
@@ -323,22 +247,21 @@ Example Usage:
 int main() {
         lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    status = lsm9ds1_init();
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
     }
-
-        status = lsm9ds1\&.update_mag(lsm9ds1);
+    mag_converted_data_t data = {0};
+        status = get_mag(&data);
         if(status < 0) {
             fprintf(stderr, "Error reading magnetometer!\n");
         }
 
-    printf("Magnetometer x: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.x);
-    printf("Magnetometer y: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.y);
-    printf("Magnetometer z: %f\n", lsm9ds1\&.converted_data\&.magnetometer\&.z);
-
-    free(lsm9ds1);
+    printf("Magnetometer x: %f\n", data\&.x);
+    printf("Magnetometer y: %f\n", data\&.y);
+    printf("Magnetometer z: %f\n", data\&.z);
+    
+    return status;
 }
 
 .fi
@@ -347,7 +270,12 @@ int main() {
 .PP
 \fBParameters:\fP
 .RS 4
-\fIself\fP The created instance of the \fBlsm9ds1_device_t\fP\&. 
+\fIdata\fP the converted data read from the magnetometer\&. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBmag_converted_data_t\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -358,8 +286,6 @@ Returns the function status as defined in \fBlsm9ds1_status_t\fP\&.
 \fBSee also:\fP
 .RS 4
 \fBlsm9ds1_status_t\fP 
-.PP
-\fBlsm9ds1_device_t\fP 
 .RE
 .PP
 \fBNote:\fP
@@ -373,10 +299,10 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP update_temp (\fBlsm9ds1_device_t\fP * self)"
+.SS "\fBlsm9ds1_status_t\fP get_temp (\fBlsm9ds1_temperature_t\fP * temperature)"
 
 .PP
-Read the temperature of the LSM9DS1\&. Updates the \fBlsm9ds1_device_t\fP structure with the current temperature\&. You must first create this structure before reading\&.
+Read the temperature of the LSM9DS1\&. Get the current converted temperature reading
 .PP
 Example Usage: 
 .PP
@@ -386,20 +312,20 @@ Example Usage:
 int main() {
         lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
-    lsm9ds1 = malloc(sizeof(lsm9ds1_device_t));
-    status = lsm9ds1_init(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    status = lsm9ds1_init();
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
     }
 
-        status = lsm9ds1\&.update_temp(lsm9ds1);
+    lsm9ds1_temperature_t data = 0;
+        status = get_temp(&data);
         if(status < 0) {
             fprintf(stderr, "Error reading temperature!\n");
         }
 
-    printf("Temperature: %f\n", lsm9ds1\&.converted_data\&.temperature);
+    printf("Temperature: %f\n", data);
 
-    free(lsm9ds1);
+    return status;
 }
 
 .fi
@@ -408,7 +334,12 @@ int main() {
 .PP
 \fBParameters:\fP
 .RS 4
-\fIself\fP The created instance of the \fBlsm9ds1_device_t\fP\&. 
+\fIdata\fP the converted data read from the temperature monitor 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBlsm9ds1_temperature_t\fP 
 .RE
 .PP
 \fBReturns:\fP
@@ -419,8 +350,6 @@ Returns the function status as defined in \fBlsm9ds1_status_t\fP\&.
 \fBSee also:\fP
 .RS 4
 \fBlsm9ds1_status_t\fP 
-.PP
-\fBlsm9ds1_device_t\fP 
 .RE
 .PP
 \fBNote:\fP
@@ -431,6 +360,83 @@ You must first initialize the lsm9ds1\&.
 \fBSee also:\fP
 .RS 4
 \fBlsm9ds1_init\fP 
+.RE
+.PP
+
+.SS "\fBlsm9ds1_status_t\fP lsm9ds1_close ()"
+
+.PP
+Close the LSM9DS1\&. Close the open buses\&.
+.PP
+Example Usage: 
+.PP
+.nf
+#include <lsm9ds1\&.h>
+
+int main() {
+        lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+    status = lsm9ds1_init();
+    if(status < 0) {
+        fprinf(stderr, "Error initializing lsm9ds1!\n");
+    }
+
+    status = lsm9ds1_close();
+    if(status < 0) {
+        fprinf(stderr, "Error closing lsm9ds1!\n");
+    }
+
+    return status;
+}
+
+.fi
+.PP
+ 
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBlsm9ds1_status_t\fP 
+.RE
+.PP
+
+.SS "\fBlsm9ds1_status_t\fP lsm9ds1_init ()"
+
+.PP
+Initialize the LSM9DS1\&. Initialize the lsm9ds1 according to the configuration file found in /etc/lsm9ds1\&.json\&. This function only has to be called once\&.
+.PP
+Example Usage: 
+.PP
+.nf
+#include <lsm9ds1\&.h>
+
+int main() {
+        lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+    status = lsm9ds1_init();
+    if(status < 0) {
+        fprinf(stderr, "Error initializing lsm9ds1!\n");
+    }
+
+    return status;
+}
+
+.fi
+.PP
+ 
+.PP
+\fBReturns:\fP
+.RS 4
+Returns the function status as defined in \fBlsm9ds1_status_t\fP\&. 
+.RE
+.PP
+\fBSee also:\fP
+.RS 4
+\fBlsm9ds1_status_t\fP 
 .RE
 .PP
 

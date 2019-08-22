@@ -78,21 +78,11 @@ $(function() {
 <p>Gyroscope functions and data.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;lsm9ds1_common.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__error_8h_source.html">lsm9ds1_error.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for lsm9ds1_gyro.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="lsm9ds1__gyro_8h__incl.png" border="0" usemap="#_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8h" alt=""/></div>
 <map name="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8h" id="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8h">
-<area shape="rect" id="node3" href="lsm9ds1__error_8h.html" title="Error codes returned by lsm9ds1 functions. " alt="" coords="168,95,283,121"/>
-</map>
-</div>
-</div><div class="textblock"><div class="dynheader">
-This graph shows which files directly or indirectly include this file:</div>
-<div class="dyncontent">
-<div class="center"><img src="lsm9ds1__gyro_8h__dep__incl.png" border="0" usemap="#_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8hdep" alt=""/></div>
-<map name="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8hdep" id="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1__gyro_8hdep">
-<area shape="rect" id="node2" href="lsm9ds1_8h.html" title="Functions to access the lsm9ds1. " alt="" coords="5,95,203,136"/>
 </map>
 </div>
 </div>
@@ -121,41 +111,135 @@ Macros</h2></td></tr>
 <tr class="memitem:a8069a44c0cb7a6376d30b000f1ac3567"><td class="memItemLeft" align="right" valign="top"><a id="a8069a44c0cb7a6376d30b000f1ac3567"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>SENSITIVITY_GYROSCOPE_2000</b>&#160;&#160;&#160;0.07</td></tr>
 <tr class="separator:a8069a44c0cb7a6376d30b000f1ac3567"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0f9268afbfc1cd9376192a8f98560b5"><td class="memItemLeft" align="right" valign="top"><a id="af0f9268afbfc1cd9376192a8f98560b5"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Z_ENABLE_BIT_OFFSET</b>&#160;&#160;&#160;5</td></tr>
+<tr class="separator:af0f9268afbfc1cd9376192a8f98560b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef4992f226d5a543bc98271364b2d747"><td class="memItemLeft" align="right" valign="top"><a id="aef4992f226d5a543bc98271364b2d747"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Z_ENABLE_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b00100000</td></tr>
+<tr class="separator:aef4992f226d5a543bc98271364b2d747"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9926e0679a73b9b079e20baef02afa5e"><td class="memItemLeft" align="right" valign="top"><a id="a9926e0679a73b9b079e20baef02afa5e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Z_ENABLE</b>&#160;&#160;&#160;(1 &lt;&lt; LSM9DS1_GRYO_Z_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:a9926e0679a73b9b079e20baef02afa5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a00a5d5bbda223f21e2f41fc04af76faa"><td class="memItemLeft" align="right" valign="top"><a id="a00a5d5bbda223f21e2f41fc04af76faa"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Z_DISABLE</b>&#160;&#160;&#160;(0 &lt;&lt; LSM9DS1_GRYO_Z_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:a00a5d5bbda223f21e2f41fc04af76faa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f6d66a2eaa4f8270876ed911c519895"><td class="memItemLeft" align="right" valign="top"><a id="a6f6d66a2eaa4f8270876ed911c519895"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Y_ENABLE_BIT_OFFSET</b>&#160;&#160;&#160;4</td></tr>
+<tr class="separator:a6f6d66a2eaa4f8270876ed911c519895"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab442abe9fd687c7187c71f1b7905d6f"><td class="memItemLeft" align="right" valign="top"><a id="aab442abe9fd687c7187c71f1b7905d6f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Y_ENABLE_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b00010000</td></tr>
+<tr class="separator:aab442abe9fd687c7187c71f1b7905d6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3e5f001521d0aaa18c713ee554d0f99"><td class="memItemLeft" align="right" valign="top"><a id="aa3e5f001521d0aaa18c713ee554d0f99"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Y_ENABLE</b>&#160;&#160;&#160;(1 &lt;&lt; LSM9DS1_GRYO_Y_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:aa3e5f001521d0aaa18c713ee554d0f99"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96f559aca9c8769bc2f2f5a8442c1810"><td class="memItemLeft" align="right" valign="top"><a id="a96f559aca9c8769bc2f2f5a8442c1810"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_Y_DISABLE</b>&#160;&#160;&#160;(0 &lt;&lt; LSM9DS1_GRYO_Y_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:a96f559aca9c8769bc2f2f5a8442c1810"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6e1a379203dab5a96085fc9938e5031"><td class="memItemLeft" align="right" valign="top"><a id="aa6e1a379203dab5a96085fc9938e5031"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_X_ENABLE_BIT_OFFSET</b>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:aa6e1a379203dab5a96085fc9938e5031"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af07808a6b483e9899f0ebf6ee6da0a8e"><td class="memItemLeft" align="right" valign="top"><a id="af07808a6b483e9899f0ebf6ee6da0a8e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_X_ENABLE_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b00001000</td></tr>
+<tr class="separator:af07808a6b483e9899f0ebf6ee6da0a8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac2f27f37719f77627f5095f8afc41642"><td class="memItemLeft" align="right" valign="top"><a id="ac2f27f37719f77627f5095f8afc41642"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_X_ENABLE</b>&#160;&#160;&#160;(1 &lt;&lt; LSM9DS1_GRYO_X_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:ac2f27f37719f77627f5095f8afc41642"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20be02af1610d61daac85c3679d1aecd"><td class="memItemLeft" align="right" valign="top"><a id="a20be02af1610d61daac85c3679d1aecd"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GRYO_X_DISABLE</b>&#160;&#160;&#160;(0 &lt;&lt; LSM9DS1_GRYO_X_ENABLE_BIT_OFFSET)</td></tr>
+<tr class="separator:a20be02af1610d61daac85c3679d1aecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa3bcd624c29cfd8edfbc60b6e056a688"><td class="memItemLeft" align="right" valign="top"><a id="aa3bcd624c29cfd8edfbc60b6e056a688"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HIGH_PASS_FILTER_BIT_OFFSET</b>&#160;&#160;&#160;6</td></tr>
+<tr class="separator:aa3bcd624c29cfd8edfbc60b6e056a688"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba1072718543b48079ce4f1598571a1f"><td class="memItemLeft" align="right" valign="top"><a id="aba1072718543b48079ce4f1598571a1f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HIGH_PASS_FILTER_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b01000000</td></tr>
+<tr class="separator:aba1072718543b48079ce4f1598571a1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a43ef74bf32845ebdd56f690726615bf8"><td class="memItemLeft" align="right" valign="top"><a id="a43ef74bf32845ebdd56f690726615bf8"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HIGH_PASS_FILTER_ENABLE</b>&#160;&#160;&#160;(1 &lt;&lt; LSM9DS1_GYRO_HIGH_PASS_FILETER_BIT_OFFSET)</td></tr>
+<tr class="separator:a43ef74bf32845ebdd56f690726615bf8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad10ce466c5f661cdfd59c5c7e5353a60"><td class="memItemLeft" align="right" valign="top"><a id="ad10ce466c5f661cdfd59c5c7e5353a60"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HIGH_PASS_FILTER_DISABLE</b>&#160;&#160;&#160;(0 &lt;&lt; LSM9DS1_GYRO_HIGH_PASS_FILETER_BIT_OFFSET)</td></tr>
+<tr class="separator:ad10ce466c5f661cdfd59c5c7e5353a60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5772186b64595e336302c14ba5bf962"><td class="memItemLeft" align="right" valign="top"><a id="ae5772186b64595e336302c14ba5bf962"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_LOW_POWER_MODE_BIT_OFFSET</b>&#160;&#160;&#160;7</td></tr>
+<tr class="separator:ae5772186b64595e336302c14ba5bf962"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ddcbba2d5624be6ff00dd2b36b99cc6"><td class="memItemLeft" align="right" valign="top"><a id="a7ddcbba2d5624be6ff00dd2b36b99cc6"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_LOW_POWER_MODE_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b10000000</td></tr>
+<tr class="separator:a7ddcbba2d5624be6ff00dd2b36b99cc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4a65a9531780ef22189f84e3f22e3d0"><td class="memItemLeft" align="right" valign="top"><a id="af4a65a9531780ef22189f84e3f22e3d0"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_LOW_POWER_MODE</b>&#160;&#160;&#160;(1 &lt;&lt; LSM9DS1_GRYO_LOW_POWER_MODE_BIT_OFFSET);</td></tr>
+<tr class="separator:af4a65a9531780ef22189f84e3f22e3d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c446bb2bdd9a1b41057a5744f5f4dcd"><td class="memItemLeft" align="right" valign="top"><a id="a6c446bb2bdd9a1b41057a5744f5f4dcd"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_ODR_BIT_OFFSET</b>&#160;&#160;&#160;5</td></tr>
+<tr class="separator:a6c446bb2bdd9a1b41057a5744f5f4dcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2df60d8207ff42c35af203a00bdb29a0"><td class="memItemLeft" align="right" valign="top"><a id="a2df60d8207ff42c35af203a00bdb29a0"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_ODR_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b11100000</td></tr>
+<tr class="separator:a2df60d8207ff42c35af203a00bdb29a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a78cfd05be9b813d1193008c18e992c51"><td class="memItemLeft" align="right" valign="top"><a id="a78cfd05be9b813d1193008c18e992c51"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_SCALE_BIT_OFFSET</b>&#160;&#160;&#160;3</td></tr>
+<tr class="separator:a78cfd05be9b813d1193008c18e992c51"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a362ae5052362de9177484a714287eb75"><td class="memItemLeft" align="right" valign="top"><a id="a362ae5052362de9177484a714287eb75"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_SCALE_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b00011000</td></tr>
+<tr class="separator:a362ae5052362de9177484a714287eb75"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae09626a9d6fd2ab1ff11b0cd99393a43"><td class="memItemLeft" align="right" valign="top"><a id="ae09626a9d6fd2ab1ff11b0cd99393a43"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HPCF_BIT_OFFSET</b>&#160;&#160;&#160;0</td></tr>
+<tr class="separator:ae09626a9d6fd2ab1ff11b0cd99393a43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac670699dd2e8a245f7926cc967925867"><td class="memItemLeft" align="right" valign="top"><a id="ac670699dd2e8a245f7926cc967925867"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>LSM9DS1_GYRO_HPCF_BIT_MASK</b>&#160;&#160;&#160;__extension__ 0b00001111</td></tr>
+<tr class="separator:ac670699dd2e8a245f7926cc967925867"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:a340ff3db979087d35f48b87b0acf5482"><td class="memItemLeft" align="right" valign="top"><a id="a340ff3db979087d35f48b87b0acf5482"></a>
+typedef enum lsm9ds1_gyro_odr_t&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_odr_t</b></td></tr>
+<tr class="separator:a340ff3db979087d35f48b87b0acf5482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87f88ee36661d56f7f801d606860a1fa"><td class="memItemLeft" align="right" valign="top"><a id="a87f88ee36661d56f7f801d606860a1fa"></a>
 typedef struct <a class="el" href="structgyro__data.html">gyro_data</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gyro_raw_data_t</b></td></tr>
 <tr class="separator:a87f88ee36661d56f7f801d606860a1fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76de3bf9c7dd53b778247639e798f9f0"><td class="memItemLeft" align="right" valign="top"><a id="a76de3bf9c7dd53b778247639e798f9f0"></a>
 typedef struct <a class="el" href="structgyro__converted__data__t.html">gyro_converted_data_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gyro_converted_data_t</b></td></tr>
 <tr class="separator:a76de3bf9c7dd53b778247639e798f9f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a340ff3db979087d35f48b87b0acf5482"><td class="memItemLeft" align="right" valign="top"><a id="a340ff3db979087d35f48b87b0acf5482"></a>
-typedef enum lsm9ds1_gyro_odr_t&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_odr_t</b></td></tr>
-<tr class="separator:a340ff3db979087d35f48b87b0acf5482"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a43397f8997aca7bd436557d27860fc85"><td class="memItemLeft" align="right" valign="top"><a id="a43397f8997aca7bd436557d27860fc85"></a>
 typedef struct <a class="el" href="structlsm9ds1__gyro__settings__t.html">lsm9ds1_gyro_settings_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_settings_t</b></td></tr>
 <tr class="separator:a43397f8997aca7bd436557d27860fc85"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a589232b212b1d05463e2f5c8872bbc11"><td class="memItemLeft" align="right" valign="top"><a id="a589232b212b1d05463e2f5c8872bbc11"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_scale_t</b> { <b>LSM9DS1_GYROSCALE_245DPS</b> = (0 &lt;&lt; 3), 
-<b>LSM9DS1_GYROSCALE_500DPS</b> = (1 &lt;&lt; 3), 
-<b>LSM9DS1_GYROSCALE_2000DPS</b> = (3 &lt;&lt; 3)
- }</td></tr>
-<tr class="separator:a589232b212b1d05463e2f5c8872bbc11"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3cf638d5f5bf6376a6d9a3fc1bbe61c"><td class="memItemLeft" align="right" valign="top"><a id="ad3cf638d5f5bf6376a6d9a3fc1bbe61c"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_odr_t</b> { <br />
-&#160;&#160;<b>LSM9DS1_GYRO_ODR_POWERDOWN</b> = (0 &lt;&lt; 5), 
-<b>LSM9DS1_GYRO_ODR_14_9HZ</b> = (1 &lt;&lt; 5), 
-<b>LSM9DS1_GYRO_ODR_59_5HZ</b> = (2 &lt;&lt; 5), 
-<b>LSM9DS1_GYRO_ODR_119HZ</b> = (3 &lt;&lt; 5), 
+&#160;&#160;<b>LSM9DS1_GYRO_ODR_POWERDOWN</b> = (0 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_ODR_14_9HZ</b> = (1 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_ODR_59_5HZ</b> = (2 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_ODR_119HZ</b> = (3 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
 <br />
-&#160;&#160;<b>LSM9DS1_GYRO_ODR_238HZ</b> = (4 &lt;&lt; 5), 
-<b>LSM9DS1_GYRO_ODR_476HZ</b> = (5 &lt;&lt; 5), 
-<b>LSM9DS1_GYRO_ODR_952HZ</b> = (6 &lt;&lt; 5)
+&#160;&#160;<b>LSM9DS1_GYRO_ODR_238HZ</b> = (4 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_ODR_476HZ</b> = (5 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_ODR_952HZ</b> = (6 &lt;&lt; LSM9DS1_GYRO_ODR_BIT_OFFSET)
 <br />
  }</td></tr>
 <tr class="separator:ad3cf638d5f5bf6376a6d9a3fc1bbe61c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a589232b212b1d05463e2f5c8872bbc11"><td class="memItemLeft" align="right" valign="top"><a id="a589232b212b1d05463e2f5c8872bbc11"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_scale_t</b> { <b>LSM9DS1_GYROSCALE_245DPS</b> = (0 &lt;&lt; LSM9DS1_GYRO_SCALE_BIT_OFFSET), 
+<b>LSM9DS1_GYROSCALE_500DPS</b> = (1 &lt;&lt; LSM9DS1_GYRO_SCALE_BIT_OFFSET), 
+<b>LSM9DS1_GYROSCALE_2000DPS</b> = (3 &lt;&lt; LSM9DS1_GYRO_SCALE_BIT_OFFSET)
+ }</td></tr>
+<tr class="separator:a589232b212b1d05463e2f5c8872bbc11"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69f0ceb6d40fde89da676b142ec8f1db"><td class="memItemLeft" align="right" valign="top"><a id="a69f0ceb6d40fde89da676b142ec8f1db"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_bandwidth_select_t</b> { <b>UKNOWN</b>
+ }</td></tr>
+<tr class="separator:a69f0ceb6d40fde89da676b142ec8f1db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9636dc32d2f686b1fc0f265b710d8adf"><td class="memItemLeft" align="right" valign="top"><a id="a9636dc32d2f686b1fc0f265b710d8adf"></a>enum &#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_gyro_hpcf_t</b> { <br />
+&#160;&#160;<b>LSM9DS1_GYRO_HPCF_DIV_2</b> = (0 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_4</b> = (1 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_8</b> = (2 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_16</b> = (3 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<br />
+&#160;&#160;<b>LSM9DS1_GYRO_HPCF_DIV_32</b> = (4 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_64</b> = (5 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_128</b> = (6 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_256</b> = (7 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<br />
+&#160;&#160;<b>LSM9DS1_GYRO_HPCF_DIV_512</b> = (8 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET), 
+<b>LSM9DS1_GYRO_HPCF_DIV_1024</b> = (9 &lt;&lt; LSM9DS1_GYRO_HPCF_BIT_OFFSET)
+<br />
+ }</td></tr>
+<tr class="separator:a9636dc32d2f686b1fc0f265b710d8adf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>

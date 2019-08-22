@@ -1,4 +1,4 @@
-.TH "lsm9ds1_gyro_settings_t" 3 "Fri Aug 9 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "lsm9ds1_gyro_settings_t" 3 "Wed Aug 21 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -10,13 +10,34 @@ lsm9ds1_gyro_settings_t
 
 .in +1c
 .ti -1c
+.RI "lsm9ds1_gyro_odr_t \fBodr\fP"
+.br
+.ti -1c
 .RI "lsm9ds1_gyro_scale_t \fBscale\fP"
 .br
 .ti -1c
-.RI "float \fBgyro_resolution\fP"
+.RI "lsm9ds1_gyro_bandwidth_select_t \fBbw_select\fP"
 .br
 .ti -1c
-.RI "lsm9ds1_gyro_odr_t \fBodr\fP"
+.RI "uint8_t \fBlow_power_mode_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBhigh_pass_filter_enable\fP"
+.br
+.ti -1c
+.RI "lsm9ds1_gyro_hpcf_t \fBhigh_pass_cutoff\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBz_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBy_enable\fP"
+.br
+.ti -1c
+.RI "uint8_t \fBx_enable\fP"
+.br
+.ti -1c
+.RI "float \fBgyro_resolution\fP"
 .br
 .in -1c
 

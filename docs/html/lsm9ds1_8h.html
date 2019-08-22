@@ -78,12 +78,6 @@ $(function() {
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdbool.h&gt;</code><br />
 <code>#include &lt;stdint.h&gt;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__mag_8h_source.html">lsm9ds1_mag.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__gyro_8h_source.html">lsm9ds1_gyro.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__accel_8h_source.html">lsm9ds1_accel.h</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__error_8h_source.html">lsm9ds1_error.h</a>&quot;</code><br />
-<code>#include &quot;lsm9ds1_regs.h&quot;</code><br />
-<code>#include &quot;<a class="el" href="lsm9ds1__temp_8h_source.html">lsm9ds1_temp.h</a>&quot;</code><br />
 <code>#include &quot;lsm9ds1_debug.h&quot;</code><br />
 <code>#include &quot;lsm9ds1_config.h&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -91,11 +85,6 @@ Include dependency graph for lsm9ds1.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="lsm9ds1_8h__incl.png" border="0" usemap="#_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h" alt=""/></div>
 <map name="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h" id="_2home_2christopher_2Documents_2lsm9ds1_2inc_2lsm9ds1_8h">
-<area shape="rect" id="node4" href="lsm9ds1__mag_8h.html" title="Magnetometer functions and data. " alt="" coords="337,102,452,129"/>
-<area shape="rect" id="node6" href="lsm9ds1__error_8h.html" title="Error codes returned by lsm9ds1 functions. " alt="" coords="488,184,603,211"/>
-<area shape="rect" id="node8" href="lsm9ds1__gyro_8h.html" title="Gyroscope functions and data. " alt="" coords="476,102,591,129"/>
-<area shape="rect" id="node9" href="lsm9ds1__accel_8h.html" title="Accelerometer functions and data. " alt="" coords="615,102,735,129"/>
-<area shape="rect" id="node11" href="lsm9ds1__temp_8h.html" title="Temperature functions and data. " alt="" coords="194,102,313,129"/>
 </map>
 </div>
 </div>
@@ -103,19 +92,11 @@ Include dependency graph for lsm9ds1.h:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__settings.html">lsm9ds1_settings</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the settings for each sub device.  <a href="structlsm9ds1__settings.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__data__t.html">lsm9ds1_data_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the raw data for each sub device.  <a href="structlsm9ds1__data__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__converted__data__t.html">lsm9ds1_converted_data_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the converted data for each sub device.  <a href="structlsm9ds1__converted__data__t.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__sub__device__t.html">lsm9ds1_sub_device_t</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__sub__devices__t.html">lsm9ds1_sub_devices_t</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">LSM9DS1 sub device.  <a href="structlsm9ds1__sub__devices__t.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data and configurations for the lsm9ds1 device.  <a href="structlsm9ds1__device__t.html#details">More...</a><br /></td></tr>
@@ -129,10 +110,6 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:a50b5715bd1593d61e2158ff7f98de918"><td class="memItemLeft" align="right" valign="top"><a id="a50b5715bd1593d61e2158ff7f98de918"></a>
-typedef struct <a class="el" href="structlsm9ds1__settings.html">lsm9ds1_settings</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a50b5715bd1593d61e2158ff7f98de918">lsm9ds1_settings_t</a></td></tr>
-<tr class="memdesc:a50b5715bd1593d61e2158ff7f98de918"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the settings for each sub device. <br /></td></tr>
-<tr class="separator:a50b5715bd1593d61e2158ff7f98de918"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa04bc9779f65d6d38a24bb8fb16d23ba"><td class="memItemLeft" align="right" valign="top"><a id="aa04bc9779f65d6d38a24bb8fb16d23ba"></a>
 typedef struct <a class="el" href="structlsm9ds1__data__t.html">lsm9ds1_data_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#aa04bc9779f65d6d38a24bb8fb16d23ba">lsm9ds1_data_t</a></td></tr>
 <tr class="memdesc:aa04bc9779f65d6d38a24bb8fb16d23ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the raw data for each sub device. <br /></td></tr>
@@ -141,13 +118,6 @@ typedef struct <a class="el" href="structlsm9ds1__data__t.html">lsm9ds1_data_t</
 typedef struct <a class="el" href="structlsm9ds1__converted__data__t.html">lsm9ds1_converted_data_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a5ad19964f4455d181bf431eb3fa98dc2">lsm9ds1_converted_data_t</a></td></tr>
 <tr class="memdesc:a5ad19964f4455d181bf431eb3fa98dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Stores the converted data for each sub device. <br /></td></tr>
 <tr class="separator:a5ad19964f4455d181bf431eb3fa98dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af4e754bd6a8837d9435b776ad10d5b4f"><td class="memItemLeft" align="right" valign="top"><a id="af4e754bd6a8837d9435b776ad10d5b4f"></a>
-typedef struct <a class="el" href="structlsm9ds1__sub__device__t.html">lsm9ds1_sub_device_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>lsm9ds1_sub_device_t</b></td></tr>
-<tr class="separator:af4e754bd6a8837d9435b776ad10d5b4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3f357b060de3363816186073bc00397e"><td class="memItemLeft" align="right" valign="top"><a id="a3f357b060de3363816186073bc00397e"></a>
-typedef struct <a class="el" href="structlsm9ds1__sub__devices__t.html">lsm9ds1_sub_devices_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a3f357b060de3363816186073bc00397e">lsm9ds1_sub_devices_t</a></td></tr>
-<tr class="memdesc:a3f357b060de3363816186073bc00397e"><td class="mdescLeft">&#160;</td><td class="mdescRight">LSM9DS1 sub device. <br /></td></tr>
-<tr class="separator:a3f357b060de3363816186073bc00397e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6a9027697ce51d0cb314259ab7d40a50"><td class="memItemLeft" align="right" valign="top"><a id="a6a9027697ce51d0cb314259ab7d40a50"></a>
 typedef struct <a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a6a9027697ce51d0cb314259ab7d40a50">lsm9ds1_device_t</a></td></tr>
 <tr class="memdesc:a6a9027697ce51d0cb314259ab7d40a50"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data and configurations for the lsm9ds1 device. <br /></td></tr>
@@ -155,29 +125,182 @@ typedef struct <a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:af4eb6530883425783517fc7e685abc15"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#af4eb6530883425783517fc7e685abc15">update_temp</a> (<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *self)</td></tr>
-<tr class="memdesc:af4eb6530883425783517fc7e685abc15"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the temperature of the LSM9DS1.  <a href="#af4eb6530883425783517fc7e685abc15">More...</a><br /></td></tr>
-<tr class="separator:af4eb6530883425783517fc7e685abc15"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab809ada09b2c91d230a27313abe97eab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#ab809ada09b2c91d230a27313abe97eab">update_accel</a> (<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *self)</td></tr>
-<tr class="memdesc:ab809ada09b2c91d230a27313abe97eab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the accelerometer of the LSM9DS1.  <a href="#ab809ada09b2c91d230a27313abe97eab">More...</a><br /></td></tr>
-<tr class="separator:ab809ada09b2c91d230a27313abe97eab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a34a321b48c99b5ccba6514e2d477640f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a34a321b48c99b5ccba6514e2d477640f">update_mag</a> (<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *self)</td></tr>
-<tr class="memdesc:a34a321b48c99b5ccba6514e2d477640f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the magnetometer of the LSM9DS1.  <a href="#a34a321b48c99b5ccba6514e2d477640f">More...</a><br /></td></tr>
-<tr class="separator:a34a321b48c99b5ccba6514e2d477640f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6bc2ad3ebfd4f6b3bda03e022d834df"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#ad6bc2ad3ebfd4f6b3bda03e022d834df">update_gyro</a> (<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *self)</td></tr>
-<tr class="memdesc:ad6bc2ad3ebfd4f6b3bda03e022d834df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the gyroscope from the LSM9DS1.  <a href="#ad6bc2ad3ebfd4f6b3bda03e022d834df">More...</a><br /></td></tr>
-<tr class="separator:ad6bc2ad3ebfd4f6b3bda03e022d834df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2296bc943a38a259996c56c80ac9852d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a> (<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *self, lsm9ds1_xfer_bus_t bus_type, lsm9ds1_accel_range_t range, lsm9ds1_mag_gain_t gain, lsm9ds1_gyro_scale_t scale)</td></tr>
-<tr class="memdesc:a2296bc943a38a259996c56c80ac9852d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the LSM9DS1.  <a href="#a2296bc943a38a259996c56c80ac9852d">More...</a><br /></td></tr>
-<tr class="separator:a2296bc943a38a259996c56c80ac9852d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc8637776e2925093bbe4e41c458e450"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#abc8637776e2925093bbe4e41c458e450">get_temp</a> (<a class="el" href="lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc">lsm9ds1_temperature_t</a> *temperature)</td></tr>
+<tr class="memdesc:abc8637776e2925093bbe4e41c458e450"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the temperature of the LSM9DS1.  <a href="#abc8637776e2925093bbe4e41c458e450">More...</a><br /></td></tr>
+<tr class="separator:abc8637776e2925093bbe4e41c458e450"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24908041695749a17ce330e7afaa3132"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a24908041695749a17ce330e7afaa3132">get_accel</a> (<a class="el" href="structaccelerometer__converted__data__t.html">accelerometer_converted_data_t</a> *data)</td></tr>
+<tr class="memdesc:a24908041695749a17ce330e7afaa3132"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the accelerometer of the LSM9DS1.  <a href="#a24908041695749a17ce330e7afaa3132">More...</a><br /></td></tr>
+<tr class="separator:a24908041695749a17ce330e7afaa3132"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa785f35583253327c0cdc4b6767d7a31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#aa785f35583253327c0cdc4b6767d7a31">get_mag</a> (<a class="el" href="structmag__converted__data__t.html">mag_converted_data_t</a> *data)</td></tr>
+<tr class="memdesc:aa785f35583253327c0cdc4b6767d7a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the magnetometer of the LSM9DS1.  <a href="#aa785f35583253327c0cdc4b6767d7a31">More...</a><br /></td></tr>
+<tr class="separator:aa785f35583253327c0cdc4b6767d7a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3ac94617a332fadd665087ceba69a85c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a3ac94617a332fadd665087ceba69a85c">get_gyro</a> (<a class="el" href="structgyro__converted__data__t.html">gyro_converted_data_t</a> *data)</td></tr>
+<tr class="memdesc:a3ac94617a332fadd665087ceba69a85c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read the gyroscope from the LSM9DS1.  <a href="#a3ac94617a332fadd665087ceba69a85c">More...</a><br /></td></tr>
+<tr class="separator:a3ac94617a332fadd665087ceba69a85c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c68140d65a0a34bbc96ceabeea9a164"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a> ()</td></tr>
+<tr class="memdesc:a6c68140d65a0a34bbc96ceabeea9a164"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize the LSM9DS1.  <a href="#a6c68140d65a0a34bbc96ceabeea9a164">More...</a><br /></td></tr>
+<tr class="separator:a6c68140d65a0a34bbc96ceabeea9a164"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5b09a496f260cfd8ded869e0b9564e76"><td class="memItemLeft" align="right" valign="top"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="lsm9ds1_8h.html#a5b09a496f260cfd8ded869e0b9564e76">lsm9ds1_close</a> ()</td></tr>
+<tr class="memdesc:a5b09a496f260cfd8ded869e0b9564e76"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the LSM9DS1.  <a href="#a5b09a496f260cfd8ded869e0b9564e76">More...</a><br /></td></tr>
+<tr class="separator:a5b09a496f260cfd8ded869e0b9564e76"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Functions to access the lsm9ds1. </p>
 <dl class="section author"><dt>Author</dt><dd>Christopher Jordan-Denny </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>Initializes the LSM9DS1 for the Raspberry Pi 3B+. Currently the device is wired to the first spi device. Sets up the magnetometer, accelerometer and gyroscope. Provides functions to read and write the data collected on the LSM9DS1. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a2296bc943a38a259996c56c80ac9852d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2296bc943a38a259996c56c80ac9852d">&#9670;&nbsp;</a></span>lsm9ds1_init()</h2>
+<a id="a24908041695749a17ce330e7afaa3132"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a24908041695749a17ce330e7afaa3132">&#9670;&nbsp;</a></span>get_accel()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> get_accel </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structaccelerometer__converted__data__t.html">accelerometer_converted_data_t</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read the accelerometer of the LSM9DS1. </p>
+<p>Get the current converted accelerometer reading. The X, Y and Z coordinates are returned by this function.</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    <a class="code" href="structaccelerometer__converted__data__t.html">accelerometer_converted_data_t</a> data = {0};</div><div class="line">        status = <a class="code" href="lsm9ds1_8h.html#a24908041695749a17ce330e7afaa3132">get_accel</a>(&amp;data);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading accelerometer!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer x: %f\n&quot;</span>, data.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer y: %f\n&quot;</span>, data.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer z: %f\n&quot;</span>, data.z);</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>the converted data read from the accelerometer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structaccelerometer__converted__data__t.html">accelerometer_converted_data_t</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
+
+</div>
+</div>
+<a id="a3ac94617a332fadd665087ceba69a85c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3ac94617a332fadd665087ceba69a85c">&#9670;&nbsp;</a></span>get_gyro()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> get_gyro </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structgyro__converted__data__t.html">gyro_converted_data_t</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read the gyroscope from the LSM9DS1. </p>
+<p>Get the current converted gyroscope reading. The X, Y and Z coordinates are returned by this function.</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    <a class="code" href="structgyro__converted__data__t.html">gyro_converted_data_t</a> data = {0};</div><div class="line">        status = <a class="code" href="lsm9ds1_8h.html#a3ac94617a332fadd665087ceba69a85c">get_gyro</a>(&amp;data);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading gyroscope!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope x: %f\n&quot;</span>, data.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope y: %f\n&quot;</span>, data.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope z: %f\n&quot;</span>, data.z);</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>the converted data read from the gyroscope. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structgyro__converted__data__t.html">gyro_converted_data_t</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
+
+</div>
+</div>
+<a id="aa785f35583253327c0cdc4b6767d7a31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa785f35583253327c0cdc4b6767d7a31">&#9670;&nbsp;</a></span>get_mag()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> get_mag </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmag__converted__data__t.html">mag_converted_data_t</a> *&#160;</td>
+          <td class="paramname"><em>data</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read the magnetometer of the LSM9DS1. </p>
+<p>Get the current converted magnetometer reading. The X, Y and Z coordinates are returned by this function.</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line">    <a class="code" href="structmag__converted__data__t.html">mag_converted_data_t</a> data = {0};</div><div class="line">        status = <a class="code" href="lsm9ds1_8h.html#aa785f35583253327c0cdc4b6767d7a31">get_mag</a>(&amp;data);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading magnetometer!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer x: %f\n&quot;</span>, data.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer y: %f\n&quot;</span>, data.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer z: %f\n&quot;</span>, data.z);</div><div class="line">    </div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>the converted data read from the magnetometer. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="structmag__converted__data__t.html">mag_converted_data_t</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
+
+</div>
+</div>
+<a id="abc8637776e2925093bbe4e41c458e450"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abc8637776e2925093bbe4e41c458e450">&#9670;&nbsp;</a></span>get_temp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> get_temp </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc">lsm9ds1_temperature_t</a> *&#160;</td>
+          <td class="paramname"><em>temperature</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Read the temperature of the LSM9DS1. </p>
+<p>Get the current converted temperature reading</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    <a class="code" href="lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc">lsm9ds1_temperature_t</a> data = 0;</div><div class="line">        status = <a class="code" href="lsm9ds1_8h.html#abc8637776e2925093bbe4e41c458e450">get_temp</a>(&amp;data);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading temperature!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Temperature: %f\n&quot;</span>, data);</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">data</td><td>the converted data read from the temperature monitor </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__temp_8h.html#affc851998241a514c17988986ad28efc">lsm9ds1_temperature_t</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
+
+</div>
+</div>
+<a id="a5b09a496f260cfd8ded869e0b9564e76"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b09a496f260cfd8ded869e0b9564e76">&#9670;&nbsp;</a></span>lsm9ds1_close()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> lsm9ds1_close </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Close the LSM9DS1. </p>
+<p>Close the open buses.</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a5b09a496f260cfd8ded869e0b9564e76">lsm9ds1_close</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error closing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
+
+</div>
+</div>
+<a id="a6c68140d65a0a34bbc96ceabeea9a164"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6c68140d65a0a34bbc96ceabeea9a164">&#9670;&nbsp;</a></span>lsm9ds1_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -185,193 +308,16 @@ Functions</h2></td></tr>
         <tr>
           <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> lsm9ds1_init </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *&#160;</td>
-          <td class="paramname"><em>self</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
+          <td class="paramname"></td><td>)</td>
           <td></td>
-          <td class="paramtype">lsm9ds1_xfer_bus_t&#160;</td>
-          <td class="paramname"><em>bus_type</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">lsm9ds1_accel_range_t&#160;</td>
-          <td class="paramname"><em>range</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">lsm9ds1_mag_gain_t&#160;</td>
-          <td class="paramname"><em>gain</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">lsm9ds1_gyro_scale_t&#160;</td>
-          <td class="paramname"><em>scale</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Initialize the LSM9DS1. </p>
-<p>TODO Add description of initialization</p>
-<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    lsm9ds1 = malloc(<span class="keyword">sizeof</span>(<a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>));</div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    free(lsm9ds1);</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">self</td><td>The created instance of the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd>
-<dd>
-<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> </dd>
-<dd>
-lsm9ds1_xfer_bus_t </dd>
-<dd>
-lsm9ds1_accel_range_t </dd>
-<dd>
-lsm9ds1_mag_gain_t </dd>
-<dd>
-lsm9ds1_gyro_scale_t </dd></dl>
-
-</div>
-</div>
-<a id="ab809ada09b2c91d230a27313abe97eab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab809ada09b2c91d230a27313abe97eab">&#9670;&nbsp;</a></span>update_accel()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> update_accel </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read the accelerometer of the LSM9DS1. </p>
-<p>Updates the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a> structure with the current accelerometer reading. You must first create this structure before reading.</p>
-<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    lsm9ds1 = malloc(<span class="keyword">sizeof</span>(<a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>));</div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">        status = lsm9ds1.update_accel(lsm9ds1);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading accelerometer!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer x: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer y: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Accelerometer z: %f\n&quot;</span>, lsm9ds1.converted_data.accelerometer.z);</div><div class="line"></div><div class="line">    free(lsm9ds1);</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">self</td><td>The created instance of the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd>
-<dd>
-<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
-
-</div>
-</div>
-<a id="ad6bc2ad3ebfd4f6b3bda03e022d834df"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad6bc2ad3ebfd4f6b3bda03e022d834df">&#9670;&nbsp;</a></span>update_gyro()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> update_gyro </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read the gyroscope from the LSM9DS1. </p>
-<p>Updates the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a> structure with the current gyroscope reading. You must first create this structure before reading.</p>
-<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    lsm9ds1 = malloc(<span class="keyword">sizeof</span>(<a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>));</div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">        status = lsm9ds1.update_gyro(lsm9ds1);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading gyroscope!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope x: %f\n&quot;</span>, lsm9ds1.converted_data.gyroscope.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope y: %f\n&quot;</span>, lsm9ds1.converted_data.gyroscope.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Gyroscope z: %f\n&quot;</span>, lsm9ds1.converted_data.gyroscope.z);</div><div class="line"></div><div class="line">    free(lsm9ds1);</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">self</td><td>The created instance of the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd>
-<dd>
-<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
-
-</div>
-</div>
-<a id="a34a321b48c99b5ccba6514e2d477640f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34a321b48c99b5ccba6514e2d477640f">&#9670;&nbsp;</a></span>update_mag()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> update_mag </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read the magnetometer of the LSM9DS1. </p>
-<p>Updates the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a> structure with the current magnetometer reading. You must first create this structure before reading.</p>
-<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    lsm9ds1 = malloc(<span class="keyword">sizeof</span>(<a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>));</div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">        status = lsm9ds1.update_mag(lsm9ds1);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading magnetometer!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer x: %f\n&quot;</span>, lsm9ds1.converted_data.magnetometer.x);</div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer y: %f\n&quot;</span>, lsm9ds1.converted_data.magnetometer.y);</div><div class="line">    printf(<span class="stringliteral">&quot;Magnetometer z: %f\n&quot;</span>, lsm9ds1.converted_data.magnetometer.z);</div><div class="line"></div><div class="line">    free(lsm9ds1);</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">self</td><td>The created instance of the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd>
-<dd>
-<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
-
-</div>
-</div>
-<a id="af4eb6530883425783517fc7e685abc15"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af4eb6530883425783517fc7e685abc15">&#9670;&nbsp;</a></span>update_temp()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> update_temp </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> *&#160;</td>
-          <td class="paramname"><em>self</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Read the temperature of the LSM9DS1. </p>
-<p>Updates the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a> structure with the current temperature. You must first create this structure before reading.</p>
-<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    lsm9ds1 = malloc(<span class="keyword">sizeof</span>(<a class="code" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a>));</div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d">lsm9ds1_init</a>(lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">        status = lsm9ds1.update_temp(lsm9ds1);</div><div class="line">        <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">            fprintf(stderr, <span class="stringliteral">&quot;Error reading temperature!\n&quot;</span>);</div><div class="line">        }</div><div class="line"></div><div class="line">    printf(<span class="stringliteral">&quot;Temperature: %f\n&quot;</span>, lsm9ds1.converted_data.temperature);</div><div class="line"></div><div class="line">    free(lsm9ds1);</div><div class="line">}</div></div><!-- fragment --> <dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">self</td><td>The created instance of the <a class="el" href="structlsm9ds1__device__t.html" title="Data and configurations for the lsm9ds1 device. ">lsm9ds1_device_t</a>. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd>
-<dd>
-<a class="el" href="structlsm9ds1__device__t.html">lsm9ds1_device_t</a> </dd></dl>
-<dl class="section note"><dt>Note</dt><dd>You must first initialize the lsm9ds1. </dd></dl>
-<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1_8h.html#a2296bc943a38a259996c56c80ac9852d" title="Initialize the LSM9DS1. ">lsm9ds1_init</a> </dd></dl>
+<p>Initialize the lsm9ds1 according to the configuration file found in /etc/lsm9ds1.json. This function only has to be called once.</p>
+<p>Example Usage: </p><div class="fragment"><div class="line"><span class="preprocessor">#include &lt;<a class="code" href="lsm9ds1_8h.html">lsm9ds1.h</a>&gt;</span></div><div class="line"></div><div class="line"><span class="keywordtype">int</span> main() {</div><div class="line">        <a class="code" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> status = LSM9DS1_UNKNOWN_ERROR;</div><div class="line"></div><div class="line">    status = <a class="code" href="lsm9ds1_8h.html#a6c68140d65a0a34bbc96ceabeea9a164">lsm9ds1_init</a>();</div><div class="line">    <span class="keywordflow">if</span>(status &lt; 0) {</div><div class="line">        fprinf(stderr, <span class="stringliteral">&quot;Error initializing lsm9ds1!\n&quot;</span>);</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keywordflow">return</span> status;</div><div class="line">}</div></div><!-- fragment --> <dl class="section return"><dt>Returns</dt><dd>Returns the function status as defined in <a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a>. </dd></dl>
+<dl class="section see"><dt>See also</dt><dd><a class="el" href="lsm9ds1__error_8h.html#a3d3b38789ebc38e558241af4ddb5627d">lsm9ds1_status_t</a> </dd></dl>
 
 </div>
 </div>
