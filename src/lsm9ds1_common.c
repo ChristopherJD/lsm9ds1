@@ -33,6 +33,8 @@ lsm9ds1_status_t is_correct_sub_device(lsm9ds1_bus_t *bus, lsm9ds1_sub_device_id
 
 	lsm9ds1_status_t function_return = LSM9DS1_UNKNOWN_ERROR;
 
+	DEBUG_PRINT("Made it\n");
+
 	if (!bus->initialized) return LSM9DS1_BUS_NOT_INTIALIZED;
 
 	// The mag accel and gyro id should be at the same offset, if not, we don't know what device we have.

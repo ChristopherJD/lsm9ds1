@@ -84,6 +84,18 @@ TARGET_LINK_LIBRARIES(lsm9ds1 cjson)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 
+######################### LSM9DS1 PIPE ########################################
+SET(PIPE_SOURCES 
+    "src/lsm9ds1_pipe.c" 
+)
+
+ADD_EXECUTABLE(lsm9ds1_pipe ${PIPE_SOURCES})
+TARGET_LINK_LIBRARIES(lsm9ds1_pipe lsm9ds1)
+
+INSTALL(TARGETS lsm9ds1_pipe
+    DESTINATION usr/bin
+)
+
 ######################### Tests ###############################################
 OPTION(BUILD_TESTS "Build lsm9ds1 tests" OFF)
 if(BUILD_TESTS)

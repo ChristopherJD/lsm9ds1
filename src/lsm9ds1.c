@@ -25,9 +25,40 @@
 
 static lsm9ds1_device_t glsm9ds1 = {0};
 
-static lsm9ds1_status_t init_i2c(lsm9ds1_sub_device_t *self) {
+static lsm9ds1_status_t init_i2c(lsm9ds1_bus_t *self) {
 	// Probably won't implement for raspberrypi
 	return LSM9DS1_BUS_NOT_SUPPORTED;
+}
+
+static lsm9ds1_status_t close_i2c(lsm9ds1_bus_t *self) {
+	// Probably won't implement for raspberrypi
+	return LSM9DS1_BUS_NOT_SUPPORTED;
+}
+
+static lsm9ds1_status_t lsm9ds1_close_bus(lsm9ds1_sub_device_t *self, lsm9ds1_xfer_bus_t bus_type) {
+
+	if (!self->bus.initialized) {
+		return LSM9DS1_SUCCESS;
+	}
+
+	// Determine bus type being used.
+	int8_t ret = -1;	// Function return codes.
+	switch (bus_type) {
+	case LSM9DS1_SPI_BUS:
+		ret = close_spi(&(self->bus));
+		if (ret < 0) return ret;
+		break;
+	case LSM9DS1_I2C_BUS:
+		ret = close_i2c(&(self->bus));
+		if (ret < 0) return ret;
+		break;
+	default:
+		ret = LSM9DS1_BUS_NOT_SUPPORTED;
+		break;
+	}
+
+	self->bus.initialized = false;
+	return LSM9DS1_SUCCESS;
 }
 
 static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_sub_device_t *self, lsm9ds1_xfer_bus_t bus_type) {
@@ -44,7 +75,7 @@ static lsm9ds1_status_t lsm9ds1_init_bus(lsm9ds1_sub_device_t *self, lsm9ds1_xfe
 		if (ret < 0) return ret;
 		break;
 	case LSM9DS1_I2C_BUS:
-		ret = init_i2c(self);
+		ret = init_i2c(&(self->bus));
 		if (ret < 0) return ret;
 		break;
 	default:
@@ -287,6 +318,16 @@ lsm9ds1_status_t lsm9ds1_init() {
 	glsm9ds1.initialized = true;
 
 	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t lsm9ds1_close() {
+
+	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+
+	status = lsm9ds1_close_bus(&(glsm9ds1.sub_device.accelerometer), glsm9ds1.xfer_bus);
+	status = lsm9ds1_close_bus(&(glsm9ds1.sub_device.magnetometer), glsm9ds1.xfer_bus);
+
+	return status;
 }
 
 #endif

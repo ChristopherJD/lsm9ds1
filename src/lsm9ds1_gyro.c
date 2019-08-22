@@ -37,6 +37,9 @@ static lsm9ds1_status_t lsm9ds1_read_gyro_settings(lsm9ds1_bus_t *bus, lsm9ds1_g
 		LSM9DS1_GYRO_SCALE_BIT_OFFSET, &bit_value);
 	settings->scale = bit_value;
 
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG1_G: 0x%X\n",
+	            bus->spi.rx[0]);
+
 	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG3_G);
 	if (status < 0) {
 		return status;
@@ -50,7 +53,10 @@ static lsm9ds1_status_t lsm9ds1_read_gyro_settings(lsm9ds1_bus_t *bus, lsm9ds1_g
 		LSM9DS1_GYRO_HIGH_PASS_FILTER_BIT_OFFSET, &bit_value);
 	settings->high_pass_filter_enable = bit_value;
 
-	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG3_G);
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG3_G: 0x%X\n",
+	            bus->spi.rx[0]);
+
+	status = lsm9ds1_read(bus, LSM9DS1_REGISTER_CTRL_REG4);
 	if (status < 0) {
 		return status;
 	}
@@ -67,7 +73,7 @@ static lsm9ds1_status_t lsm9ds1_read_gyro_settings(lsm9ds1_bus_t *bus, lsm9ds1_g
 		LSM9DS1_GRYO_Z_ENABLE_BIT_OFFSET, &bit_value);
 	settings->z_enable = bit_value;
 
-	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG5_XL: 0x%X\n",
+	DEBUG_PRINT("Read back LSM9DS1_REGISTER_CTRL_REG4: 0x%X\n",
 	            bus->spi.rx[0]);
 
 	return LSM9DS1_SUCCESS;

@@ -262,6 +262,36 @@ lsm9ds1_status_t get_gyro(gyro_converted_data_t *data);
  */
 lsm9ds1_status_t lsm9ds1_init();
 
+/**
+ * @brief Close the LSM9DS1.
+ *
+ * Close the open buses.
+ *
+ * Example Usage:
+ * @code
+ * #include <lsm9ds1.h>
+ *
+ * int main() {
+ * 		lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
+ *
+ *		status = lsm9ds1_init();
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *		}
+ *
+ *		status = lsm9ds1_close();
+ *		if(status < 0) {
+ *			fprinf(stderr, "Error closing lsm9ds1!\n");
+ *		}
+ *
+ *		return status;
+ * }
+ * @endcode
+ * @return Returns the function status as defined in \ref lsm9ds1_status_t.
+ * @see \ref lsm9ds1_status_t
+ */
+lsm9ds1_status_t lsm9ds1_close();
+
 #ifdef __cplusplus
 }
 #endif

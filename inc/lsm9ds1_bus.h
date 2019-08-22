@@ -97,6 +97,7 @@ lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8
 lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address);
 lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, uint8_t mask, uint8_t value);
 lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self);
+lsm9ds1_status_t close_spi(lsm9ds1_bus_t *self);
 
 
 #endif

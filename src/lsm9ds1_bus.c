@@ -19,6 +19,8 @@
 #include <linux/spi/spidev.h>
 #include <string.h>
 #include <fcntl.h>
+#include <unistd.h>
+
 
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
@@ -146,6 +148,14 @@ lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, ui
 
 	status = lsm9ds1_write(self, address, value);
 	if (status < 0) return status;
+
+	return LSM9DS1_SUCCESS;
+}
+
+lsm9ds1_status_t close_spi(lsm9ds1_bus_t *self) {
+
+	DEBUG_PRINT("Closing device: %s\n", self->spi.name);
+	close(self->spi.fd);	
 
 	return LSM9DS1_SUCCESS;
 }

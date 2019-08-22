@@ -21,8 +21,6 @@
 #include <stdlib.h>
 #include "lsm9ds1.h"
 
-static lsm9ds1_device_t *lsm9ds1 = NULL;
-
 /* The suite initialization function.
  *
  */
@@ -37,23 +35,8 @@ int init_lsm9ds1_suite(void) {
  * Returns zero on success, non-zero otherwise.
  */
 int clean_lsm9ds1_suite(void) {
-	//TODO add close.
+	lsm9ds1_close();
 	return 0;
-}
-
-void test_lsm9ds1_read_sub_device_accel_gryo(void) {
-
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-
-	status = is_correct_sub_device(&(lsm9ds1->sub_device.accelerometer.bus), LSM9DS1_ACCEL_GYRO);
-	CU_ASSERT(0 == status);
-}
-
-void test_lsm9ds1_read_sub_device_mag(void) {
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-
-	status = is_correct_sub_device(&(lsm9ds1->sub_device.magnetometer.bus), LSM9DS1_MAG);
-	CU_ASSERT(0 == status);
 }
 
 void test_lsm9ds1_read_temp(void) {
@@ -123,9 +106,7 @@ int main() {
 	}
 
 	/* add the tests to the suite */
-	if ((NULL == CU_add_test(pSuite, "test read_sub_device for mag", test_lsm9ds1_read_sub_device_mag))
-	        || (NULL == CU_add_test(pSuite, "test read_sub_device for accel and gyro", test_lsm9ds1_read_sub_device_accel_gryo))
-	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_temp", test_lsm9ds1_read_temp))
+	if ((NULL == CU_add_test(pSuite, "test lsm9ds1_read_temp", test_lsm9ds1_read_temp))
 	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_accel", test_lsm9ds1_read_accel))
 	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_gyro", test_lsm9ds1_read_gyro))
 	        || (NULL == CU_add_test(pSuite, "test lsm9ds1_read_mag", test_lsm9ds1_read_mag))
