@@ -1,4 +1,4 @@
-.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Wed Aug 21 2019" "Version 0.4.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
+.TH "/home/christopher/Documents/lsm9ds1/inc/lsm9ds1.h" 3 "Tue Aug 27 2019" "Version 0.6.0-alpha" "LSM9DS1 Library" \" -*- nroff -*-
 .ad l
 .nh
 .SH NAME
@@ -24,6 +24,15 @@
 .br
 .RI "Stores the raw data for each sub device\&. "
 .ti -1c
+.RI "struct \fBaccelerometer_converted_data_t\fP"
+.br
+.ti -1c
+.RI "struct \fBmag_converted_data_t\fP"
+.br
+.ti -1c
+.RI "struct \fBgyro_converted_data_t\fP"
+.br
+.ti -1c
 .RI "struct \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
@@ -47,6 +56,15 @@
 .br
 .RI "Stores the raw data for each sub device\&. "
 .ti -1c
+.RI "typedef struct \fBaccelerometer_converted_data_t\fP \fBaccelerometer_converted_data_t\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBmag_converted_data_t\fP \fBmag_converted_data_t\fP"
+.br
+.ti -1c
+.RI "typedef struct \fBgyro_converted_data_t\fP \fBgyro_converted_data_t\fP"
+.br
+.ti -1c
 .RI "typedef struct \fBlsm9ds1_converted_data_t\fP \fBlsm9ds1_converted_data_t\fP"
 .br
 .RI "Stores the converted data for each sub device\&. "
@@ -59,7 +77,7 @@
 
 .in +1c
 .ti -1c
-.RI "\fBlsm9ds1_status_t\fP \fBget_temp\fP (\fBlsm9ds1_temperature_t\fP *temperature)"
+.RI "\fBlsm9ds1_status_t\fP \fBget_temp\fP (lsm9ds1_temperature_t *temperature)"
 .br
 .RI "Read the temperature of the LSM9DS1\&. "
 .ti -1c
@@ -299,7 +317,7 @@ You must first initialize the lsm9ds1\&.
 .RE
 .PP
 
-.SS "\fBlsm9ds1_status_t\fP get_temp (\fBlsm9ds1_temperature_t\fP * temperature)"
+.SS "\fBlsm9ds1_status_t\fP get_temp (lsm9ds1_temperature_t * temperature)"
 
 .PP
 Read the temperature of the LSM9DS1\&. Get the current converted temperature reading
