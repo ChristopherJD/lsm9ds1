@@ -64,15 +64,11 @@ LINK_DIRECTORIES(
 )
 
 ########################## C Library ##########################################
-SET(SOURCES 
-    "src/lsm9ds1.c" 
-    "src/lsm9ds1_common.c"
-    "src/lsm9ds1_bus.c"
-    "src/lsm9ds1_accel.c"
-    "src/lsm9ds1_gyro.c"
-    "src/lsm9ds1_mag.c"
-    "src/lsm9ds1_temp.c" 
-    "src/lsm9ds1_config.c" 
+FILE(GLOB HEADERS
+    "inc/*.h"
+)
+FILE(GLOB SOURCES 
+    "src/*.c" 
 )
 
 FILE(GLOB CONFIGS
@@ -83,6 +79,7 @@ ADD_LIBRARY(lsm9ds1 SHARED ${SOURCES} ${CONFIGS})
 TARGET_LINK_LIBRARIES(lsm9ds1 cjson)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
+SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES PUBLIC_HEADER "${HEADERS}")
 
 ######################### LSM9DS1 PIPE ########################################
 SET(PIPE_SOURCES 
@@ -117,6 +114,7 @@ endif(BUILD_TESTS)
 ########################## C Library ##########################################
 INSTALL(TARGETS lsm9ds1
 	DESTINATION lib
+    PUBLIC_HEADER DESTINATION include    
     COMPONENT binaries
 )
 
