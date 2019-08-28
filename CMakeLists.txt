@@ -93,7 +93,7 @@ ADD_EXECUTABLE(lsm9ds1_pipe ${PIPE_SOURCES})
 TARGET_LINK_LIBRARIES(lsm9ds1_pipe lsm9ds1)
 
 INSTALL(TARGETS lsm9ds1_pipe
-    DESTINATION usr/bin
+    DESTINATION bin
 )
 
 ######################### Tests ###############################################
@@ -108,7 +108,7 @@ if(BUILD_TESTS)
 
     ######################### Tests ###########################################
     INSTALL(TARGETS lsm9ds1_test
-        DESTINATION usr/bin
+        DESTINATION bin
     )
 endif(BUILD_TESTS)
 
@@ -116,11 +116,11 @@ endif(BUILD_TESTS)
 
 ########################## C Library ##########################################
 INSTALL(TARGETS lsm9ds1
-	DESTINATION usr/lib/
+	DESTINATION lib/
     COMPONENT binaries
 )
 
-INSTALL(FILES "inc/lsm9ds1.h" DESTINATION usr/include/)
+INSTALL(FILES "inc/lsm9ds1.h" DESTINATION include/)
 
 INSTALL(FILES ${CONFIGS}
     DESTINATION etc/

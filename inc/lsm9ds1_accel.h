@@ -118,12 +118,6 @@ typedef struct accelerometer_data {
 	int16_t z;
 } accelerometer_raw_data_t;
 
-typedef struct accelerometer_converted_data_t {
-	float x;
-	float y;
-	float z;
-}accelerometer_converted_data_t;
-
 typedef struct lsm9ds1_accel_settings_t {
 
 	//CTRL REG 5 XL

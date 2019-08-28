@@ -143,13 +143,6 @@ typedef struct mag_data {
 	int16_t z;
 } mag_raw_data_t;
 
-typedef struct mag_converted_data_t {
-	float x;
-	float y;
-	float z;
-}mag_converted_data_t;
-
-
 typedef struct lsm9ds1_mag_settings_t {
 	float mag_resolution;
 

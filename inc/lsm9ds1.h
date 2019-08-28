@@ -52,6 +52,24 @@ typedef struct lsm9ds1_data_t
 	gyro_raw_data_t gyroscope;
 } lsm9ds1_data_t;
 
+typedef struct accelerometer_converted_data_t {
+	float x;
+	float y;
+	float z;
+}accelerometer_converted_data_t;
+
+typedef struct mag_converted_data_t {
+	float x;
+	float y;
+	float z;
+}mag_converted_data_t;
+
+typedef struct gyro_converted_data_t {
+	float x;
+	float y;
+	float z;
+}gyro_converted_data_t;
+
 /**
  * @brief Stores the converted data for each sub device.
  */

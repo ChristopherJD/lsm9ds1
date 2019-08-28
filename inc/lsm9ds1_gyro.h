@@ -103,12 +103,6 @@ typedef struct gyro_data {
 	int16_t z;
 } gyro_raw_data_t;
 
-typedef struct gyro_converted_data_t {
-	float x;
-	float y;
-	float z;
-}gyro_converted_data_t;
-
 typedef struct lsm9ds1_gyro_settings_t {
 
 	// CTRL_REG1_G
