@@ -30,7 +30,7 @@
 
 #define LSM9DS1_MAX_STR_SIZE 256
 #define MAX_SPI_SPEED 15000000
-#define LSM9DS1_CONFIG "/etc/lsm9ds1.json"
+#define LSM9DS1_CONFIG "/usr/share/lsm9ds1.json"
 
 typedef struct lsm9ds1_config_t {
 	char name[LSM9DS1_MAX_STR_SIZE];

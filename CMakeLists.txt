@@ -120,10 +120,10 @@ INSTALL(TARGETS lsm9ds1
     COMPONENT binaries
 )
 
-INSTALL(FILES "inc/lsm9ds1.h" DESTINATION include/)
+INSTALL(FILES "inc/lsm9ds1.h" DESTINATION include)
 
 INSTALL(FILES ${CONFIGS}
-    DESTINATION etc
+    DESTINATION share
     COMPONENT config
 )
 ###############################################################################
