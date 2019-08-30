@@ -49,20 +49,24 @@ int main() {
     lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
     lsm9ds1_device_t lsm9ds1 = {0};
 
-    status = lsm9ds1_init(&lsm9ds1, LSM9DS1_SPI_BUS, LSM9DS1_ACCELRANGE_8G, LSM9DS1_MAGGAIN_8GAUSS, LSM9DS1_GYROSCALE_500DPS);
+    status = lsm9ds1_init();
     if(status < 0) {
         fprinf(stderr, "Error initializing lsm9ds1!\n");
         exit(EXIT_FAILURE);
     }
-    status = lsm9ds1.update_accel(lsm9ds1);
+    
+    lsm9ds1_accel_data_t accel = {0};
+    status = get_accel(&accel);
     if(status < 0) {
    		fprintf(stderr, "Error reading accelerometer!\n");
         exit(EXIT_FAILURE);
     }
     
-    printf("Accelerometer x: %f\n", lsm9ds1.converted_data.accelerometer.x);
-    printf("Accelerometer y: %f\n", lsm9ds1.converted_data.accelerometer.y);
-    printf("Accelerometer z: %f\n", lsm9ds1.converted_data.accelerometer.z);
+    printf("Accelerometer x: %f\n", accel.x);
+    printf("Accelerometer y: %f\n", accel.y);
+    printf("Accelerometer z: %f\n", accel.z);
+    
+    lsm9ds1_close();
     
     return EXIT_SUCCESS;
 }
