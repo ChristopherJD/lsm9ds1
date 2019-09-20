@@ -36,7 +36,6 @@ extern "C"
 
 #include <stdbool.h>
 #include <stdint.h>
-#include "lsm9ds1_debug.h"
 #include "lsm9ds1_config.h"
 
 #define _BUILD_VERSION BUILD_VERSION
@@ -98,6 +97,11 @@ typedef struct lsm9ds1_device_t {
 	lsm9ds1_status_t (*update)(struct lsm9ds1_device_t *self);
 } lsm9ds1_device_t;
 
+/* Debug Functions */
+#if DEBUG > 0
+lsm9ds1_status_t lsm9ds1_get_device(lsm9ds1_device_t *device);
+#endif
+
 /**
  * @brief Read the temperature of the LSM9DS1.
  *
@@ -112,7 +116,7 @@ typedef struct lsm9ds1_device_t {
  *
  *		status = lsm9ds1_init();
  *		if(status < 0) {
- *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *			fprintf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
  *		lsm9ds1_temperature_t data = 0;
@@ -133,7 +137,7 @@ typedef struct lsm9ds1_device_t {
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature);
+lsm9ds1_status_t lsm9ds1_get_temp(lsm9ds1_temperature_t *temperature);
 
 /**
  * @brief Read the accelerometer of the LSM9DS1.
@@ -150,7 +154,7 @@ lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature);
  *
  *		status = lsm9ds1_init();
  *		if(status < 0) {
- *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *			fprintf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
  *		accelerometer_converted_data_t data = {0};
@@ -173,7 +177,7 @@ lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature);
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data);
+lsm9ds1_status_t lsm9ds1_get_accel(accelerometer_converted_data_t *data);
 
 /**
  * @brief Read the magnetometer of the LSM9DS1.
@@ -190,7 +194,7 @@ lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data);
  *
  *		status = lsm9ds1_init();
  *		if(status < 0) {
- *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *			fprintf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *		mag_converted_data_t data = {0};
  * 		status = get_mag(&data);
@@ -212,7 +216,7 @@ lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data);
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t get_mag(mag_converted_data_t *data);
+lsm9ds1_status_t lsm9ds1_get_mag(mag_converted_data_t *data);
 
 /**
  * @brief Read the gyroscope from the LSM9DS1.
@@ -229,7 +233,7 @@ lsm9ds1_status_t get_mag(mag_converted_data_t *data);
  *
  *		status = lsm9ds1_init();
  *		if(status < 0) {
- *			fprinf(stderr, "Error initializing lsm9ds1!\n");
+ *			fprintf(stderr, "Error initializing lsm9ds1!\n");
  *		}
  *
  *		gyro_converted_data_t data = {0};
@@ -252,7 +256,7 @@ lsm9ds1_status_t get_mag(mag_converted_data_t *data);
  * @note You must first initialize the lsm9ds1.
  * @see lsm9ds1_init
  */
-lsm9ds1_status_t get_gyro(gyro_converted_data_t *data);
+lsm9ds1_status_t lsm9ds1_get_gyro(gyro_converted_data_t *data);
 
 /**
  * @brief Initialize the LSM9DS1.

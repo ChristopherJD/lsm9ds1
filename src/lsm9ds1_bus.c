@@ -25,6 +25,7 @@
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
 #include "lsm9ds1_config.h"
+#include "lsm9ds1_error.h"
 
 static lsm9ds1_status_t spi_transfer(lsm9ds1_spi_t *self, lsm9ds1_xfer_t op,
                                  uint8_t address, uint8_t tx) {

@@ -18,6 +18,7 @@
 #include <stdlib.h>
 
 #include "lsm9ds1.h"
+#include "lsm9ds1_debug.h"
 
 #ifndef __GNUC__
 #error "__GNUC__ not defined"
@@ -34,6 +35,13 @@ static lsm9ds1_status_t close_i2c(lsm9ds1_bus_t *self) {
 	// Probably won't implement for raspberrypi
 	return LSM9DS1_BUS_NOT_SUPPORTED;
 }
+
+#if DEBUG > 0
+lsm9ds1_status_t lsm9ds1_get_device(lsm9ds1_device_t *device) {
+	device = &glsm9ds1;
+	return LSM9DS1_SUCCESS;
+}
+#endif
 
 static lsm9ds1_status_t lsm9ds1_close_bus(lsm9ds1_sub_device_t *self, lsm9ds1_xfer_bus_t bus_type) {
 
@@ -173,26 +181,7 @@ static lsm9ds1_status_t update_gyro(lsm9ds1_device_t *self) {
 	return status;
 }
 
-static lsm9ds1_status_t update(lsm9ds1_device_t *self) {
-
-	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
-
-	status = self->update_temp(self);
-	if (status < 0) return status;
-
-	self->update_accel(self);
-	if (status < 0) return status;
-
-	self->update_mag(self);
-	if (status < 0) return status;
-
-	self->update_gyro(self);
-	if (status < 0) return status;
-
-	return LSM9DS1_SUCCESS;
-}
-
-lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature) {
+lsm9ds1_status_t lsm9ds1_get_temp(lsm9ds1_temperature_t *temperature) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -206,7 +195,7 @@ lsm9ds1_status_t get_temp(lsm9ds1_temperature_t *temperature) {
 	return LSM9DS1_SUCCESS;
 }
 
-lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data) {
+lsm9ds1_status_t lsm9ds1_get_accel(accelerometer_converted_data_t *data) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -218,7 +207,7 @@ lsm9ds1_status_t get_accel(accelerometer_converted_data_t *data) {
 	return LSM9DS1_SUCCESS;
 }
 
-lsm9ds1_status_t get_mag(mag_converted_data_t *data) {
+lsm9ds1_status_t lsm9ds1_get_mag(mag_converted_data_t *data) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -230,7 +219,7 @@ lsm9ds1_status_t get_mag(mag_converted_data_t *data) {
 	return LSM9DS1_SUCCESS;
 }
 
-lsm9ds1_status_t get_gyro(gyro_converted_data_t *data) {
+lsm9ds1_status_t lsm9ds1_get_gyro(gyro_converted_data_t *data) {
 
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
@@ -256,7 +245,6 @@ lsm9ds1_status_t lsm9ds1_init() {
 	glsm9ds1.update_accel = update_accel;
 	glsm9ds1.update_mag = update_mag;
 	glsm9ds1.update_gyro = update_gyro;
-	glsm9ds1.update = update;	
 
 	ret = init_config();
 	if(ret < 0) {

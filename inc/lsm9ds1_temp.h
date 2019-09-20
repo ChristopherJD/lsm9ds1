@@ -27,7 +27,7 @@
 #ifndef LSM9DS1_TEMP_H_
 #define LSM9DS1_TEMP_H_
 
-#include "lsm9ds1_common.h"
+#include "lsm9ds1_bus.h"
 
 /**
  * @brief Temperature returned from the LSM9DS1

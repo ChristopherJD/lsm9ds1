@@ -40,10 +40,10 @@ endif(BUILD_DOCUMENTATION)
 
 ############################ Project Settings #################################
 IF(CMAKE_BUILD_TYPE MATCHES Debug)
-    message("debug mode")
+    message("Debug mode")
     SET(PROJECT liblsm9ds1-dbg)
 ELSE()
-    message("release mode")
+    message("Release mode")
     SET(PROJECT liblsm9ds1)
 ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
@@ -52,7 +52,7 @@ SET(LICENSE "GPLV3")
 ###############################################################################
 
 ########################### Build and include settings ########################
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
+STRING(CONCAT CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG=1 -g")
 STRING(CONCAT CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -pedantic")
 
 INCLUDE_DIRECTORIES(
@@ -71,7 +71,7 @@ FILE(GLOB SOURCES
     "src/*.c" 
 )
 
-FILE(GLOB CONFIGS
+SET(CONFIGS
     "conf/lsm9ds1.json"
 )
 
@@ -80,18 +80,6 @@ TARGET_LINK_LIBRARIES(lsm9ds1 cjson)
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES VERSION ${LSM9DS1_VERSION_STRING}
                                           SOVERSION ${LSM9DS1_VERSION_MAJOR})
 SET_TARGET_PROPERTIES(lsm9ds1 PROPERTIES PUBLIC_HEADER "${HEADERS}")
-
-######################### LSM9DS1 PIPE ########################################
-SET(PIPE_SOURCES 
-    "src/lsm9ds1_pipe.c" 
-)
-
-ADD_EXECUTABLE(lsm9ds1_pipe ${PIPE_SOURCES})
-TARGET_LINK_LIBRARIES(lsm9ds1_pipe lsm9ds1)
-
-INSTALL(TARGETS lsm9ds1_pipe
-    DESTINATION bin
-)
 
 ######################### Tests ###############################################
 OPTION(BUILD_TESTS "Build lsm9ds1 tests" OFF)
@@ -115,14 +103,10 @@ endif(BUILD_TESTS)
 INSTALL(TARGETS lsm9ds1
 	DESTINATION lib
     PUBLIC_HEADER DESTINATION include    
-    COMPONENT binaries
 )
 
-INSTALL(FILES "inc/lsm9ds1.h" DESTINATION include)
-
 INSTALL(FILES ${CONFIGS}
-    DESTINATION share
-    COMPONENT config
+    DESTINATION etc
 )
 ###############################################################################
 
@@ -135,7 +119,6 @@ ENDIF(CMAKE_BUILD_TYPE MATCHES Debug)
 
 SET(CPACK_RPM_PACKAGE_REQUIRES ${DEPENDENCIES})
 SET(CPACK_RPM_PACKAGE_RELOCATABLE ON)
-#SET(DESTDIR /)
 SET(CPACK_RPM_PACKAGE_ARCHITECTURE "raspberrypi3")
 SET(CPACK_PACKAGE_VERSION ${BUILD_VERSION})
 SET(CPACK_GENERATOR "RPM;TGZ")
@@ -143,7 +126,6 @@ SET(CPACK_PACKAGE_NAME ${PROJECT})
 SET(CPACK_PACKAGE_RELEASE 1)
 SET(CPACK_PACKAGE_CONTACT "Christopher Jordan-Denny")
 SET(CPACK_PACKAGE_VENDOR "Christopher Jordan-Denny")
-#SET(CPACK_PACKAGING_INSTALL_PREFIX ${DESTDIR})
 SET(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Library for the LSM9DS1.")
 SET(CPACK_RPM_PACKAGE_LICENSE ${LICENSE})
 SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/LICENSE")

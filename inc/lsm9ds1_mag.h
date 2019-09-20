@@ -27,7 +27,7 @@
 #ifndef LSM9DS1_MAG_H_
 #define LSM9DS1_MAG_H_
 
-#include "lsm9ds1_common.h"
+#include "lsm9ds1_bus.h"
 
 #define LSM9DS1_MAG_TEMP_COMP_BIT_OFFSET 7
 #define LSM9DS1_MAG_TEMP_COMP_BIT_MASK __extension__ 0b10000000

@@ -51,7 +51,7 @@ int main() {
 
     status = lsm9ds1_init();
     if(status < 0) {
-        fprinf(stderr, "Error initializing lsm9ds1!\n");
+        fprintf(stderr, "Error initializing lsm9ds1!\n");
         exit(EXIT_FAILURE);
     }
     
@@ -82,8 +82,10 @@ There are 2 options when building the LSM9DS1 Library.
 
 * Build for release
     When building for release you will build the source code, doxygen documentation, CUnit tests, and package for the RPM format.
+    The RPM package can be found in the Release directory.
 * Build for debug
     When building for debug purposes you will build the source code with debugging symbols and additional print statements as well as the CUnit tests.
+    The RPM package can be found in the Debug directory.
 
 1. You MUST have the SDK sourced to create a cross-compiled build for the raspberrypi system. (If you don't intend to build for this system you can skip this step.)
 
@@ -91,23 +93,24 @@ There are 2 options when building the LSM9DS1 Library.
     source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi
     ```
 
-1. Use the build shell script. This will use cmake and make to build for your system. 
+1. CMake is used in the background, however a makefile wraps all the prior steps.
 
     If building for release.
 
     ```bash
-    ./build.sh release
+    make
     ```
 
     If building for debugging purposes.
 
     ```bash
-    ./build.sh debug
+    make debug
     ```
     
 ## Testing
 
-This project uses the the CUnit Testing Framwork. Tests can be run by running the lms9ds1_test program installed in the `/usr/bin` directory.
+This project uses the the CUnit Testing Framwork. Tests can be run by running the lms9ds1_test program installed in the `/usr/bin` directory when building the debug version
+of the package.
 
 ## Debugging
 

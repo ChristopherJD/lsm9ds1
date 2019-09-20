@@ -27,7 +27,7 @@
 #ifndef LSM9DS1_GYRO_H_
 #define LSM9DS1_GRYO_H_
 
-#include "lsm9ds1_common.h"
+#include "lsm9ds1_bus.h"
 
 // Angular Rate: dps per LSB
 #define SENSITIVITY_GYROSCOPE_245    0.00875

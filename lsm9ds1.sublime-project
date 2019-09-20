@@ -11,12 +11,12 @@
     {
       "name": "lsm9ds1-debug",
       "working_dir": "${project_path}",
-      "shell_cmd": "source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi && ./build.sh DEBUG"
+      "shell_cmd": "source /opt/poky/2.7.1/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi && make debug_clean debug"
     },
     {
       "name": "lsm9ds1-release",
       "working_dir": "${project_path}",
-      "shell_cmd": "source /opt/poky/2.6.2/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi && ./build.sh RELEASE docs"
+      "shell_cmd": "source /opt/poky/2.7.1/environment-setup-cortexa7t2hf-neon-vfpv4-poky-linux-gnueabi && make clean all"
     }
   ]
 }

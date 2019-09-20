@@ -18,6 +18,7 @@
 #include "lsm9ds1_accel.h"
 #include "lsm9ds1_regs.h"
 #include "lsm9ds1_debug.h"
+#include "lsm9ds1_common.h"
 
 static lsm9ds1_status_t lsm9ds1_read_accel_settings(lsm9ds1_bus_t *bus, lsm9ds1_accel_settings_t *settings) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;

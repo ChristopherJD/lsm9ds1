@@ -18,6 +18,7 @@
 #include "lsm9ds1_temp.h"
 #include "lsm9ds1_regs.h"
 #include "lsm9ds1_debug.h"
+#include "lsm9ds1_common.h"
 
 lsm9ds1_status_t lsm9ds1_read_temp(lsm9ds1_bus_t *bus, lsm9ds1_temperature_t *temperature) {
 

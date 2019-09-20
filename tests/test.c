@@ -43,7 +43,7 @@ void test_lsm9ds1_read_temp(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	lsm9ds1_temperature_t temperature = 0;
-	status = get_temp(&temperature);
+	status = lsm9ds1_get_temp(&temperature);
 
 	printf("%d\n", status);
 
@@ -55,7 +55,7 @@ void test_lsm9ds1_read_accel(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	accelerometer_converted_data_t data = {0};
-	status = get_accel(&data);
+	status = lsm9ds1_get_accel(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
@@ -68,7 +68,7 @@ void test_lsm9ds1_read_gyro(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	gyro_converted_data_t data = {0};
-	status = get_gyro(&data);
+	status = lsm9ds1_get_gyro(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
@@ -81,7 +81,7 @@ void test_lsm9ds1_read_mag(void) {
 	lsm9ds1_status_t status = LSM9DS1_UNKNOWN_ERROR;
 
 	mag_converted_data_t data = {0};
-	status = get_mag(&data);
+	status = lsm9ds1_get_mag(&data);
 	printf("%d\n", status);
 
 	CU_ASSERT(0 == status);
