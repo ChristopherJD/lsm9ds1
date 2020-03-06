@@ -21,7 +21,6 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-
 #include "lsm9ds1_bus.h"
 #include "lsm9ds1_debug.h"
 #include "lsm9ds1_config.h"
@@ -93,13 +92,19 @@ lsm9ds1_status_t lsm9ds1_write(lsm9ds1_bus_t *self, uint8_t register_addr, uint8
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 	lsm9ds1_xfer_t operation = LSM9DS1_WRITE;
+	uint8_t addr_xfer = 0;
 
 	if(!self->initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
 	}
 
 	if(self->spi.initialized) {
-		ret = spi_transfer(&(self->spi), operation, register_addr, tx);
+		addr_xfer = (SPI_WRITE | register_addr);
+		self->spi.address = addr_xfer;
+		self->spi.tx = self->spi.address;
+
+		bcm2835_spi_chipSelect(self->spi.settings.cs);
+		bcm2835_spi_transfernb(&(self->spi.tx), self->spi.rx, 1);
 	}
 	else if(self->i2c.initialized) {
 		// Not implemented
@@ -115,13 +120,19 @@ lsm9ds1_status_t lsm9ds1_read(lsm9ds1_bus_t *self, uint8_t address) {
 
 	lsm9ds1_status_t ret = LSM9DS1_UNKNOWN_ERROR;
 	lsm9ds1_xfer_t operation = LSM9DS1_READ;
+	uint8_t addr_xfer = 0;
 
 	if(!self->initialized) {
 		return LSM9DS1_BUS_NOT_INTIALIZED;
 	}
 
 	if(self->spi.initialized) {
-		ret = spi_transfer(&(self->spi), operation, address, 0);
+		addr_xfer = (SPI_READ | address);
+		self->spi.address = addr_xfer;
+		self->spi.tx = self->spi.address;
+
+		bcm2835_spi_chipSelect(self->spi.settings.cs);
+		bcm2835_spi_transfernb(&(self->spi.tx), self->spi.rx, 1);
 	}
 	else if(self->i2c.initialized) {
 		// Not implemented 
@@ -155,8 +166,7 @@ lsm9ds1_status_t lsm9ds1_register_write(lsm9ds1_bus_t *self, uint8_t address, ui
 
 lsm9ds1_status_t close_spi(lsm9ds1_bus_t *self) {
 
-	DEBUG_PRINT("Closing device: %s\n", self->spi.name);
-	close(self->spi.fd);	
+	bcm2835_spi_end();	
 
 	return LSM9DS1_SUCCESS;
 }
@@ -165,58 +175,32 @@ lsm9ds1_status_t init_spi(lsm9ds1_bus_t *self) {
 
 	int8_t ret = LSM9DS1_UNKNOWN_ERROR;	// Function return codes.
 	
-	self->spi.settings.mode 		= 0;
+	self->spi.settings.mode 		= BCM2835_SPI_MODE3;
+	self->spi.settings.speed		= BCM2835_SPI_CLOCK_DIVIDER_32;
 	self->spi.settings.bits 		= 8;
 	self->spi.settings.spi_delay 	= 0;
 
 	switch(self->id) {
 		case LSM9DS1_ACCEL_GYRO:
-			self->spi.settings.speed = glsm9ds1_config.sub_device.accelerometer.bus.spi.settings.speed;
-			strncpy(self->spi.name, glsm9ds1_config.sub_device.accelerometer.bus.spi.name, sizeof(self->spi.name));
+			self->spi.settings.cs = BCM2835_SPI_CS0;
 			break;
 		case LSM9DS1_MAG:
-			self->spi.settings.speed = glsm9ds1_config.sub_device.magnetometer.bus.spi.settings.speed;
-			strncpy(self->spi.name, glsm9ds1_config.sub_device.magnetometer.bus.spi.name, sizeof(self->spi.name));
+			self->spi.settings.cs = BCM2835_SPI_CS1;
 			break;
 		default:
 			return LSM9DS1_UNKNOWN_SUB_DEVICE;
 	}
 
-	DEBUG_PRINT("Device: %s\n", self->spi.name);
+	bcm2835_spi_begin();
 
-	self->spi.fd = open(self->spi.name, O_RDWR);
-	if (self->spi.fd <= 0) {
-		return LSM9DS1_NOT_FOUND;
-	}
+	//Set CS pins polarity to low
+	bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS0, 0);
+	bcm2835_spi_setChipSelectPolarity(BCM2835_SPI_CS1, 0);
+	bcm2835_spi_setClockDivider(self->spi.settings.speed);
 
-	DEBUG_PRINT("Device fd: %d\n", self->spi.fd);
-
-	// Set to mode 3
-	self->spi.settings.mode |= SPI_MODE_3;
-	ret = ioctl(self->spi.fd, SPI_IOC_WR_MODE, &(self->spi.settings.mode));
-	if (ret == -1) {
-		return LSM9DS1_MODE_3_NOT_SET;
-	}
-
-#if DEBUG > 0
-	ret = ioctl(self->spi.fd, SPI_IOC_RD_MODE, &(self->spi.settings.mode));
-	if (ret == -1) {
-		return LSM9DS1_MODE_3_NOT_SET;
-	}
-	DEBUG_PRINT("SPI_IOC_RD_MODE: 0x%X\n", self->spi.settings.mode);
-#endif
-
-	// Set the number of bits per word.
-	ret = ioctl(self->spi.fd, SPI_IOC_WR_BITS_PER_WORD, &(self->spi.settings.bits));
-	if (ret == -1) {
-		return LSM9DS1_NUM_BITS_NOT_SET;
-	}
-
-	// Set the max clock speed in hz
-	ret = ioctl(self->spi.fd, SPI_IOC_WR_MAX_SPEED_HZ, &(self->spi.settings.speed));
-	if (ret == -1) {
-		return LSM9DS1_CLOCK_NOT_SET;
-	}
+	//	BCM2835_SPI_MODE3 = 3, CPOL = 1, CPHA = 1, Clock idle high, 
+	// data is clocked in on rising, edge output data (change) on falling edge
+	bcm2835_spi_setDataMode(self->spi.settings.mode);
 
 	self->spi.initialized = true;
 

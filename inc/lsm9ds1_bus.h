@@ -30,6 +30,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <bcm2835.h>
 #include "lsm9ds1_error.h"
 
 #define ACCEL "/dev/spidev0.0"
@@ -60,10 +61,11 @@ typedef enum lsm9ds1_xfer_bus_t {
 } lsm9ds1_xfer_bus_t;
 
 typedef struct lsm9ds1_spi_settings_t {
-	uint8_t mode;
+	bcm2835SPIMode mode;
 	uint8_t bits;
-	uint32_t speed;
+	bcm2835SPIClockDivider speed;
 	uint16_t spi_delay;
+	bcm2835SPIChipSelect cs;
 }lsm9ds1_spi_settings_t;
 
 typedef struct lsm9ds1_i2c_settings_t {
